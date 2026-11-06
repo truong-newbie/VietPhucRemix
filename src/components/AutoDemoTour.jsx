@@ -111,10 +111,11 @@ export function AutoDemoTour({
   const [elapsedTime, setElapsedTime] = useState(0);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
   const [availableVoices, setAvailableVoices] = useState([]);
+  const audioRef = useRef(null);
 
   const currentStep = TOUR_STEPS[currentStepIndex];
 
-  // Load available browser synthesis voices
+  // Load available browser synthesis voices for secondary fallback
   useEffect(() => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       const updateVoices = () => {
@@ -126,43 +127,83 @@ export function AutoDemoTour({
     }
   }, []);
 
-  // Speak voice function
-  const speakStepText = (text) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    window.speechSynthesis.cancel(); // Stop prior speech
-
-    if (!isVoiceEnabled || !text) return;
-
-    try {
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'vi-VN';
-      utterance.rate = 1.0; // natural pacing
-      utterance.pitch = 1.0;
-
-      // Find Vietnamese voice in browser (Chrome/Edge Natural voices like HoaiMy or NamMinh)
-      const viVoice = availableVoices.find(
-        (v) => v.lang.startsWith('vi') || v.lang.includes('VN')
-      );
-      if (viVoice) {
-        utterance.voice = viVoice;
-      }
-
-      window.speechSynthesis.speak(utterance);
-    } catch (e) {
-      console.warn('Speech synthesis error:', e);
+  // Stop all active audio & synthesis
+  const stopAllAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
     }
   };
 
-  // Stop speech on unmount, close, or pause
+  // Play authentic Vietnamese AI narration (HTML5 Audio MP3)
+  const playStepAudio = (stepIndex) => {
+    stopAllAudio();
+    if (!isVoiceEnabled || !isActive) return;
+
+    // Resolve base URL for localhost and GitHub Pages deployment
+    const base = import.meta.env.BASE_URL.endsWith('/')
+      ? import.meta.env.BASE_URL
+      : `${import.meta.env.BASE_URL}/`;
+    const audioUrl = `${base}audio/step${stepIndex + 1}.mp3`;
+
+    try {
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.warn('Audio playback error, attempting speech fallback:', err);
+          // Fallback to browser SpeechSynthesis if autoplay or file load is blocked
+          const text = TOUR_STEPS[stepIndex]?.voiceText;
+          if (text && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'vi-VN';
+            const viVoice = availableVoices.find(
+              (v) => v.lang.startsWith('vi') || v.lang.includes('VN')
+            );
+            if (viVoice) utterance.voice = viVoice;
+            window.speechSynthesis.speak(utterance);
+          }
+        });
+      }
+    } catch (e) {
+      console.warn('HTML5 Audio init failed:', e);
+    }
+  };
+
+  // Stop audio on unmount or when tour is closed
   useEffect(() => {
-    if (!isActive || !isPlaying) {
+    if (!isActive) {
+      stopAllAudio();
+    }
+    return () => {
+      stopAllAudio();
+    };
+  }, [isActive]);
+
+  // Handle Play / Pause audio sync
+  useEffect(() => {
+    if (!isActive) return;
+    if (isPlaying) {
+      if (audioRef.current && audioRef.current.paused) {
+        audioRef.current.play().catch(() => {});
+      }
+    } else {
+      if (audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause();
+      }
       if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
+        window.speechSynthesis.pause();
       }
     }
-  }, [isActive, isPlaying]);
+  }, [isPlaying, isActive]);
 
-  // Execute step action and voice on step change
+  // Execute step action and voice whenever step changes
   useEffect(() => {
     if (!isActive) return;
     const step = TOUR_STEPS[currentStepIndex];
@@ -171,10 +212,10 @@ export function AutoDemoTour({
         step.action(helpers);
       }
       if (isPlaying && isVoiceEnabled) {
-        speakStepText(step.voiceText);
+        playStepAudio(currentStepIndex);
       }
     }
-  }, [isActive, currentStepIndex, isVoiceEnabled]);
+  }, [isActive, currentStepIndex]);
 
   // Timer loop for auto progression
   useEffect(() => {
@@ -221,7 +262,7 @@ export function AutoDemoTour({
     setElapsedTime(0);
     setIsPlaying(true);
     if (isVoiceEnabled) {
-      speakStepText(TOUR_STEPS[0].voiceText);
+      playStepAudio(0);
     }
   };
 
@@ -229,18 +270,14 @@ export function AutoDemoTour({
     const nextState = !isVoiceEnabled;
     setIsVoiceEnabled(nextState);
     if (!nextState) {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      stopAllAudio();
     } else {
-      speakStepText(currentStep.voiceText);
+      playStepAudio(currentStepIndex);
     }
   };
 
   const handleClose = () => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
+    stopAllAudio();
     onClose();
   };
 

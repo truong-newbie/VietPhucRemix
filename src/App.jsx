@@ -8,6 +8,7 @@ import { HarmonyGauge } from './components/HarmonyGauge';
 import { CultureCardModal } from './components/CultureCardModal';
 import { LookbookModal } from './components/LookbookModal';
 import { PartnerModal } from './components/PartnerModal';
+import { ProjectRoadmapPage } from './components/ProjectRoadmapPage';
 import { Footer } from './components/Footer';
 
 import { GARMENTS_DATA } from './data/garmentsData';
@@ -18,6 +19,9 @@ import { evaluateCultureGuard } from './engines/cultureEngine';
 import { calculateHarmonyScore } from './engines/harmonyEngine';
 
 export function App() {
+  // Navigation View: 'studio' (Phối đồ) | 'roadmap' (Landing page báo cáo MVP & lộ trình)
+  const [currentView, setCurrentView] = useState('studio');
+
   // Target Audience Mode: 'genz' | 'family'
   const [mode, setMode] = useState('genz');
   const [gender, setGender] = useState('female');
@@ -160,7 +164,7 @@ export function App() {
       // Cố tình tạo bối cảnh sai lệch để kiểm chứng Lá chắn Culture Guard (Báo Đỏ)
       setSelectedEventId('le-chua');
       setSelectedGarmentId('ao-dai');
-      setSelectedOuterColorId('do-son'); // Đỏ son rực rỡ + quần cộc đi chùa
+      setSelectedOuterColorId('do-son');
       setBottomLength('short');
     } else if (scenarioKey === 'royal-wedding') {
       setMode('family');
@@ -190,6 +194,8 @@ export function App() {
     <div className="min-h-screen bg-[#F4EFE6] text-[#2C241D] flex flex-col font-sans selection:bg-[#8B1A1A] selection:text-white">
       {/* 1. Header Navigation */}
       <Navbar
+        currentView={currentView}
+        onViewChange={setCurrentView}
         mode={mode}
         onModeChange={handleModeChange}
         onOpenCultureCard={() => setIsCultureCardOpen(true)}
@@ -197,99 +203,106 @@ export function App() {
         onOpenPartners={() => setIsPartnerModalOpen(true)}
       />
 
-      {/* 2. Hero Philosophy & 4 Quick Scenarios */}
-      <HeroSection onApplyScenario={handleApplyScenario} />
+      {/* Conditionally Render: Studio View OR Roadmap Landing Page */}
+      {currentView === 'roadmap' ? (
+        <ProjectRoadmapPage onBackToStudio={() => setCurrentView('studio')} />
+      ) : (
+        <>
+          {/* 2. Hero Philosophy & 4 Quick Scenarios */}
+          <HeroSection onApplyScenario={handleApplyScenario} />
 
-      {/* 3. Main Interactive Workspace */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Left Column (5 Cols on LG): Studio Controls */}
-          <div className="lg:col-span-5 space-y-4">
-            <StudioControls
-              selectedEventId={selectedEventId}
-              onSelectEvent={setSelectedEventId}
-              selectedGarmentId={selectedGarmentId}
-              onSelectGarment={setSelectedGarmentId}
-              selectedOuterColorId={selectedOuterColorId}
-              onSelectOuterColor={setSelectedOuterColorId}
-              selectedBottomColorId={selectedBottomColorId}
-              onSelectBottomColor={setSelectedBottomColorId}
-              selectedBeltColorId={selectedBeltColorId}
-              onSelectBeltColor={setSelectedBeltColorId}
-              selectedHeadId={selectedHeadId}
-              onSelectHead={setSelectedHeadId}
-              selectedHandId={selectedHandId}
-              onSelectHand={setSelectedHandId}
-              selectedFootId={selectedFootId}
-              onSelectFoot={setSelectedFootId}
-            />
-          </div>
-
-          {/* Right Column (7 Cols on LG): Culture Guard + Layered SVG Avatar + Harmony Gauge */}
-          <div className="lg:col-span-7 space-y-4">
-            {/* Culture Guard Traffic-Light Alert Banner */}
-            <CultureGuardBanner
-              cultureResult={cultureResult}
-              onAutoFix={handleAutoFix}
-              onOpenCultureCard={() => setIsCultureCardOpen(true)}
-            />
-
-            {/* Stage Grid: Avatar & Gauges */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
-              {/* Visual Avatar Stage (7 Cols) */}
-              <div className="md:col-span-7">
-                <AvatarStage
-                  garment={selectedGarment}
-                  outerColor={outerColor}
-                  innerColor={innerColor}
-                  bottomColor={bottomColor}
-                  beltColor={beltColor}
-                  headAccessory={headAccessory}
-                  handAccessory={handAccessory}
-                  footAccessory={footAccessory}
-                  gender={gender}
-                  onGenderChange={setGender}
+          {/* 3. Main Interactive Workspace */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Left Column (5 Cols on LG): Studio Controls */}
+              <div className="lg:col-span-5 space-y-4">
+                <StudioControls
+                  selectedEventId={selectedEventId}
+                  onSelectEvent={setSelectedEventId}
+                  selectedGarmentId={selectedGarmentId}
+                  onSelectGarment={setSelectedGarmentId}
+                  selectedOuterColorId={selectedOuterColorId}
+                  onSelectOuterColor={setSelectedOuterColorId}
+                  selectedBottomColorId={selectedBottomColorId}
+                  onSelectBottomColor={setSelectedBottomColorId}
+                  selectedBeltColorId={selectedBeltColorId}
+                  onSelectBeltColor={setSelectedBeltColorId}
+                  selectedHeadId={selectedHeadId}
+                  onSelectHead={setSelectedHeadId}
+                  selectedHandId={selectedHandId}
+                  onSelectHand={setSelectedHandId}
+                  selectedFootId={selectedFootId}
+                  onSelectFoot={setSelectedFootId}
                 />
               </div>
 
-              {/* Real-time Harmony Score & Quick Summary (5 Cols) */}
-              <div className="md:col-span-5 flex flex-col justify-between gap-3">
-                <HarmonyGauge harmonyResult={harmonyResult} />
+              {/* Right Column (7 Cols on LG): Culture Guard + Layered SVG Avatar + Harmony Gauge */}
+              <div className="lg:col-span-7 space-y-4">
+                {/* Culture Guard Traffic-Light Alert Banner */}
+                <CultureGuardBanner
+                  cultureResult={cultureResult}
+                  onAutoFix={handleAutoFix}
+                  onOpenCultureCard={() => setIsCultureCardOpen(true)}
+                />
 
-                {/* Culture 60s Callout Card */}
-                <div className="bg-[#FAF7F2] rounded-2xl border border-[#E0D5C1] p-4 shadow-sm space-y-2.5">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#8C5E3B] block">
-                    Góc nhìn Chuyên gia Văn hóa
-                  </span>
-                  <h4 className="font-bold text-sm text-[#1D2440] font-serif">
-                    Ý nghĩa 5 Khuy Áo Ngũ Thân
-                  </h4>
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    Năm hạt cúc áo ngũ thân tượng trưng cho <strong>Ngũ thường</strong> (Nhân, Lễ, Nghĩa, Trí, Tín) – kim chỉ nam rèn luyện nhân cách của người Việt xưa.
-                  </p>
-                  <button
-                    onClick={() => setIsCultureCardOpen(true)}
-                    className="text-xs font-bold text-[#8B1A1A] hover:underline flex items-center gap-1"
-                  >
-                    Đọc tiếp tư liệu di sản →
-                  </button>
+                {/* Stage Grid: Avatar & Gauges */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+                  {/* Visual Avatar Stage (7 Cols) */}
+                  <div className="md:col-span-7">
+                    <AvatarStage
+                      garment={selectedGarment}
+                      outerColor={outerColor}
+                      innerColor={innerColor}
+                      bottomColor={bottomColor}
+                      beltColor={beltColor}
+                      headAccessory={headAccessory}
+                      handAccessory={handAccessory}
+                      footAccessory={footAccessory}
+                      gender={gender}
+                      onGenderChange={setGender}
+                    />
+                  </div>
+
+                  {/* Real-time Harmony Score & Quick Summary (5 Cols) */}
+                  <div className="md:col-span-5 flex flex-col justify-between gap-3">
+                    <HarmonyGauge harmonyResult={harmonyResult} />
+
+                    {/* Culture 60s Callout Card */}
+                    <div className="bg-[#FAF7F2] rounded-2xl border border-[#E0D5C1] p-4 shadow-sm space-y-2.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#8C5E3B] block">
+                        Góc nhìn Chuyên gia Văn hóa
+                      </span>
+                      <h4 className="font-bold text-sm text-[#1D2440] font-serif">
+                        Ý nghĩa 5 Khuy Áo Ngũ Thân
+                      </h4>
+                      <p className="text-xs text-gray-600 leading-relaxed">
+                        Năm hạt cúc áo ngũ thân tượng trưng cho <strong>Ngũ thường</strong> (Nhân, Lễ, Nghĩa, Trí, Tín) – kim chỉ nam rèn luyện nhân cách của người Việt xưa.
+                      </p>
+                      <button
+                        onClick={() => setIsCultureCardOpen(true)}
+                        className="text-xs font-bold text-[#8B1A1A] hover:underline flex items-center gap-1"
+                      >
+                        Đọc tiếp tư liệu di sản →
+                      </button>
+                    </div>
+
+                    {/* Quick Action Button: Export Lookbook */}
+                    <button
+                      onClick={() => setIsLookbookOpen(true)}
+                      className="w-full py-3 px-4 rounded-xl font-serif font-bold text-sm text-white bg-gradient-to-r from-[#8B1A1A] via-[#A62626] to-[#C9A227] hover:brightness-105 transition shadow-md flex items-center justify-center gap-2"
+                    >
+                      <span>Xuất Lookbook & Quét Mã QR</span>
+                    </button>
+                  </div>
                 </div>
-
-                {/* Quick Action Button: Export Lookbook */}
-                <button
-                  onClick={() => setIsLookbookOpen(true)}
-                  className="w-full py-3 px-4 rounded-xl font-serif font-bold text-sm text-white bg-gradient-to-r from-[#8B1A1A] via-[#A62626] to-[#C9A227] hover:brightness-105 transition shadow-md flex items-center justify-center gap-2"
-                >
-                  <span>Xuất Lookbook & Quét Mã QR</span>
-                </button>
               </div>
             </div>
-          </div>
-        </div>
-      </main>
+          </main>
+        </>
+      )}
 
       {/* 4. Footer */}
-      <Footer />
+      <Footer onNavigateRoadmap={() => setCurrentView('roadmap')} />
 
       {/* 5. Modals */}
       <CultureCardModal

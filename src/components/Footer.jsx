@@ -1,7 +1,7 @@
 import React from 'react';
-import { ShieldCheck, Heart, Award, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Heart, Award, ExternalLink, Compass } from 'lucide-react';
 
-export function Footer() {
+export function Footer({ onNavigateRoadmap }) {
   return (
     <footer className="bg-[#1D2440] text-gray-300 py-10 border-t-4 border-[#C9A227] text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
@@ -20,12 +20,22 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="text-left md:text-right space-y-1">
+          <div className="text-left md:text-right space-y-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-[#F9D423] block">
               Cuộc thi Khởi nghiệp Sáng tạo HaUI 2026
             </span>
             <p className="text-white font-medium">Trường Đại học Công nghiệp Hà Nội (HaUI)</p>
             <p className="text-gray-400">Trường Công nghệ Thông tin & Truyền thông</p>
+
+            {onNavigateRoadmap && (
+              <button
+                onClick={onNavigateRoadmap}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-[#8B1A1A] text-white font-bold text-xs transition border border-white/20 hover:border-[#8B1A1A]"
+              >
+                <Compass className="w-3.5 h-3.5 text-[#F9D423]" />
+                <span>Xem Báo Cáo MVP &amp; Lộ Trình Phát Triển →</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -66,4 +76,3 @@ export function Footer() {
     </footer>
   );
 }
-

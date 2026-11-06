@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { StudioControls } from './components/StudioControls';
@@ -11,6 +11,7 @@ import { PartnerModal } from './components/PartnerModal';
 import { ProjectRoadmapPage } from './components/ProjectRoadmapPage';
 import { AutoDemoTour } from './components/AutoDemoTour';
 import { Footer } from './components/Footer';
+import { Link2, Check } from 'lucide-react';
 
 import { GARMENTS_DATA } from './data/garmentsData';
 import { EVENTS_DATA } from './data/eventsData';
@@ -18,25 +19,35 @@ import { COLOR_PALETTE } from './data/colorsData';
 import { ACCESSORIES_DATA } from './data/accessoriesData';
 import { evaluateCultureGuard } from './engines/cultureEngine';
 import { calculateHarmonyScore } from './engines/harmonyEngine';
+import { encodeOutfit, decodeOutfit } from './utils/outfitUrl';
 
 export function App() {
+  // Read initial outfit from URL parameters safely
+  const [initialParams] = useState(() => {
+    if (typeof window === 'undefined') return {};
+    return decodeOutfit(window.location.search);
+  });
+
   // Navigation View: 'studio' (Phối đồ) | 'roadmap' (Landing page báo cáo MVP & lộ trình)
   const [currentView, setCurrentView] = useState('studio');
 
   // Target Audience Mode: 'genz' | 'family'
-  const [mode, setMode] = useState('genz');
-  const [gender, setGender] = useState('female');
+  const [mode, setMode] = useState(() => initialParams.mode || 'genz');
+  const [gender, setGender] = useState(() => initialParams.gender || 'female');
 
   // Core Outfit Configuration State
-  const [selectedEventId, setSelectedEventId] = useState('tet-xuan');
-  const [selectedGarmentId, setSelectedGarmentId] = useState('ngu-than');
-  const [selectedOuterColorId, setSelectedOuterColorId] = useState('do-son');
-  const [selectedBottomColorId, setSelectedBottomColorId] = useState('trang-su');
-  const [selectedBeltColorId, setSelectedBeltColorId] = useState('hoang-tho');
-  const [selectedHeadId, setSelectedHeadId] = useState('khan-van');
-  const [selectedHandId, setSelectedHandId] = useState('tui-tote');
-  const [selectedFootId, setSelectedFootId] = useState('sneaker-trang');
-  const [bottomLength, setBottomLength] = useState('long'); // 'long' | 'short' (để test Culture Guard)
+  const [selectedEventId, setSelectedEventId] = useState(() => initialParams.eventId || 'tet-xuan');
+  const [selectedGarmentId, setSelectedGarmentId] = useState(() => initialParams.garmentId || 'ngu-than');
+  const [selectedOuterColorId, setSelectedOuterColorId] = useState(() => initialParams.outerColorId || 'do-son');
+  const [selectedBottomColorId, setSelectedBottomColorId] = useState(() => initialParams.bottomColorId || 'trang-su');
+  const [selectedBeltColorId, setSelectedBeltColorId] = useState(() => initialParams.beltColorId || 'hoang-tho');
+  const [selectedHeadId, setSelectedHeadId] = useState(() => initialParams.headId || 'khan-van');
+  const [selectedHandId, setSelectedHandId] = useState(() => initialParams.handId || 'tui-tote');
+  const [selectedFootId, setSelectedFootId] = useState(() => initialParams.footId || 'sneaker-trang');
+  const [bottomLength, setBottomLength] = useState(() => initialParams.bottomLength || 'long'); // 'long' | 'short' (để test Culture Guard)
+
+  // Copy share link status
+  const [isCopiedLink, setIsCopiedLink] = useState(false);
 
   // Modals
   const [isCultureCardOpen, setIsCultureCardOpen] = useState(false);
@@ -86,8 +97,8 @@ export function App() {
     [selectedFootId]
   );
 
-  // Evaluate Culture Guard
-  const cultureState = {
+  // Evaluate Culture Guard with memoized state
+  const cultureState = useMemo(() => ({
     eventId: selectedEventId,
     garmentId: selectedGarmentId,
     outerColorId: selectedOuterColorId,
@@ -97,7 +108,17 @@ export function App() {
     handAccessoryId: selectedHandId,
     footAccessoryId: selectedFootId,
     bottomLength
-  };
+  }), [
+    selectedEventId,
+    selectedGarmentId,
+    selectedOuterColorId,
+    selectedBottomColorId,
+    selectedBeltColorId,
+    selectedHeadId,
+    selectedHandId,
+    selectedFootId,
+    bottomLength
+  ]);
 
   const cultureResult = useMemo(
     () => evaluateCultureGuard(cultureState, colorsMap),
@@ -118,6 +139,78 @@ export function App() {
       }),
     [selectedGarment, selectedEvent, outerColor, bottomColor, beltColor, headAccessory, footAccessory]
   );
+
+  // Synchronize outfit state into URL query string via history.replaceState
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const qs = encodeOutfit({
+      eventId: selectedEventId,
+      garmentId: selectedGarmentId,
+      outerColorId: selectedOuterColorId,
+      bottomColorId: selectedBottomColorId,
+      beltColorId: selectedBeltColorId,
+      headId: selectedHeadId,
+      handId: selectedHandId,
+      footId: selectedFootId,
+      bottomLength,
+      mode,
+      gender
+    });
+    const newUrl = `${window.location.pathname}${qs}${window.location.hash}`;
+    window.history.replaceState(null, '', newUrl);
+  }, [
+    selectedEventId,
+    selectedGarmentId,
+    selectedOuterColorId,
+    selectedBottomColorId,
+    selectedBeltColorId,
+    selectedHeadId,
+    selectedHandId,
+    selectedFootId,
+    bottomLength,
+    mode,
+    gender
+  ]);
+
+  const getShareUrl = useCallback(() => {
+    if (typeof window === 'undefined') return '';
+    const qs = encodeOutfit({
+      eventId: selectedEventId,
+      garmentId: selectedGarmentId,
+      outerColorId: selectedOuterColorId,
+      bottomColorId: selectedBottomColorId,
+      beltColorId: selectedBeltColorId,
+      headId: selectedHeadId,
+      handId: selectedHandId,
+      footId: selectedFootId,
+      bottomLength,
+      mode,
+      gender
+    });
+    return `${window.location.origin}${window.location.pathname}${qs}`;
+  }, [
+    selectedEventId,
+    selectedGarmentId,
+    selectedOuterColorId,
+    selectedBottomColorId,
+    selectedBeltColorId,
+    selectedHeadId,
+    selectedHandId,
+    selectedFootId,
+    bottomLength,
+    mode,
+    gender
+  ]);
+
+  const handleCopyShareLink = () => {
+    const url = getShareUrl();
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(url).then(() => {
+        setIsCopiedLink(true);
+        setTimeout(() => setIsCopiedLink(false), 2000);
+      });
+    }
+  };
 
   // Handle Mode Change (Gen Z vs Family)
   const handleModeChange = newMode => {
@@ -308,13 +401,33 @@ export function App() {
                       </button>
                     </div>
 
-                    {/* Quick Action Button: Export Lookbook */}
-                    <button
-                      onClick={() => setIsLookbookOpen(true)}
-                      className="w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-[#8B1A1A] via-[#A62626] to-[#C9A227] hover:brightness-105 transition shadow-md flex items-center justify-center gap-2"
-                    >
-                      <span>Xuất Lookbook &amp; Quét Mã QR</span>
-                    </button>
+                    {/* Quick Action Buttons: Share Link & Export Lookbook */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <button
+                        onClick={handleCopyShareLink}
+                        className="py-3 px-3 rounded-xl font-bold text-xs sm:text-sm text-[#1D2440] bg-[#FAF7F2] hover:bg-[#EAE0D0] border border-[#D8C7B0] transition shadow-sm flex items-center justify-center gap-1.5"
+                        title="Sao chép link chia sẻ bộ phối này"
+                      >
+                        {isCopiedLink ? (
+                          <>
+                            <Check className="w-4 h-4 text-emerald-600" />
+                            <span className="text-emerald-700">Đã chép link!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Link2 className="w-4 h-4 text-[#8B1A1A]" />
+                            <span>Chia sẻ link</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => setIsLookbookOpen(true)}
+                        className="py-3 px-3 rounded-xl font-bold text-xs sm:text-sm text-white bg-gradient-to-r from-[#8B1A1A] via-[#A62626] to-[#C9A227] hover:brightness-105 transition shadow-md flex items-center justify-center gap-1.5"
+                      >
+                        <span>Xuất Lookbook</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -344,6 +457,7 @@ export function App() {
         handAccessory={handAccessory}
         footAccessory={footAccessory}
         harmonyResult={harmonyResult}
+        shareUrl={getShareUrl()}
       />
 
       <PartnerModal

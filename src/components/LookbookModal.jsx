@@ -1,6 +1,7 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { X, Download, Share2, Sparkles, Check, QrCode } from 'lucide-react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { X, Download, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import QRCode from 'qrcode';
 
 export function LookbookModal({
   isOpen,
@@ -12,30 +13,14 @@ export function LookbookModal({
   headAccessory,
   handAccessory,
   footAccessory,
-  harmonyResult
+  harmonyResult,
+  shareUrl
 }) {
   const canvasRef = useRef(null);
   const [downloadUrl, setDownloadUrl] = useState(null);
+  const [downloadFilename, setDownloadFilename] = useState('Lookbook-Viet-Phuc-Remix.png');
 
-  useEffect(() => {
-    if (isOpen) {
-      // Fire festive celebratory confetti
-      confetti({
-        particleCount: 60,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#8B1A1A', '#C9A227', '#1F6F5C', '#1D2440', '#F9D423']
-      });
-
-      // Render Lookbook Canvas
-      const timer = setTimeout(() => {
-        renderCanvas();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, garment, event, outerColor, bottomColor, harmonyResult]);
-
-  const renderCanvas = () => {
+  const renderCanvas = useCallback(async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -118,7 +103,7 @@ export function LookbookModal({
 
     ctx.fillStyle = '#8B1A1A';
     ctx.font = 'bold 36px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(`${harmonyResult.score}`, cx, cy + 8);
+    ctx.fillText(`${harmonyResult ? harmonyResult.score : 85}`, cx, cy + 8);
     ctx.fillStyle = '#664422';
     ctx.font = 'bold 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('ĐIỂM HÀI HÒA', cx, cy + 26);
@@ -149,14 +134,13 @@ export function LookbookModal({
       ctx.fillText(c.label, bx + 18, 448);
     });
 
-    // Accessories Summary
+    // Accessories Summary (combining head, hand, foot)
+    const accList = [headAccessory?.name, handAccessory?.name, footAccessory?.name].filter(Boolean);
+    const accSummary = accList.length > 0 ? accList.join(' • ') : 'Trang phục cổ truyền di sản';
+
     ctx.fillStyle = '#555555';
     ctx.font = 'italic 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText(
-      `Phụ kiện: ${headAccessory?.name || 'Khăn vấn'} • ${footAccessory?.name || 'Sneaker trắng'}`,
-      width / 2,
-      480
-    );
+    ctx.fillText(`Phụ kiện: ${accSummary}`, width / 2, 480);
 
     // 5. Cultural Philosophy Quote Card
     ctx.fillStyle = '#FAF3DD';
@@ -179,34 +163,31 @@ export function LookbookModal({
     ctx.font = 'italic 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('— Dự án dự thi HaUI Startup Mindset 2026', width / 2, 615);
 
-    // 6. QR Code & Footer Info
+    // 6. Real Heritage QR Code & Footer Info
+    const qrSize = 90;
+    const qrX = 55;
+    const qrY = 645;
+
     ctx.fillStyle = '#FFFFFF';
-    ctx.fillRect(60, 650, 80, 80);
-    ctx.strokeStyle = '#000000';
+    ctx.fillRect(qrX, qrY, qrSize, qrSize);
+    ctx.strokeStyle = '#DECDB8';
     ctx.lineWidth = 1;
-    ctx.strokeRect(60, 650, 80, 80);
+    ctx.strokeRect(qrX, qrY, qrSize, qrSize);
 
-    // Simulated QR pattern
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(68, 658, 22, 22);
-    ctx.fillRect(110, 658, 22, 22);
-    ctx.fillRect(68, 700, 22, 22);
-    ctx.fillRect(100, 690, 12, 12);
-    ctx.fillRect(116, 706, 16, 16);
-
+    // Text beside QR
     ctx.textAlign = 'left';
     ctx.fillStyle = '#1D2440';
-    ctx.font = 'bold 13px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('QUÉT MÃ TRẢI NGHIỆM THỬ ĐỒ TƯƠNG TÁC', 155, 672);
+    ctx.font = 'bold 12px "Be Vietnam Pro", sans-serif';
+    ctx.fillText('QUÉT MÃ ĐỂ MỞ LẠI BỘ PHỐI NÀY', 160, 668);
 
     ctx.fillStyle = '#666666';
     ctx.font = '11px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('Ứng dụng: Việt Phục Remix (Bản Web MVP)', 155, 694);
-    ctx.fillText('Nhóm SV Trường CNTT&TT – ĐH Công nghiệp Hà Nội', 155, 712);
+    ctx.fillText('Ứng dụng: Việt Phục Remix (Bản Web MVP)', 160, 690);
+    ctx.fillText('Nhóm SV Trường CNTT&TT – ĐH Công nghiệp Hà Nội', 160, 708);
 
     ctx.fillStyle = '#8B1A1A';
     ctx.font = 'bold 11px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('Đại diện dự án: Đỗ Đăng Trường – HaUI', 155, 730);
+    ctx.fillText('Đại diện dự án: Đỗ Đăng Trường – HaUI', 160, 726);
 
     // Bottom Copyright
     ctx.textAlign = 'center';
@@ -214,9 +195,61 @@ export function LookbookModal({
     ctx.font = '10px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Bản quyền © 2026 VIET PHUC REMIX. All rights reserved.', width / 2, 770);
 
-    // Create Download Link
-    setDownloadUrl(canvas.toDataURL('image/png'));
-  };
+    // Render Real QR Code asynchronously onto canvas
+    const targetUrl = shareUrl || (typeof window !== 'undefined' ? window.location.href : 'https://vietphucremix.vercel.app');
+
+    try {
+      const qrDataUrl = await QRCode.toDataURL(targetUrl, {
+        width: qrSize - 8,
+        margin: 1,
+        color: {
+          dark: '#1D2440',
+          light: '#FFFFFF'
+        }
+      });
+
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, qrX + 4, qrY + 4, qrSize - 8, qrSize - 8);
+        setDownloadUrl(canvas.toDataURL('image/png'));
+        setDownloadFilename(`Lookbook-Viet-Phuc-Remix-${Date.now()}.png`);
+      };
+      img.src = qrDataUrl;
+    } catch (err) {
+      console.warn('QR code generation error:', err);
+      // Fallback: update download url even if QR drawing has issue
+      setDownloadUrl(canvas.toDataURL('image/png'));
+      setDownloadFilename(`Lookbook-Viet-Phuc-Remix-${Date.now()}.png`);
+    }
+  }, [
+    garment,
+    event,
+    outerColor,
+    bottomColor,
+    headAccessory,
+    handAccessory,
+    footAccessory,
+    harmonyResult,
+    shareUrl
+  ]);
+
+  useEffect(() => {
+    if (isOpen) {
+      // Fire festive celebratory confetti
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#8B1A1A', '#C9A227', '#1F6F5C', '#1D2440', '#F9D423']
+      });
+
+      // Render Lookbook Canvas with small debounce for font readiness
+      const timer = setTimeout(() => {
+        renderCanvas();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, renderCanvas]);
 
   if (!isOpen) return null;
 
@@ -250,14 +283,14 @@ export function LookbookModal({
         <div className="bg-[#FAF3DD] p-4 border-t border-[#DECDB8] flex items-center justify-between gap-3">
           <div className="text-xs text-[#664422]">
             <span className="font-bold block">Độ phân giải: 600 × 800 HD</span>
-            <span>Tích hợp mã QR và chứng nhận hài hòa di sản.</span>
+            <span>Mã QR thật kết nối trực tiếp đến bộ phối này.</span>
           </div>
 
           <div className="flex items-center gap-2">
             {downloadUrl && (
               <a
                 href={downloadUrl}
-                download={`Lookbook-Viet-Phuc-Remix-${Date.now()}.png`}
+                download={downloadFilename}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-[#8B1A1A] hover:bg-[#A62626] transition shadow-md"
               >
                 <Download className="w-4 h-4 text-[#F9D423]" />
@@ -270,4 +303,3 @@ export function LookbookModal({
     </div>
   );
 }
-

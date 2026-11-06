@@ -9,15 +9,9 @@ import {
   ShieldCheck,
   Cpu,
   Layers,
-  Users,
-  Compass,
-  Calendar,
-  Award,
-  ExternalLink,
-  ChevronRight,
-  HeartHandshake,
-  Lightbulb
+  HeartHandshake
 } from 'lucide-react';
+import { CULTURE_RULES } from '../data/cultureRules';
 
 export function ProjectRoadmapPage({ onBackToStudio }) {
   return (
@@ -134,7 +128,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
                 <h3 className="font-bold text-base text-[#1D2440]">3. Culture Guard – Lá Chắn Bản Sắc Tự Động</h3>
               </div>
               <p className="text-xs text-gray-700 leading-relaxed">
-                Tính năng độc bản giúp dự án vượt lên các app phối đồ thông thường. Hệ thống luật số hóa quan hệ ma trận giữa <code>[Áo + Sự kiện + Màu + Phụ kiện]</code>:
+                Tính năng độc bản giúp dự án vượt lên các app phối đồ thông thường. Bộ {CULTURE_RULES.length} quy tắc lõi số hóa quan hệ ma trận giữa <code>[Áo + Sự kiện + Màu + Phụ kiện]</code> (lộ trình hoàn thiện ~200 luật trong giai đoạn ươm tạo):
               </p>
               <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-bold">
                 <div className="p-2 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -218,10 +212,10 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
 
               <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-sm space-y-1.5">
                 <span className="font-bold text-rose-800 block text-xs">
-                  ⚠️ 3. Bộ quy tắc Culture Guard vận hành theo luật Rule-based
+                  ⚠️ 3. Bộ quy tắc Culture Guard vận hành theo luật Rule-based lõi
                 </span>
                 <p className="text-gray-600 text-xs leading-relaxed">
-                  Hệ thống đang chạy trên bộ ~200 quy tắc số hóa logic. Dù xử lý chính xác các trường hợp cơ bản, hệ thống cần được bổ sung thêm mô hình đồ thị tri thức (Knowledge Graph) và cố vấn lịch sử chuyên sâu từ các viện nghiên cứu.
+                  Hệ thống đang chạy trên bộ {CULTURE_RULES.length} quy tắc lõi số hóa phản ứng thời gian thực (xử lý chính xác các ca phối điển hình). Nhóm đặt mục tiêu mở rộng và hoàn thiện ~200 quy tắc toàn diện trong giai đoạn ươm tạo, kết hợp mô hình đồ thị tri thức (Knowledge Graph) và hội đồng cố vấn lịch sử từ các viện nghiên cứu.
                 </p>
               </div>
 

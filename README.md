@@ -35,7 +35,7 @@ VietPhucRemix/
     │   ├── eventsData.js        # 10 sự kiện bối cảnh văn hóa & dữ liệu thời tiết gợi ý
     │   ├── colorsData.js        # Bảng màu Ngũ Hành & màu di sản cổ truyền
     │   ├── accessoriesData.js   # Tủ phụ kiện đầu (khăn vấn, nón), cầm tay (quạt, túi tote), giày guốc
-    │   ├── cultureRules.js      # Bộ ma trận 200 quy tắc kiểm định văn hóa Culture Guard
+    │   ├── cultureRules.js      # Bộ luật lõi Culture Guard (hiện có 8 luật cơ bản, lộ trình mở rộng ~200 luật)
     │   └── partnersData.js      # Mạng lưới đối tác tiệm thuê/may đo B2B2C
     ├── engines/
     │   ├── cultureEngine.js     # Động cơ suy diễn trạng thái Culture Guard (Green/Yellow/Red)

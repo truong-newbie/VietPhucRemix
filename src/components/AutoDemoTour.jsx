@@ -1,5 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Play, Pause, X, SkipForward, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  Play,
+  Pause,
+  X,
+  SkipForward,
+  RotateCcw,
+  Sparkles,
+  Volume2,
+  VolumeX,
+  Mic
+} from 'lucide-react';
 
 export const TOUR_STEPS = [
   {
@@ -7,6 +17,7 @@ export const TOUR_STEPS = [
     timeRange: '0:00 - 0:25',
     durationSec: 25,
     title: '1. Khởi đầu & Tư tưởng Di sản Dân tộc',
+    voiceText: 'Kính chào Ban Giám khảo cuộc thi HaUI Startup Mindset 2026. Chúng tôi là nhóm tác giả dự án Việt Phục Remix, nền tảng phối đồ di sản thông minh đa thế hệ với triết lý: Văn hóa là nội lực mạnh nhất của một dân tộc.',
     subtitle: '“Kính chào Ban Giám khảo cuộc thi HaUI Startup Mindset 2026. Chúng tôi là nhóm tác giả dự án VIỆT PHỤC REMIX – Nền tảng phối đồ di sản thông minh đa thế hệ với triết lý: Văn hóa là nội lực mạnh nhất của dân tộc.”',
     action: (helpers) => {
       helpers.setView('studio');
@@ -19,6 +30,7 @@ export const TOUR_STEPS = [
     timeRange: '0:25 - 0:55',
     durationSec: 30,
     title: '2. Động cơ Layered SVG Avatar & Màu sắc Ngũ Hành',
+    voiceText: 'Để giải quyết bài toán chi phí khởi nghiệp không đồng server, nhóm phát triển Động cơ Layered SVG Avatar chạy trực tiếp trên trình duyệt, cho phép đổi trang phục và màu sắc ngũ hành tương sinh tức thì với độ trễ không mili giây.',
     subtitle: '“Để giải bài toán chi phí khởi nghiệp 0đ server, nhóm phát triển Động cơ Layered SVG Avatar chạy trực tiếp trên trình duyệt máy khách, đổi trang phục và màu sắc ngũ hành tương sinh tức thì với độ trễ 0ms.”',
     action: (helpers) => {
       helpers.setView('studio');
@@ -33,6 +45,7 @@ export const TOUR_STEPS = [
     timeRange: '0:55 - 1:30',
     durationSec: 35,
     title: '3. Culture Guard – Lá Chắn Kiểm Định Văn Hóa',
+    voiceText: 'Tính năng độc bản: Khi người dùng thử kết hợp sai lệch tại nơi tôn nghiêm, ví dụ đi lễ chùa mà mặc đồ hở hoặc đỏ rực, Lá chắn Culture Guard lập tức báo đèn đỏ cảnh báo, giải thích ý nghĩa cổ thư và cung cấp nút Tự Động Chuẩn Hóa một click.',
     subtitle: '“Tính năng độc bản: Khi người dùng thử kết hợp sai lệch tại nơi tôn nghiêm (đi chùa mặc đồ hở/đỏ rực), Lá chắn Culture Guard lập tức báo Đèn Đỏ cảnh báo, giải thích ý nghĩa cổ thư và cung cấp nút Tự Động Chuẩn Hóa 1-click.”',
     action: (helpers) => {
       helpers.setView('studio');
@@ -43,7 +56,7 @@ export const TOUR_STEPS = [
           bottomLength: 'long',
           bottomColorId: 'trang-su'
         });
-      }, 15000);
+      }, 14000);
     }
   },
   {
@@ -51,6 +64,7 @@ export const TOUR_STEPS = [
     timeRange: '1:30 - 2:05',
     durationSec: 35,
     title: '4. Harmony Score (0-100đ) & Xuất Lookbook Canvas',
+    voiceText: 'Thuật toán Harmony Score tự động chấm điểm hài hòa ngũ hành và thời tiết. Sau khi hoàn thành, hệ thống tự động kết xuất ảnh bưu thiếp Lookbook di sản độ phân giải cao kèm mã QR để chia sẻ hoặc đặt lịch tiệm thuê đối tác.',
     subtitle: '“Thuật toán Harmony Score chấm điểm hài hòa ngũ hành và thời tiết. Sau khi hoàn thành, hệ thống tự động render ảnh bưu thiếp Lookbook di sản 600×800 HD kèm mã QR để người dùng chia sẻ hoặc đặt lịch tiệm thuê đối tác.”',
     action: (helpers) => {
       helpers.setView('studio');
@@ -65,6 +79,7 @@ export const TOUR_STEPS = [
     timeRange: '2:05 - 2:40',
     durationSec: 35,
     title: '5. Minh Bạch Hạn Chế & Lộ Trình Phát Triển 2026–2028',
+    voiceText: 'Tại trang Lộ trình, nhóm thẳng thắn nhìn nhận những giới hạn của bản MVP và vạch ra lộ trình gọi vốn ươm tạo rõ ràng: Tích hợp AI thử đồ từ ảnh thật người dùng, ứng dụng Mobile Flutter và mở rộng năm mươi tư dân tộc.',
     subtitle: '“Tại trang Lộ trình, nhóm thẳng thắn nhìn nhận hạn chế của bản MVP (đồ họa 2D, chưa có Virtual Try-On) và vạch ra lộ trình gọi vốn ươm tạo rõ ràng: Tích hợp AI thử đồ từ ảnh thật, Mobile App Flutter và mở rộng 54 dân tộc.”',
     action: (helpers) => {
       helpers.closeModals();
@@ -77,6 +92,7 @@ export const TOUR_STEPS = [
     timeRange: '2:40 - 3:00',
     durationSec: 20,
     title: '6. Lời Kêu Gọi Đồng Hành & Kết Luận',
+    voiceText: 'Nhóm kính mong nhận được sự đồng hành quý báu từ Ban Giám khảo và Trường Đại học Công nghiệp Hà Nội để cùng lan tỏa thông điệp: Mặc đẹp, mặc đúng, giữ trọn hồn thiêng dân tộc! Xin trân trọng cảm ơn.',
     subtitle: '“Nhóm kính mong nhận được sự đồng hành quý báu từ Ban Giám khảo và Trường Đại học Công nghiệp Hà Nội để sớm đưa dự án vào thực tiễn: Mặc đẹp – Mặc đúng – Giữ trọn hồn thiêng dân tộc! Xin trân trọng cảm ơn.”',
     action: (helpers) => {
       helpers.setView('roadmap');
@@ -93,17 +109,72 @@ export function AutoDemoTour({
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const [availableVoices, setAvailableVoices] = useState([]);
 
   const currentStep = TOUR_STEPS[currentStepIndex];
 
-  // Execute step action on step change
+  // Load available browser synthesis voices
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      const updateVoices = () => {
+        const voices = window.speechSynthesis.getVoices();
+        setAvailableVoices(voices);
+      };
+      updateVoices();
+      window.speechSynthesis.onvoiceschanged = updateVoices;
+    }
+  }, []);
+
+  // Speak voice function
+  const speakStepText = (text) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel(); // Stop prior speech
+
+    if (!isVoiceEnabled || !text) return;
+
+    try {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'vi-VN';
+      utterance.rate = 1.0; // natural pacing
+      utterance.pitch = 1.0;
+
+      // Find Vietnamese voice in browser (Chrome/Edge Natural voices like HoaiMy or NamMinh)
+      const viVoice = availableVoices.find(
+        (v) => v.lang.startsWith('vi') || v.lang.includes('VN')
+      );
+      if (viVoice) {
+        utterance.voice = viVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.warn('Speech synthesis error:', e);
+    }
+  };
+
+  // Stop speech on unmount, close, or pause
+  useEffect(() => {
+    if (!isActive || !isPlaying) {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+  }, [isActive, isPlaying]);
+
+  // Execute step action and voice on step change
   useEffect(() => {
     if (!isActive) return;
     const step = TOUR_STEPS[currentStepIndex];
-    if (step && step.action) {
-      step.action(helpers);
+    if (step) {
+      if (step.action) {
+        step.action(helpers);
+      }
+      if (isPlaying && isVoiceEnabled) {
+        speakStepText(step.voiceText);
+      }
     }
-  }, [isActive, currentStepIndex]);
+  }, [isActive, currentStepIndex, isVoiceEnabled]);
 
   // Timer loop for auto progression
   useEffect(() => {
@@ -112,7 +183,6 @@ export function AutoDemoTour({
     const interval = setInterval(() => {
       setElapsedTime((prev) => {
         const nextTime = prev + 1;
-        // Check if current step duration exceeded
         const step = TOUR_STEPS[currentStepIndex];
         if (step && nextTime >= step.durationSec) {
           if (currentStepIndex < TOUR_STEPS.length - 1) {
@@ -150,13 +220,35 @@ export function AutoDemoTour({
     setCurrentStepIndex(0);
     setElapsedTime(0);
     setIsPlaying(true);
+    if (isVoiceEnabled) {
+      speakStepText(TOUR_STEPS[0].voiceText);
+    }
+  };
+
+  const toggleVoice = () => {
+    const nextState = !isVoiceEnabled;
+    setIsVoiceEnabled(nextState);
+    if (!nextState) {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    } else {
+      speakStepText(currentStep.voiceText);
+    }
+  };
+
+  const handleClose = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    onClose();
   };
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-50 p-3 sm:p-4 bg-black/85 backdrop-blur-md border-t-2 border-[#C9A227] text-white shadow-2xl animate-fadeIn">
-      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+    <div className="fixed bottom-0 inset-x-0 z-50 p-3 sm:p-4 bg-black/90 backdrop-blur-md border-t-2 border-[#C9A227] text-white shadow-2xl animate-fadeIn font-sans">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Step Indicator & Progress */}
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex items-center gap-3 w-full md:w-auto shrink-0">
           <div className="w-10 h-10 rounded-xl bg-[#8B1A1A] border border-[#C9A227] flex items-center justify-center shrink-0">
             <Sparkles className="w-5 h-5 text-[#F9D423]" />
           </div>
@@ -164,7 +256,7 @@ export function AutoDemoTour({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C9A227] text-black">
-                Bước {currentStep.id}/6 • {currentStep.timeRange}
+                Cảnh {currentStep.id}/6 • {currentStep.timeRange}
               </span>
               <span className="text-[11px] text-gray-300 font-mono">
                 {elapsedTime}s / {currentStep.durationSec}s
@@ -176,20 +268,36 @@ export function AutoDemoTour({
           </div>
         </div>
 
-        {/* Subtitle Teleprompter (Lời thoại gợi ý đọc theo) */}
-        <div className="flex-1 max-w-xl bg-white/10 p-2.5 rounded-xl border border-white/15 text-xs text-gray-200 leading-relaxed font-sans">
-          <div className="flex items-center gap-1.5 text-[#F9D423] font-bold text-[10px] uppercase mb-1">
-            <Volume2 className="w-3.5 h-3.5" />
-            <span>Lời thoại thuyết trình gợi ý (Đọc theo màn hình):</span>
+        {/* Subtitle Teleprompter (Lời thoại hiển thị & AI đang đọc) */}
+        <div className="flex-1 w-full max-w-xl bg-white/10 p-2.5 rounded-xl border border-white/15 text-xs text-gray-200 leading-relaxed">
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <span className="flex items-center gap-1.5 text-[#F9D423] font-bold text-[10px] uppercase">
+              <Mic className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
+              <span>Lời thuyết minh {isVoiceEnabled ? '(AI đang đọc live)' : '(Đã tắt tiếng)'}:</span>
+            </span>
+
+            {/* Voice Mute / Unmute Button */}
+            <button
+              onClick={toggleVoice}
+              className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold transition ${
+                isVoiceEnabled
+                  ? 'bg-emerald-600 text-white'
+                  : 'bg-white/20 text-gray-300 hover:text-white'
+              }`}
+              title="Bật/Tắt giọng đọc AI tự động"
+            >
+              {isVoiceEnabled ? <Volume2 className="w-3 h-3" /> : <VolumeX className="w-3 h-3" />}
+              <span>{isVoiceEnabled ? 'Giọng AI: BẬT' : 'Giọng AI: TẮT'}</span>
+            </button>
           </div>
-          <p className="line-clamp-2 italic">{currentStep.subtitle}</p>
+          <p className="line-clamp-2 italic text-gray-100">{currentStep.subtitle}</p>
         </div>
 
         {/* Playback Controls */}
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="p-2.5 rounded-xl bg-[#8B1A1A] hover:bg-[#A62626] transition text-white"
+            className="p-2.5 rounded-xl bg-[#8B1A1A] hover:bg-[#A62626] transition text-white shadow-sm"
             title={isPlaying ? 'Tạm dừng' : 'Tiếp tục phát'}
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -213,8 +321,8 @@ export function AutoDemoTour({
           </button>
 
           <button
-            onClick={onClose}
-            className="p-2.5 rounded-xl bg-rose-900/60 hover:bg-rose-800 transition text-rose-200 ml-2"
+            onClick={handleClose}
+            className="p-2.5 rounded-xl bg-rose-900/60 hover:bg-rose-800 transition text-rose-200 ml-1.5"
             title="Thoát chế độ thuyết trình"
           >
             <X className="w-4 h-4" />

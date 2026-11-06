@@ -8,7 +8,7 @@ export function Footer({ onNavigateRoadmap }) {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-gray-700/60">
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-serif font-black text-lg text-white tracking-wider">
+              <span className="font-black text-lg text-white tracking-wider">
                 VIỆT PHỤC REMIX
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C9A227]/20 text-[#F9D423] border border-[#C9A227]/40">
@@ -55,7 +55,7 @@ export function Footer({ onNavigateRoadmap }) {
 
           <div>
             <span className="text-[10px] uppercase font-bold text-gray-400 block">Kim chỉ nam tư tưởng</span>
-            <span className="text-[#F9D423] font-serif italic text-[11px]">
+            <span className="text-[#F9D423] italic text-[11px] font-medium">
               “Văn hóa còn thì Dân tộc còn”
             </span>
             <p className="text-gray-400 text-[10px]">Nghị quyết 33 & Nghị quyết 68-NQ/TW</p>

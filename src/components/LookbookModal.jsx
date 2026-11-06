@@ -79,12 +79,12 @@ export function LookbookModal({
     ctx.strokeRect(43, 48, width - 86, 69);
 
     ctx.fillStyle = '#FAF7F2';
-    ctx.font = 'bold 22px serif';
+    ctx.font = 'bold 22px "Be Vietnam Pro", sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('VIỆT PHỤC REMIX • LOOKBOOK', width / 2, 78);
 
     ctx.fillStyle = '#F9D423';
-    ctx.font = 'italic 12px sans-serif';
+    ctx.font = 'italic 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText('“Mặc đẹp – Mặc đúng – Giữ trọn hồn thiêng dân tộc”', width / 2, 102);
 
     // 4. Center Outfit Display Frame
@@ -98,11 +98,11 @@ export function LookbookModal({
 
     // Garment Title in Frame
     ctx.fillStyle = '#8B1A1A';
-    ctx.font = 'bold 24px serif';
+    ctx.font = 'bold 24px "Be Vietnam Pro", sans-serif';
     ctx.fillText(garment ? garment.name.toUpperCase() : 'CỔ PHỤC VIỆT NAM', width / 2, 180);
 
     ctx.fillStyle = '#664422';
-    ctx.font = '13px sans-serif';
+    ctx.font = '13px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`Bối cảnh: ${event ? event.name : 'Du xuân truyền thống'}`, width / 2, 206);
 
     // Harmony Score Badge Circle
@@ -117,15 +117,15 @@ export function LookbookModal({
     ctx.stroke();
 
     ctx.fillStyle = '#8B1A1A';
-    ctx.font = 'bold 36px serif';
+    ctx.font = 'bold 36px "Be Vietnam Pro", sans-serif';
     ctx.fillText(`${harmonyResult.score}`, cx, cy + 8);
     ctx.fillStyle = '#664422';
-    ctx.font = 'bold 11px sans-serif';
+    ctx.font = 'bold 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('ĐIỂM HÀI HÒA', cx, cy + 26);
 
     // Palette Swatches
     ctx.fillStyle = '#7A6B5D';
-    ctx.font = 'bold 12px sans-serif';
+    ctx.font = 'bold 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText('HỆ MÀU NGŨ HÀNH:', width / 2, 380);
 
     const swatchX = width / 2 - 80;
@@ -145,13 +145,13 @@ export function LookbookModal({
       ctx.stroke();
 
       ctx.fillStyle = '#333333';
-      ctx.font = '10px sans-serif';
+      ctx.font = '10px "Be Vietnam Pro", sans-serif';
       ctx.fillText(c.label, bx + 18, 448);
     });
 
     // Accessories Summary
     ctx.fillStyle = '#555555';
-    ctx.font = 'italic 12px sans-serif';
+    ctx.font = 'italic 12px "Be Vietnam Pro", sans-serif';
     ctx.fillText(
       `Phụ kiện: ${headAccessory?.name || 'Khăn vấn'} • ${footAccessory?.name || 'Sneaker trắng'}`,
       width / 2,
@@ -168,15 +168,15 @@ export function LookbookModal({
     ctx.stroke();
 
     ctx.fillStyle = '#8B1A1A';
-    ctx.font = 'bold 13px serif';
+    ctx.font = 'bold 13px "Be Vietnam Pro", sans-serif';
     ctx.fillText('LỜI BÌNH VĂN HÓA & NGHỊ QUYẾT 68-NQ/TW:', width / 2, 545);
 
     ctx.fillStyle = '#444444';
-    ctx.font = '12px sans-serif';
+    ctx.font = '12px "Be Vietnam Pro", sans-serif';
     ctx.fillText('“Văn hóa dân tộc là nội lực mạnh nhất.', width / 2, 570);
     ctx.fillText('Phối đồ truyền thống vừa hiện đại vừa giữ vẹn nguyên cấu trúc nếp áo cha ông.”', width / 2, 592);
     ctx.fillStyle = '#8C5E3B';
-    ctx.font = 'italic 11px sans-serif';
+    ctx.font = 'italic 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('— Dự án dự thi HaUI Startup Mindset 2026', width / 2, 615);
 
     // 6. QR Code & Footer Info
@@ -196,22 +196,22 @@ export function LookbookModal({
 
     ctx.textAlign = 'left';
     ctx.fillStyle = '#1D2440';
-    ctx.font = 'bold 13px serif';
+    ctx.font = 'bold 13px "Be Vietnam Pro", sans-serif';
     ctx.fillText('QUÉT MÃ TRẢI NGHIỆM THỬ ĐỒ TƯƠNG TÁC', 155, 672);
 
     ctx.fillStyle = '#666666';
-    ctx.font = '11px sans-serif';
+    ctx.font = '11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Ứng dụng: Việt Phục Remix (Bản Web MVP)', 155, 694);
     ctx.fillText('Nhóm SV Trường CNTT&TT – ĐH Công nghiệp Hà Nội', 155, 712);
 
     ctx.fillStyle = '#8B1A1A';
-    ctx.font = 'bold 11px sans-serif';
+    ctx.font = 'bold 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Đại diện dự án: Đỗ Đăng Trường – HaUI', 155, 730);
 
     // Bottom Copyright
     ctx.textAlign = 'center';
     ctx.fillStyle = '#888888';
-    ctx.font = '10px sans-serif';
+    ctx.font = '10px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Bản quyền © 2026 VIET PHUC REMIX. All rights reserved.', width / 2, 770);
 
     // Create Download Link
@@ -227,7 +227,7 @@ export function LookbookModal({
         <div className="bg-gradient-to-r from-[#8B1A1A] to-[#600C0C] text-white p-4 flex items-center justify-between border-b-2 border-[#C9A227]">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-[#F9D423]" />
-            <h3 className="font-serif font-bold text-base sm:text-lg">
+            <h3 className="font-bold text-base sm:text-lg">
               Lookbook Di Sản Cá Nhân Hóa
             </h3>
           </div>

@@ -81,9 +81,9 @@ export function CultureGuardBanner({
       </p>
 
       {activeRule.quote && (
-        <div className="mt-2.5 pt-2 border-t border-black/10 flex items-start gap-2 text-xs italic text-gray-600 font-serif">
-          <span>“</span>
-          <p>{activeRule.quote}</p>
+        <div className="mt-2.5 pt-2 border-t border-black/10 flex items-start gap-2 text-xs italic text-gray-700 font-sans font-medium">
+          <span className="text-base leading-none text-[#8B1A1A]">“</span>
+          <p className="leading-relaxed">{activeRule.quote}</p>
         </div>
       )}
     </div>

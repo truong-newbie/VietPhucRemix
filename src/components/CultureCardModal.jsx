@@ -19,7 +19,7 @@ export function CultureCardModal({ isOpen, onClose, garment }) {
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#F9D423] block">
                 Tư liệu Di sản & Cổ thư
               </span>
-              <h3 className="font-serif font-bold text-lg sm:text-xl text-white">
+              <h3 className="font-bold text-lg sm:text-xl text-white">
                 {card.title}
               </h3>
             </div>
@@ -49,7 +49,7 @@ export function CultureCardModal({ isOpen, onClose, garment }) {
 
           {/* Section 1: Lịch sử & Nguồn gốc */}
           <div className="bg-white p-4 rounded-2xl border border-[#E6DBCE] shadow-sm">
-            <h4 className="font-bold text-[#8B1A1A] text-sm flex items-center gap-2 mb-2 font-serif">
+            <h4 className="font-bold text-[#8B1A1A] text-sm flex items-center gap-2 mb-2">
               <BookOpen className="w-4 h-4 text-[#C9A227]" />
               1. Bối cảnh Lịch sử & Sắc Dụ Hoàng Gia
             </h4>
@@ -58,12 +58,12 @@ export function CultureCardModal({ isOpen, onClose, garment }) {
 
           {/* Section 2: Cấu tạo & Triết lý nếp áo */}
           <div className="bg-white p-4 rounded-2xl border border-[#E6DBCE] shadow-sm">
-            <h4 className="font-bold text-[#8B1A1A] text-sm flex items-center gap-2 mb-2 font-serif">
+            <h4 className="font-bold text-[#8B1A1A] text-sm flex items-center gap-2 mb-2">
               <ShieldCheck className="w-4 h-4 text-[#C9A227]" />
               2. Cấu tạo nếp áo & Triết lý sống cha ông
             </h4>
             <p className="text-gray-700 mb-2">{card.structure}</p>
-            <div className="p-3 bg-[#FAF7F2] rounded-xl border border-[#E6DBCE] text-xs font-serif italic text-[#664422]">
+            <div className="p-3 bg-[#FAF7F2] rounded-xl border border-[#E6DBCE] text-xs italic text-[#664422]">
               💡 {garment.philosophy}
             </div>
           </div>

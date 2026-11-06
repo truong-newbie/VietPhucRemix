@@ -34,10 +34,10 @@ export function Navbar({
           className="flex items-center gap-2.5 text-left shrink-0 group focus:outline-hidden"
         >
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#8B1A1A] to-[#600C0C] flex items-center justify-center shadow-xs text-white border border-[#C9A227] group-hover:scale-105 transition-transform">
-            <span className="font-serif font-black text-base tracking-wider text-[#C9A227]">VR</span>
+            <span className="font-black text-base tracking-wider text-[#C9A227]">VR</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="font-serif font-bold text-base sm:text-lg text-[#1D2440] tracking-normal group-hover:text-[#8B1A1A] transition-colors whitespace-nowrap">
+            <span className="font-bold text-base sm:text-lg text-[#1D2440] tracking-normal group-hover:text-[#8B1A1A] transition-colors whitespace-nowrap">
               Việt Phục Remix
             </span>
             <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md text-[10px] font-semibold bg-[#FAF3DD] text-[#8C5E3B] border border-[#E2D2B5]">

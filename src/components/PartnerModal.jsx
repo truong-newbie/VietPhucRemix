@@ -26,7 +26,7 @@ export function PartnerModal({ isOpen, onClose, selectedGarment }) {
               <span className="text-[11px] font-bold uppercase tracking-wider text-[#F9D423] block">
                 Mạng Lưới Đối Tác Khởi Nghiệp (B2B Marketplace)
               </span>
-              <h3 className="font-serif font-bold text-lg sm:text-xl text-white">
+              <h3 className="font-bold text-lg sm:text-xl text-white">
                 Tiệm Thuê & Xưởng May Đo Cổ Phục Liên Kết
               </h3>
             </div>

@@ -272,7 +272,7 @@ export function App() {
                       <span className="text-[10px] font-bold uppercase tracking-wider text-[#8C5E3B] block">
                         Góc nhìn Chuyên gia Văn hóa
                       </span>
-                      <h4 className="font-bold text-sm text-[#1D2440] font-serif">
+                      <h4 className="font-bold text-sm text-[#1D2440]">
                         Ý nghĩa 5 Khuy Áo Ngũ Thân
                       </h4>
                       <p className="text-xs text-gray-600 leading-relaxed">
@@ -289,9 +289,9 @@ export function App() {
                     {/* Quick Action Button: Export Lookbook */}
                     <button
                       onClick={() => setIsLookbookOpen(true)}
-                      className="w-full py-3 px-4 rounded-xl font-serif font-bold text-sm text-white bg-gradient-to-r from-[#8B1A1A] via-[#A62626] to-[#C9A227] hover:brightness-105 transition shadow-md flex items-center justify-center gap-2"
+                      className="w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-[#8B1A1A] via-[#A62626] to-[#C9A227] hover:brightness-105 transition shadow-md flex items-center justify-center gap-2"
                     >
-                      <span>Xuất Lookbook & Quét Mã QR</span>
+                      <span>Xuất Lookbook &amp; Quét Mã QR</span>
                     </button>
                   </div>
                 </div>

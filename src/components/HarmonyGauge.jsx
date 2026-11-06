@@ -47,7 +47,7 @@ export function HarmonyGauge({ harmonyResult }) {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-xl font-black font-serif text-[#1D2440] leading-none">
+            <span className="text-xl font-black text-[#1D2440] leading-none">
               {score}
             </span>
             <span className="text-[9px] text-gray-500 font-semibold uppercase">Điểm</span>

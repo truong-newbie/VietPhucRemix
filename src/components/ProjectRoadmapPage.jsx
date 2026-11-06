@@ -46,7 +46,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
               <span>BÁO CÁO THỰC CHỨNG & LỘ TRÌNH KHỞI NGHIỆP</span>
             </div>
 
-            <h1 className="text-2xl sm:text-4xl font-serif font-black leading-tight text-white">
+            <h1 className="text-2xl sm:text-4xl font-black leading-tight text-white tracking-normal">
               Bản Web MVP Đã Làm Được Gì &amp;{' '}
               <span className="text-[#F9D423]">Lộ Trình Tương Lai Đi Về Đâu?</span>
             </h1>
@@ -79,7 +79,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
               <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700 block">
                 Phần 1 • Hiện trạng sản phẩm
               </span>
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#1D2440]">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#1D2440] tracking-normal">
                 Bản Web MVP Hiện Tại Đã Làm Được Những Gì? (Thực tế 100%)
               </h2>
             </div>
@@ -186,7 +186,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
               <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 block">
                 Phần 2 • Nhìn thẳng vào thực tế
               </span>
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#1D2440]">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#1D2440] tracking-normal">
                 Những Hạn Chế Hiện Tại Cần Thẳng Thắn Thừa Nhận (Nói Thật)
               </h2>
             </div>
@@ -247,7 +247,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
               <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block">
                 Phần 3 • Lộ trình bứt phá
               </span>
-              <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#1D2440]">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#1D2440] tracking-normal">
                 Sau Này Sẽ Phát Triển Những Gì? (Kế hoạch 2026 – 2028)
               </h2>
             </div>
@@ -320,7 +320,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
         <section className="bg-gradient-to-r from-[#FAF3DD] to-[#F4EFE6] rounded-3xl p-6 sm:p-8 border-2 border-[#C9A227] shadow-md space-y-4">
           <div className="flex items-center gap-3">
             <HeartHandshake className="w-6 h-6 text-[#8B1A1A]" />
-            <h3 className="font-serif font-bold text-lg sm:text-xl text-[#1D2440]">
+            <h3 className="font-bold text-lg sm:text-xl text-[#1D2440] tracking-normal">
               Dự Án Cần Gì Ở Ban Giám Khảo &amp; Trường Đại Học Công Nghiệp Hà Nội?
             </h3>
           </div>

@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: './', // Sử dụng relative path để chạy hoàn hảo trên mọi nền tảng (Vercel, GitHub Pages, Netlify)
   plugins: [
     tailwindcss(),
     react()

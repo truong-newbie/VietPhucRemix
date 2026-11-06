@@ -40,7 +40,7 @@ export function StudioControls({
           }`}
         >
           <Calendar className="w-3.5 h-3.5" />
-          <span>1. Sự Kiện & Thời Tiết</span>
+          <span>1. Sự Kiện</span>
         </button>
 
         <button
@@ -52,7 +52,7 @@ export function StudioControls({
           }`}
         >
           <Shirt className="w-3.5 h-3.5" />
-          <span>2. Dòng Áo Di Sản</span>
+          <span>2. Cổ Phục</span>
         </button>
 
         <button
@@ -64,7 +64,7 @@ export function StudioControls({
           }`}
         >
           <Palette className="w-3.5 h-3.5" />
-          <span>3. Bảng Màu Ngũ Sắc</span>
+          <span>3. Màu Sắc</span>
         </button>
 
         <button
@@ -76,7 +76,7 @@ export function StudioControls({
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>4. Tủ Phụ Kiện</span>
+          <span>4. Phụ Kiện</span>
         </button>
       </div>
 

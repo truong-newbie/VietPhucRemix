@@ -19,7 +19,7 @@ export function HeroSection({ onApplyScenario }) {
             <span>Nghị quyết 33-NQ/TW & Nghị quyết 68-NQ/TW • Công nghiệp văn hóa sáng tạo</span>
           </div>
 
-          <h1 className="text-lg sm:text-xl md:text-2xl font-serif font-bold text-[#FAF7F2] leading-snug">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-serif font-bold text-[#FAF7F2] leading-snug tracking-normal">
             “Mọi người nghĩ như thế nào là một đất nước mạnh? Quân sự ư, vũ khí ư?{' '}
             <span className="text-[#F9D423] underline decoration-[#C9A227] decoration-2 underline-offset-4">
               Không, chính Văn hóa của dân tộc mới là nội lực mạnh nhất!

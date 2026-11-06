@@ -206,7 +206,7 @@ export function LookbookModal({
 
     ctx.fillStyle = '#8B1A1A';
     ctx.font = 'bold 11px sans-serif';
-    ctx.fillText('Trưởng nhóm: Đỗ Đăng Trường (MSV: 2023604739)', 155, 730);
+    ctx.fillText('Đại diện dự án: Đỗ Đăng Trường – HaUI', 155, 730);
 
     // Bottom Copyright
     ctx.textAlign = 'center';

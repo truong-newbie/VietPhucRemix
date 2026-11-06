@@ -60,7 +60,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
                 Dự án: Việt Phục Remix
               </span>
               <span className="px-3 py-1 rounded-lg bg-white/15 text-white font-medium">
-                Trưởng nhóm: Đỗ Đăng Trường (CNTT06)
+                Trưởng nhóm: Đỗ Đăng Trường
               </span>
               <span className="px-3 py-1 rounded-lg bg-[#C9A227]/30 text-[#F9D423] font-bold border border-[#C9A227]">
                 Mục tiêu: Top 1 HaUI Mindset 2026
@@ -362,3 +362,4 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
     </div>
   );
 }
+

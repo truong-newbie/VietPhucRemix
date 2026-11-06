@@ -1,7 +1,7 @@
 # VIỆT PHỤC REMIX – NỀN TẢNG PHỐI ĐỒ DI SẢN THÔNG MINH ĐA THẾ HỆ
 > **Dự án dự thi:** Cuộc thi Sinh viên với ý tưởng khởi nghiệp sáng tạo **“HaUI - STARTUP MINDSET” năm 2026**  
 > **Đơn vị:** Trường Công nghệ Thông tin & Truyền thông – Trường Đại học Công nghiệp Hà Nội (HaUI)  
-> **Trưởng nhóm:** Đỗ Đăng Trường (MSV: 2023604739 – Lớp: CNTT06)  
+> **Trưởng nhóm:** Đỗ Đăng Trường – Trường ĐH Công nghiệp Hà Nội (HaUI)  
 > **Email liên hệ:** `dangtruong3122005@gmail.com`  
 > **Kim chỉ nam tư tưởng:** *“Văn hóa là nội lực mạnh nhất của dân tộc – Mặc đẹp, Mặc đúng, Giữ trọn hồn thiêng dân tộc”* (Nghị quyết 33-NQ/TW & Nghị quyết 68-NQ/TW của Bộ Chính trị).
 

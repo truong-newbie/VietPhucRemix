@@ -42,9 +42,9 @@ export function Footer({ onNavigateRoadmap }) {
         {/* Team Leadership Details */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
           <div>
-            <span className="text-[10px] uppercase font-bold text-gray-400 block">Trưởng nhóm & CEO</span>
+            <span className="text-[10px] uppercase font-bold text-gray-400 block">Đại diện dự án</span>
             <span className="font-bold text-white text-sm">Đỗ Đăng Trường</span>
-            <p className="text-gray-400 text-[11px]">MSV: 2023604739 • Lớp CNTT06</p>
+            <p className="text-gray-400 text-[11px]">Trường Đại học Công nghiệp Hà Nội</p>
           </div>
 
           <div>

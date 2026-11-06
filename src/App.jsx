@@ -9,6 +9,7 @@ import { CultureCardModal } from './components/CultureCardModal';
 import { LookbookModal } from './components/LookbookModal';
 import { PartnerModal } from './components/PartnerModal';
 import { ProjectRoadmapPage } from './components/ProjectRoadmapPage';
+import { AutoDemoTour } from './components/AutoDemoTour';
 import { Footer } from './components/Footer';
 
 import { GARMENTS_DATA } from './data/garmentsData';
@@ -41,6 +42,9 @@ export function App() {
   const [isCultureCardOpen, setIsCultureCardOpen] = useState(false);
   const [isLookbookOpen, setIsLookbookOpen] = useState(false);
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
+
+  // 3-Minute Guided Auto Tour Mode
+  const [isTourActive, setIsTourActive] = useState(false);
 
   // Colors Map lookup
   const colorsMap = useMemo(() => {
@@ -190,6 +194,23 @@ export function App() {
     }
   };
 
+  // Helpers for 3-minute Guided Auto Tour
+  const tourHelpers = {
+    setView: setCurrentView,
+    setGarment: setSelectedGarmentId,
+    setOuterColor: setSelectedOuterColorId,
+    setBottomColor: setSelectedBottomColorId,
+    setFoot: setSelectedFootId,
+    applyScenario: handleApplyScenario,
+    autoFix: handleAutoFix,
+    openLookbook: () => setIsLookbookOpen(true),
+    closeModals: () => {
+      setIsLookbookOpen(false);
+      setIsCultureCardOpen(false);
+      setIsPartnerModalOpen(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F4EFE6] text-[#2C241D] flex flex-col font-sans selection:bg-[#8B1A1A] selection:text-white">
       {/* 1. Header Navigation */}
@@ -201,6 +222,7 @@ export function App() {
         onOpenCultureCard={() => setIsCultureCardOpen(true)}
         onOpenLookbook={() => setIsLookbookOpen(true)}
         onOpenPartners={() => setIsPartnerModalOpen(true)}
+        onStartTour={() => setIsTourActive(true)}
       />
 
       {/* Conditionally Render: Studio View OR Roadmap Landing Page */}
@@ -328,6 +350,13 @@ export function App() {
         isOpen={isPartnerModalOpen}
         onClose={() => setIsPartnerModalOpen(false)}
         selectedGarment={selectedGarment}
+      />
+
+      {/* 6. 3-Minute Guided Auto Tour Overlay & Teleprompter */}
+      <AutoDemoTour
+        isActive={isTourActive}
+        onClose={() => setIsTourActive(false)}
+        helpers={tourHelpers}
       />
     </div>
   );

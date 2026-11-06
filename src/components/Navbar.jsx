@@ -8,7 +8,8 @@ import {
   Compass,
   Palette,
   Menu,
-  X
+  X,
+  Play
 } from 'lucide-react';
 
 export function Navbar({
@@ -18,7 +19,8 @@ export function Navbar({
   onModeChange,
   onOpenCultureCard,
   onOpenLookbook,
-  onOpenPartners
+  onOpenPartners,
+  onStartTour
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -119,6 +121,17 @@ export function Navbar({
               >
                 <Store className="w-3.5 h-3.5 text-[#1F6F5C]" />
                 <span className="hidden lg:inline text-[11px]">Tiệm thuê</span>
+              </button>
+
+              {/* Auto Demo 3-Minute Tour Button */}
+              <button
+                onClick={onStartTour}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-[#C9A227] to-[#8C5E3B] hover:brightness-110 transition shadow-xs"
+                title="Bật chế độ tự động diễn hoạt và thuyết trình 3 phút"
+              >
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span className="hidden sm:inline">Tự Động Demo (3p)</span>
+                <span className="sm:hidden">Demo 3p</span>
               </button>
 
               {/* Primary CTA Button */}
@@ -243,6 +256,17 @@ export function Navbar({
                   <span>Tiệm Thuê</span>
                 </button>
               </div>
+
+              <button
+                onClick={() => {
+                  onStartTour();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full p-2.5 rounded-xl bg-gradient-to-r from-[#C9A227] to-[#8C5E3B] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs mt-2"
+              >
+                <Play className="w-3.5 h-3.5 fill-white" />
+                <span>Bắt Đầu Tự Động Demo (3 Phút)</span>
+              </button>
             </div>
           )}
         </div>

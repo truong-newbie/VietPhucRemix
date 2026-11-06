@@ -1,0 +1,72 @@
+// Danh sách tiệm thuê & may đo cổ phục đối tác liên kết
+export const PARTNERS_DATA = [
+  {
+    id: 'partner-vstyle',
+    name: 'V’Style – Cổ Phục & Di Sản Việt',
+    city: 'Hà Nội',
+    address: 'Số 42 Phố Hàng Trống, Q. Hoàn Kiếm, Hà Nội',
+    distance: '1.2 km từ Hồ Gươm',
+    rating: 4.9,
+    reviewsCount: 382,
+    specialties: ['Áo ngũ thân tay chẽn', 'Áo Nhật Bình', 'Áo tấc'],
+    rentalPrice: '180.000 đ – 320.000 đ / ngày',
+    tailoringPrice: '1.800.000 đ – 4.500.000 đ / bộ',
+    voucherCode: 'VIETPHUCREMIX10',
+    discount: 'Giảm 10% khi đặt qua App Việt phục Remix',
+    phone: '0982.112.345',
+    verified: true,
+    description: 'Đối tác chiến lược cung cấp cổ phục chuẩn phom dáng nghiên cứu lịch sử cho sinh viên và gia đình.'
+  },
+  {
+    id: 'partner-yvanhien',
+    name: 'Ỷ Vân Hiên – Tinh Hoa Y Phục Cung Đình',
+    city: 'Hà Nội',
+    address: 'Số 18 Ngõ 199 Phố Thụy Khuê, Q. Tây Hồ, Hà Nội',
+    distance: 'Gần Hồ Tây thơ mộng',
+    rating: 5.0,
+    reviewsCount: 520,
+    specialties: ['Áo Nhật Bình hoàng gia', 'Áo Giao Lĩnh', 'Mũ mã vĩ'],
+    rentalPrice: '250.000 đ – 500.000 đ / ngày',
+    tailoringPrice: '3.500.000 đ – 12.000.000 đ / bộ',
+    voucherCode: 'YVANHIENHAUI',
+    discount: 'Tặng kèm bộ phụ kiện trâm cài + quạt thêu trị giá 150k',
+    phone: '0915.668.789',
+    verified: true,
+    description: 'Đơn vị phục dựng y phục cung đình hàng đầu Việt Nam, phục vụ các sự kiện cưới hỏi thượng lưu.'
+  },
+  {
+    id: 'partner-co-phuc-hue',
+    name: 'Đại Nội Thơ – Cổ Phục Cố Đô Huế',
+    city: 'Thừa Thiên Huế',
+    address: 'Số 08 Đoàn Thị Điểm, P. Thuận Thành, TP. Huế',
+    distance: 'Cạnh Cửa Hiển Nhơn, Đại Nội Huế',
+    rating: 4.8,
+    reviewsCount: 295,
+    specialties: ['Áo dài tím Huế', 'Ngũ thân lập lĩnh', 'Áo Nhật Bình tía'],
+    rentalPrice: '120.000 đ – 250.000 đ / ngày',
+    tailoringPrice: '1.200.000 đ – 3.200.000 đ / bộ',
+    voucherCode: 'HUEHERITAGE',
+    discount: 'Giảm 15% cho học sinh, sinh viên mang thẻ HaUI',
+    phone: '0935.882.190',
+    verified: true,
+    description: 'Chuyên trang phục chụp ảnh ngoại cảnh Festival Huế, nón lá bài thơ thêu tay.'
+  },
+  {
+    id: 'partner-hoanien-saigon',
+    name: 'Hoa Niên – Năm Tháng Rực Rỡ',
+    city: 'TP. Hồ Chí Minh',
+    address: '24 Đường số 3, Cư xá Đô Thành, Quận 3, TP.HCM',
+    distance: 'Trung tâm Quận 3',
+    rating: 4.9,
+    reviewsCount: 410,
+    specialties: ['Áo ngũ thân Gen Z', 'Áo bà ba cách tân', 'Áo dài Lemur'],
+    rentalPrice: '150.000 đ – 300.000 đ / ngày',
+    tailoringPrice: '1.500.000 đ – 3.800.000 đ / bộ',
+    voucherCode: 'HOANIENREMIX',
+    discount: 'Miễn phí giặt hấp cao cấp & phụ kiện guốc mộc',
+    phone: '0903.441.229',
+    verified: true,
+    description: 'Phong cách trẻ trung hiện đại kết hợp cổ điển, được đông đảo nghệ sĩ trẻ và bạn trẻ Sài Gòn tin chọn.'
+  }
+];
+

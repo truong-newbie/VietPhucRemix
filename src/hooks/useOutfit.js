@@ -3,6 +3,7 @@ import { GARMENTS_DATA } from '../data/garmentsData';
 import { EVENTS_DATA } from '../data/eventsData';
 import { COLOR_PALETTE } from '../data/colorsData';
 import { ACCESSORIES_DATA } from '../data/accessoriesData';
+import { STYLES_DATA } from '../data/stylesData';
 import { evaluateCultureGuard } from '../engines/cultureEngine';
 import { calculateHarmonyScore } from '../engines/harmonyEngine';
 import { encodeOutfit, decodeOutfit } from '../utils/outfitUrl';
@@ -120,6 +121,11 @@ export function useOutfit() {
     [outfit.footId]
   );
 
+  const selectedStyle = useMemo(
+    () => STYLES_DATA.find((s) => s.id === outfit.styleId) || null,
+    [outfit.styleId]
+  );
+
   // Dữ liệu truyền cho Culture Guard Engine
   const cultureState = useMemo(
     () => ({
@@ -151,9 +157,11 @@ export function useOutfit() {
         bottomColor,
         beltColor,
         headAccessory,
-        footAccessory
+        handAccessory,
+        footAccessory,
+        style: selectedStyle
       }),
-    [selectedGarment, selectedEvent, outerColor, bottomColor, beltColor, headAccessory, footAccessory]
+    [selectedGarment, selectedEvent, outerColor, bottomColor, beltColor, headAccessory, handAccessory, footAccessory, selectedStyle]
   );
 
   return {
@@ -165,6 +173,7 @@ export function useOutfit() {
     colorsMap,
     selectedGarment,
     selectedEvent,
+    selectedStyle,
     outerColor,
     innerColor,
     bottomColor,

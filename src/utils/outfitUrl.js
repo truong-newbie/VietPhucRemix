@@ -2,6 +2,7 @@ import { GARMENTS_DATA } from '../data/garmentsData';
 import { EVENTS_DATA } from '../data/eventsData';
 import { COLOR_PALETTE } from '../data/colorsData';
 import { ACCESSORIES_DATA } from '../data/accessoriesData';
+import { STYLES_DATA } from '../data/stylesData';
 
 const DEFAULT_VALID_IDS = {
   events: EVENTS_DATA.map((e) => e.id),
@@ -10,6 +11,7 @@ const DEFAULT_VALID_IDS = {
   head: ACCESSORIES_DATA.head.map((a) => a.id),
   hand: ACCESSORIES_DATA.hand.map((a) => a.id),
   foot: ACCESSORIES_DATA.foot.map((a) => a.id),
+  styles: STYLES_DATA.map((s) => s.id),
   bottomLengths: ['long', 'short'],
   modes: ['genz', 'family'],
   genders: ['female', 'male']
@@ -34,6 +36,7 @@ export function encodeOutfit(outfit = {}) {
   if (outfit.bottomLength) params.set('l', outfit.bottomLength);
   if (outfit.mode) params.set('m', outfit.mode);
   if (outfit.gender) params.set('s', outfit.gender);
+  if (outfit.styleId) params.set('st', outfit.styleId);
 
   const qs = params.toString();
   return qs ? `?${qs}` : '';
@@ -75,6 +78,7 @@ export function decodeOutfit(search, validIds = DEFAULT_VALID_IDS) {
   check('bottomLength', 'l', validIds.bottomLengths || ['long', 'short']);
   check('mode', 'm', validIds.modes || ['genz', 'family']);
   check('gender', 's', validIds.genders || ['female', 'male']);
+  check('styleId', 'st', validIds.styles);
 
   return result;
 }

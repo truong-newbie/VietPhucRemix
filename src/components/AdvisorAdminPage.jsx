@@ -144,6 +144,9 @@ export function AdvisorAdminPage({ user, onBack }) {
           <div className="flex items-center gap-2 flex-1 min-w-[200px] bg-[#FAF7F2] px-3 py-2 rounded-xl border border-[#DECDB8]">
             <Search className="w-4 h-4 text-gray-400" />
             <input
+              id="admin-rule-search"
+              name="ruleSearch"
+              aria-label="Tìm kiếm luật Culture Guard"
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -153,6 +156,9 @@ export function AdvisorAdminPage({ user, onBack }) {
           </div>
 
           <select
+            id="admin-rule-category"
+            name="ruleCategory"
+            aria-label="Lọc theo nhóm luật"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
             className="px-3 py-2 rounded-xl border border-[#DECDB8] bg-[#FAF7F2] font-semibold"
@@ -168,8 +174,10 @@ export function AdvisorAdminPage({ user, onBack }) {
             <option value="khen-ngoi">Khen ngợi</option>
           </select>
 
-          <label className="flex items-center gap-1.5 font-semibold text-[#664422] cursor-pointer">
+          <label htmlFor="admin-only-needs-review" className="flex items-center gap-1.5 font-semibold text-[#664422] cursor-pointer">
             <input
+              id="admin-only-needs-review"
+              name="onlyNeedsReview"
               type="checkbox"
               checked={onlyNeedsReview}
               onChange={(e) => setOnlyNeedsReview(e.target.checked)}
@@ -230,6 +238,9 @@ export function AdvisorAdminPage({ user, onBack }) {
                 {isEditing && (
                   <div className="mt-2 pt-2 border-t border-gray-100 grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <input
+                      id={`admin-source-${rule.id}`}
+                      name={`source-${rule.id}`}
+                      aria-label="Nguồn sách hoặc trang thẩm định"
                       type="text"
                       value={draftSource}
                       onChange={(e) => setDraftSource(e.target.value)}

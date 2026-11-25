@@ -98,6 +98,18 @@ export default async function handler(req, res) {
       remainingQuota: limitRes.remaining
     });
   } catch (err) {
-    return res.status(500).json({ error: err?.message || 'Lỗi kết nối Cố vấn AI.' });
+    // Fallback an toàn về tư liệu RAG cục bộ khi Gemini tạm quá tải (503/429/mạng)
+    const fallbackDocs = retrieval.matched.slice(0, 2);
+    const fallbackCitations = [...new Set(fallbackDocs.map((d) => d.source))];
+    const summaryText = fallbackDocs
+      .map((d) => `**${d.title}:** ${d.content}`)
+      .join('\n\n');
+    return res.status(200).json({
+      answer: `(Gemini đang bận tạm thời — hệ thống tự động tra cứu trực tiếp từ kho tư liệu thẩm định)\n\n${summaryText}\n\n[Nguồn: ${fallbackCitations.join('; ')}]`,
+      citations: fallbackCitations,
+      outOfScope: false,
+      localFallback: true,
+      upstreamNotice: err?.message || 'Upstream fallback'
+    });
   }
 }

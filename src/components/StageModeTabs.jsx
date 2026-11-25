@@ -9,7 +9,7 @@ const TABS = [
 
 export function StageModeTabs({ activeMode, onChange }) {
   return (
-    <div className="flex items-center gap-1 bg-[#EFE8DC] p-1 rounded-xl border border-[#DECDB8] shadow-inner">
+    <div className="scroll-mt-20 flex items-center gap-1 bg-[#EFE8DC] p-1 rounded-xl border border-[#DECDB8] shadow-inner">
       {TABS.map((tab) => {
         const Icon = tab.icon;
         const active = activeMode === tab.id;

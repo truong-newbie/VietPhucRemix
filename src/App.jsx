@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, lazy, Suspense } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { StudioControls } from './components/StudioControls';
@@ -8,14 +8,20 @@ import { HarmonyGauge } from './components/HarmonyGauge';
 import { CultureCardModal } from './components/CultureCardModal';
 import { LookbookModal } from './components/LookbookModal';
 import { PartnerModal } from './components/PartnerModal';
-import { ProjectRoadmapPage } from './components/ProjectRoadmapPage';
 import { AutoDemoTour } from './components/AutoDemoTour';
 import { Footer } from './components/Footer';
 import { SuggestionPanel } from './components/SuggestionPanel';
 import { CompareDrawer } from './components/CompareDrawer';
 import { QuizModal } from './components/QuizModal';
 import { FamilyStageView } from './components/FamilyStageView';
+import { StageModeTabs } from './components/StageModeTabs';
+import { Stage3DErrorBoundary } from './components/stage3d/Stage3DErrorBoundary';
 import { Link2, Check, BookmarkPlus, Layers, Users, User } from 'lucide-react';
+
+const ProjectRoadmapPage = lazy(() =>
+  import('./components/ProjectRoadmapPage').then((m) => ({ default: m.ProjectRoadmapPage }))
+);
+const Stage3D = lazy(() => import('./components/stage3d/Stage3D'));
 
 import { SCENARIOS_DATA } from './data/scenariosData';
 import { GARMENTS_DATA } from './data/garmentsData';
@@ -28,6 +34,7 @@ import { classifyCreativity } from './engines/creativityClassifier';
 
 export function App() {
   const [currentView, setCurrentView] = useState('studio');
+  const [stageMode, setStageMode] = useState('2d'); // '2d' | '3d' | 'tryon'
   const [regionFilter, setRegionFilter] = useState('all');
   const [isCopiedLink, setIsCopiedLink] = useState(false);
 
@@ -211,7 +218,15 @@ export function App() {
 
       {currentView === 'roadmap' ? (
         <main className="flex-1">
-          <ProjectRoadmapPage onBackToStudio={() => setCurrentView('studio')} />
+          <Suspense
+            fallback={
+              <div className="p-12 text-center text-sm font-semibold text-[#664422]">
+                Đang tải Báo cáo &amp; Lộ trình...
+              </div>
+            }
+          >
+            <ProjectRoadmapPage onBackToStudio={() => setCurrentView('studio')} />
+          </Suspense>
         </main>
       ) : (
         <>
@@ -264,36 +279,40 @@ export function App() {
                   onOpenCultureCard={() => setIsCultureCardOpen(true)}
                 />
 
-                {/* Group Mode Switcher (Cá nhân vs Gia đình 2-4 người) */}
+                {/* Group Mode Switcher & Stage Mode Tabs */}
                 <div className="flex flex-wrap items-center justify-between gap-2 bg-white px-3 py-2 rounded-xl border border-[#E0D5C1] shadow-xs">
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      type="button"
-                      onClick={() => setGroupMode('single')}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                        groupMode === 'single'
-                          ? 'bg-[#8B1A1A] text-white shadow-xs'
-                          : 'text-[#664422] hover:bg-[#FAF7F2]'
-                      }`}
-                    >
-                      <User className="w-3.5 h-3.5" />
-                      <span>Phối Cá Nhân</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setGroupMode('family')}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                        groupMode === 'family'
-                          ? 'bg-[#1D2440] text-white shadow-xs'
-                          : 'text-[#664422] hover:bg-[#FAF7F2]'
-                      }`}
-                    >
-                      <Users className="w-3.5 h-3.5" />
-                      <span>Gia Đình (2–4 Người)</span>
-                    </button>
-                  </div>
+                  <StageModeTabs activeMode={stageMode} onChange={setStageMode} />
 
-                  <div className="flex items-center gap-2">
+                  {stageMode === '2d' && (
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setGroupMode('single')}
+                        className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition ${
+                          groupMode === 'single'
+                            ? 'bg-[#8B1A1A] text-white shadow-xs'
+                            : 'text-[#664422] hover:bg-[#FAF7F2]'
+                        }`}
+                      >
+                        <User className="w-3.5 h-3.5" />
+                        <span>1 người</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setGroupMode('family')}
+                        className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold transition ${
+                          groupMode === 'family'
+                            ? 'bg-[#1D2440] text-white shadow-xs'
+                            : 'text-[#664422] hover:bg-[#FAF7F2]'
+                        }`}
+                      >
+                        <Users className="w-3.5 h-3.5" />
+                        <span>Gia đình</span>
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-1.5">
                     <button
                       type="button"
                       onClick={handleSaveCompare}
@@ -313,7 +332,7 @@ export function App() {
                   </div>
                 </div>
 
-                {groupMode === 'family' ? (
+                {stageMode === '2d' && groupMode === 'family' ? (
                   <FamilyStageView
                     members={familyMembers}
                     activeIndex={activeMemberIndex}
@@ -324,24 +343,45 @@ export function App() {
                 ) : null}
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
-                  {groupMode === 'single' && (
+                  {(stageMode !== '2d' || groupMode === 'single') && (
                     <div className="md:col-span-7">
-                      <AvatarStage
-                        garment={selectedGarment}
-                        outerColor={outerColor}
-                        innerColor={innerColor}
-                        bottomColor={bottomColor}
-                        beltColor={beltColor}
-                        headAccessory={headAccessory}
-                        handAccessory={handAccessory}
-                        footAccessory={footAccessory}
-                        gender={outfit.gender}
-                        onGenderChange={(val) => setField('gender', val)}
-                      />
+                      {stageMode === '3d' ? (
+                        <Stage3DErrorBoundary onFallback2D={() => setStageMode('2d')}>
+                          <Suspense
+                            fallback={
+                              <div className="w-full aspect-[3/4] max-h-[620px] rounded-2xl bg-[#FAF7F2] border border-[#E0D5C1] flex items-center justify-center text-xs font-bold text-[#8B1A1A]">
+                                Đang tải sân khấu 3D xoay 360°...
+                              </div>
+                            }
+                          >
+                            <Stage3D
+                              garment={selectedGarment}
+                              outerColor={outerColor}
+                              innerColor={innerColor}
+                              bottomColor={bottomColor}
+                              beltColor={beltColor}
+                              headAccessory={headAccessory}
+                            />
+                          </Suspense>
+                        </Stage3DErrorBoundary>
+                      ) : (
+                        <AvatarStage
+                          garment={selectedGarment}
+                          outerColor={outerColor}
+                          innerColor={innerColor}
+                          bottomColor={bottomColor}
+                          beltColor={beltColor}
+                          headAccessory={headAccessory}
+                          handAccessory={handAccessory}
+                          footAccessory={footAccessory}
+                          gender={outfit.gender}
+                          onGenderChange={(val) => setField('gender', val)}
+                        />
+                      )}
                     </div>
                   )}
 
-                  <div className={`${groupMode === 'family' ? 'md:col-span-12' : 'md:col-span-5'} flex flex-col justify-between gap-3`}>
+                  <div className={`${stageMode === '2d' && groupMode === 'family' ? 'md:col-span-12' : 'md:col-span-5'} flex flex-col justify-between gap-3`}>
                     <HarmonyGauge harmonyResult={harmonyResult} />
 
                     <div className="bg-[#FAF7F2] rounded-2xl border border-[#E0D5C1] p-4 shadow-sm space-y-2.5">

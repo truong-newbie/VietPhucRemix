@@ -63,6 +63,9 @@ export default defineConfig({
           if (id.includes('node_modules/three') || id.includes('@react-three')) {
             return 'vendor-three';
           }
+          if (id.includes('node_modules/@supabase')) {
+            return 'vendor-supabase';
+          }
           if (id.includes('node_modules/qrcode') || id.includes('canvas-confetti')) {
             return 'vendor-media';
           }

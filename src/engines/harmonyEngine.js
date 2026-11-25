@@ -8,7 +8,7 @@ export function calculateHarmonyScore({
   bottomColor,
   beltColor,
   headAccessory,
-  footAccessory
+  footAccessory: _footAccessory
 }) {
   let score = 50; // Base score
   const explanations = [];

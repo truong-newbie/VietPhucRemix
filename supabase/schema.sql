@@ -83,30 +83,39 @@ ALTER TABLE public.study_responses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.rule_reviews ENABLE ROW LEVEL SECURITY;
 
 -- Policies cho dữ liệu cá nhân (chỉ chủ sở hữu)
+DROP POLICY IF EXISTS "Users manage own profile" ON public.profiles;
 CREATE POLICY "Users manage own profile" ON public.profiles
   FOR ALL USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users manage own outfits" ON public.saved_outfits;
 CREATE POLICY "Users manage own outfits" ON public.saved_outfits
   FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users manage own badges" ON public.user_badges;
 CREATE POLICY "Users manage own badges" ON public.user_badges
   FOR ALL USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);
 
 -- Policies cho Đặt lịch, Analytics & Khảo sát: khách ẩn danh được phép INSERT, chặn đọc trái phép SĐT khách
+DROP POLICY IF EXISTS "Public insert bookings" ON public.bookings;
 CREATE POLICY "Public insert bookings" ON public.bookings
   FOR INSERT WITH CHECK (pdp_consent = TRUE);
 
+DROP POLICY IF EXISTS "Public insert analytics" ON public.analytics_events;
 CREATE POLICY "Public insert analytics" ON public.analytics_events
   FOR INSERT WITH CHECK (TRUE);
 
+DROP POLICY IF EXISTS "Public insert study responses" ON public.study_responses;
 CREATE POLICY "Public insert study responses" ON public.study_responses
   FOR INSERT WITH CHECK (TRUE);
 
+DROP POLICY IF EXISTS "Public read study responses for evidence chart" ON public.study_responses;
 CREATE POLICY "Public read study responses for evidence chart" ON public.study_responses
   FOR SELECT USING (TRUE);
 
+DROP POLICY IF EXISTS "Public read verified rule reviews" ON public.rule_reviews;
 CREATE POLICY "Public read verified rule reviews" ON public.rule_reviews
   FOR SELECT USING (TRUE);
 
+DROP POLICY IF EXISTS "Authenticated advisors upsert rule reviews" ON public.rule_reviews;
 CREATE POLICY "Authenticated advisors upsert rule reviews" ON public.rule_reviews
   FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');

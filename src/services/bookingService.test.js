@@ -1,5 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { validateBookingPayload, generateBookingCode, submitBooking } from './bookingService';
+
+vi.mock('./supabase', () => ({
+  getSupabaseClient: () => null
+}));
 
 describe('bookingService', () => {
   it('validates Vietnamese phone numbers and Decree 13 consent', () => {

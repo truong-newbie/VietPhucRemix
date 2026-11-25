@@ -1,13 +1,43 @@
-// Động cơ suy diễn Luật Văn hóa Culture Guard
+// Động cơ suy diễn Luật Văn hóa Culture Guard (khai báo, thuần túy)
 import { CULTURE_RULES } from '../data/cultureRules';
+import { matchRule } from './ruleMatcher';
+
+const LEVEL_WEIGHT = { red: 3, yellow: 2, green: 1 };
+
+export function sortMatchedRules(rules) {
+  return [...rules].sort((a, b) => {
+    const levelDiff = (LEVEL_WEIGHT[b.level] || 0) - (LEVEL_WEIGHT[a.level] || 0);
+    if (levelDiff !== 0) return levelDiff;
+    return (b.priority || 0) - (a.priority || 0);
+  });
+}
+
+/**
+ * Gộp bản vá autoFix từ các luật Đỏ & Vàng đang khớp (áp Vàng trước, Đỏ sau để ưu tiên xử lý triệt để lỗi nghiêm trọng).
+ */
+export function computeCombinedAutoFix(matchedRules = []) {
+  const warnings = matchedRules.filter((r) => (r.level === 'red' || r.level === 'yellow') && r.autoFix);
+  if (warnings.length === 0) return null;
+
+  const sortedLowToHigh = [...warnings].sort((a, b) => {
+    const levelDiff = (LEVEL_WEIGHT[a.level] || 0) - (LEVEL_WEIGHT[b.level] || 0);
+    if (levelDiff !== 0) return levelDiff;
+    return (a.priority || 0) - (b.priority || 0);
+  });
+
+  const combined = {};
+  for (const r of sortedLowToHigh) {
+    Object.assign(combined, r.autoFix);
+  }
+  return Object.keys(combined).length > 0 ? combined : null;
+}
 
 export function evaluateCultureGuard(state, colorsMap) {
-  // Tìm tất cả các luật khớp
   const matchedRules = [];
 
   for (const rule of CULTURE_RULES) {
     try {
-      if (rule.check(state, colorsMap)) {
+      if (matchRule(rule, state, colorsMap)) {
         matchedRules.push(rule);
       }
     } catch (e) {
@@ -15,38 +45,39 @@ export function evaluateCultureGuard(state, colorsMap) {
     }
   }
 
-  // Phân loại ưu tiên: ĐỎ (Red) > VÀNG (Yellow) > XANH (Green)
-  const redRule = matchedRules.find(r => r.level === 'red');
-  if (redRule) {
+  const sorted = sortMatchedRules(matchedRules);
+  const topRule = sorted[0];
+
+  if (topRule?.level === 'red') {
     return {
       status: 'red',
       levelText: 'CẢNH BÁO SAI LỆCH VĂN HÓA',
-      activeRule: redRule,
-      allMatched: matchedRules
+      activeRule: topRule,
+      allMatched: sorted,
+      combinedAutoFix: computeCombinedAutoFix(sorted)
     };
   }
 
-  const yellowRule = matchedRules.find(r => r.level === 'yellow');
-  if (yellowRule) {
+  if (topRule?.level === 'yellow') {
     return {
       status: 'yellow',
       levelText: 'LƯU Ý ĐỊNH HƯỚNG BẢN SẮC',
-      activeRule: yellowRule,
-      allMatched: matchedRules
+      activeRule: topRule,
+      allMatched: sorted,
+      combinedAutoFix: computeCombinedAutoFix(sorted)
     };
   }
 
-  const greenRule = matchedRules.find(r => r.level === 'green');
-  if (greenRule) {
+  if (topRule?.level === 'green') {
     return {
       status: 'green',
       levelText: 'SÁNG TẠO HỢP CHUẨN DI SẢN',
-      activeRule: greenRule,
-      allMatched: matchedRules
+      activeRule: topRule,
+      allMatched: sorted,
+      combinedAutoFix: null
     };
   }
 
-  // Mặc định an toàn
   return {
     status: 'green',
     levelText: 'HỢP CHUẨN TRUYỀN THỐNG',
@@ -57,9 +88,10 @@ export function evaluateCultureGuard(state, colorsMap) {
       message: 'Trang phục giữ được phong thái tao nhã của người Việt, màu sắc hài hòa và đúng chuẩn mực.',
       quote: '“Y phục xứng kỳ đức” — Trang phục biểu hiện tâm hồn và phẩm hạnh.',
       suggestion: 'Bạn có thể thử nghiệm thêm các phụ kiện như quạt lụa hoặc khăn vấn để tăng thêm phần thanh lịch.',
+      source: 'CẦN THẨM ĐỊNH',
       autoFix: null
     },
-    allMatched: []
+    allMatched: [],
+    combinedAutoFix: null
   };
 }
-

@@ -11,7 +11,8 @@ export function AvatarStage({
   handAccessory,
   footAccessory,
   gender,
-  onGenderChange
+  onGenderChange,
+  compact = false
 }) {
   const outerHex = outerColor ? outerColor.hex : '#8B1A1A';
   const innerHex = innerColor ? innerColor.hex : '#F5F5F0';
@@ -19,7 +20,11 @@ export function AvatarStage({
   const beltHex = beltColor ? beltColor.hex : '#C9A227';
 
   return (
-    <div className="relative w-full aspect-[3/4] max-h-[620px] rounded-2xl bg-gradient-to-b from-[#FAF7F2] via-[#F4EFE6] to-[#EBE4D5] border border-[#E0D5C1] shadow-xl overflow-hidden flex flex-col items-center justify-between p-4 select-none">
+    <div
+      className={`relative w-full rounded-2xl bg-gradient-to-b from-[#FAF7F2] via-[#F4EFE6] to-[#EBE4D5] border border-[#E0D5C1] overflow-hidden flex flex-col items-center justify-between select-none ${
+        compact ? 'aspect-[3/4] p-2 shadow-sm' : 'aspect-[3/4] max-h-[620px] p-4 shadow-xl'
+      }`}
+    >
       {/* Background Heritage Decor */}
       <div className="absolute inset-0 opacity-10 pointer-events-none flex items-center justify-center">
         <svg viewBox="0 0 400 400" className="w-[120%] h-[120%] text-[#8B1A1A]">
@@ -30,36 +35,40 @@ export function AvatarStage({
       </div>
 
       {/* Top Floating Badges */}
-      <div className="w-full flex items-center justify-between z-10">
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-md rounded-full border border-[#D8C7B0] shadow-sm text-xs font-semibold text-[#664422]">
-          <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
-          <span>Layered SVG Engine</span>
-        </div>
+      {!compact && (
+        <div className="w-full flex items-center justify-between z-10">
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-md rounded-full border border-[#D8C7B0] shadow-sm text-xs font-semibold text-[#664422]">
+            <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
+            <span>Layered SVG Engine</span>
+          </div>
 
-        {/* Gender Toggle */}
-        <div className="flex bg-[#EAE2D3] p-0.5 rounded-full border border-[#D5C7B2] text-xs font-medium">
-          <button
-            onClick={() => onGenderChange('female')}
-            className={`px-2.5 py-1 rounded-full transition-all ${
-              gender === 'female'
-                ? 'bg-[#8B1A1A] text-white shadow-sm'
-                : 'text-[#664422] hover:text-black'
-            }`}
-          >
-            Nữ
-          </button>
-          <button
-            onClick={() => onGenderChange('male')}
-            className={`px-2.5 py-1 rounded-full transition-all ${
-              gender === 'male'
-                ? 'bg-[#8B1A1A] text-white shadow-sm'
-                : 'text-[#664422] hover:text-black'
-            }`}
-          >
-            Nam
-          </button>
+          {/* Gender Toggle */}
+          {onGenderChange && (
+            <div className="flex bg-[#EAE2D3] p-0.5 rounded-full border border-[#D5C7B2] text-xs font-medium">
+              <button
+                onClick={() => onGenderChange('female')}
+                className={`px-2.5 py-1 rounded-full transition-all ${
+                  gender === 'female'
+                    ? 'bg-[#8B1A1A] text-white shadow-sm'
+                    : 'text-[#664422] hover:text-black'
+                }`}
+              >
+                Nữ
+              </button>
+              <button
+                onClick={() => onGenderChange('male')}
+                className={`px-2.5 py-1 rounded-full transition-all ${
+                  gender === 'male'
+                    ? 'bg-[#8B1A1A] text-white shadow-sm'
+                    : 'text-[#664422] hover:text-black'
+                }`}
+              >
+                Nam
+              </button>
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
       {/* Main Dynamic Vector SVG Avatar */}
       <div className="relative w-full flex-1 flex items-center justify-center z-10 py-2">
@@ -231,6 +240,45 @@ export function AvatarStage({
                 {/* Hoa văn gấu áo sóng nước thủy ba */}
                 <path d="M126 345 Q143 338 160 345 Q177 338 194 345" stroke="url(#goldGradient)" strokeWidth="2.5" fill="none" />
               </g>
+            ) : garment.id === 'ao-tac' ? (
+              // ====== ÁO TẤC (NGŨ THÂN TAY THỤNG ĐẠI LỄ) ======
+              <g>
+                {/* Tay thụng rộng rủ dài hai bên + thân áo 5 tà */}
+                <path
+                  d="M142 120 L76 196 L88 268 L128 240 L126 362 Q160 368 194 362 L192 240 L232 268 L244 196 L178 120 Z"
+                  fill={outerHex}
+                />
+                {/* Viền cổ tay áo lót trắng ngà */}
+                <path d="M84 260 L126 236" stroke={innerHex} strokeWidth="5" fill="none" />
+                <path d="M236 260 L194 236" stroke={innerHex} strokeWidth="5" fill="none" />
+                {/* Cổ áo lập lĩnh đứng */}
+                <path d="M146 115 L174 115 L174 126 L146 126 Z" fill={outerHex} stroke="#540C0C" strokeWidth="0.8" />
+                {/* 5 Hạt Khuy Ngũ Thường */}
+                <circle cx="160" cy="126" r="2.2" fill="url(#goldGradient)" />
+                <circle cx="168" cy="132" r="2.2" fill="url(#goldGradient)" />
+                <circle cx="176" cy="140" r="2.2" fill="url(#goldGradient)" />
+                <circle cx="181" cy="150" r="2.2" fill="url(#goldGradient)" />
+                <circle cx="183" cy="165" r="2.2" fill="url(#goldGradient)" />
+                {/* Nếp tà áo trang nghiêm */}
+                <path d="M148 185 L144 358" stroke="rgba(255,255,255,0.2)" strokeWidth="1.2" fill="none" />
+                <path d="M174 185 L178 358" stroke="rgba(255,255,255,0.16)" strokeWidth="1.2" fill="none" />
+              </g>
+            ) : garment.id === 'giao-linh' ? (
+              // ====== ÁO GIAO LĨNH CỔ CHÉO ĐẠI VIỆT ======
+              <g>
+                {/* Thân áo rộng dài + tay thụng vừa */}
+                <path
+                  d="M140 120 L78 194 L94 242 L132 215 L126 365 Q160 370 194 365 L188 215 L226 242 L242 194 L180 120 Z"
+                  fill={outerHex}
+                />
+                {/* Nẹp cổ chéo chữ Y (tả khâm: vạt trái đắp lên vạt phải) */}
+                <path d="M142 118 L176 175" stroke={innerHex} strokeWidth="7" fill="none" />
+                <path d="M178 118 L158 152" stroke={innerHex} strokeWidth="7" fill="none" />
+                <path d="M142 118 L176 175" stroke={beltHex} strokeWidth="2" fill="none" />
+                {/* Đai thắt lưng lụa bản vừa */}
+                <rect x="131" y="210" width="58" height="11" rx="2" fill={beltHex} />
+                <path d="M156 221 L152 285 L162 285 L164 221 Z" fill={beltHex} />
+              </g>
             ) : garment.id === 'ao-ba-ba' ? (
               // ====== ÁO BÀ BA NAM BỘ ======
               <g>
@@ -339,21 +387,23 @@ export function AvatarStage({
       </div>
 
       {/* Bottom Summary Bar */}
-      <div className="w-full bg-white/90 backdrop-blur-md rounded-xl p-2.5 border border-[#E0D5C1] shadow-sm flex items-center justify-between z-10 text-xs">
-        <div>
-          <span className="text-gray-500 block text-[10px] uppercase font-semibold">Trang phục đang chọn</span>
-          <span className="font-bold text-[#8B1A1A] text-sm">{garment.name}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1">
-            <span className="w-3.5 h-3.5 rounded-full border border-black/20" style={{ backgroundColor: outerHex }} title="Màu áo chính" />
-            <span className="w-3.5 h-3.5 rounded-full border border-black/20" style={{ backgroundColor: bottomHex }} title="Màu quần/váy" />
+      {!compact && (
+        <div className="w-full bg-white/90 backdrop-blur-md rounded-xl p-2.5 border border-[#E0D5C1] shadow-sm flex items-center justify-between z-10 text-xs">
+          <div>
+            <span className="text-gray-500 block text-[10px] uppercase font-semibold">Trang phục đang chọn</span>
+            <span className="font-bold text-[#8B1A1A] text-sm">{garment.name}</span>
           </div>
-          <span className="px-2 py-0.5 rounded-full bg-[#FAF3DD] text-[#8C5E3B] font-semibold text-[11px]">
-            {garment.era.split(' ')[0]}
-          </span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <span className="w-3.5 h-3.5 rounded-full border border-black/20" style={{ backgroundColor: outerHex }} title="Màu áo chính" />
+              <span className="w-3.5 h-3.5 rounded-full border border-black/20" style={{ backgroundColor: bottomHex }} title="Màu quần/váy" />
+            </div>
+            <span className="px-2 py-0.5 rounded-full bg-[#FAF3DD] text-[#8C5E3B] font-semibold text-[11px]">
+              {garment.era.split(' ')[0]}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

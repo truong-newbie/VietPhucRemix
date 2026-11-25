@@ -43,6 +43,7 @@ export function App() {
     headAccessory,
     handAccessory,
     footAccessory,
+    cultureState,
     cultureResult,
     harmonyResult
   } = useOutfit();
@@ -182,6 +183,7 @@ export function App() {
                 {/* Real-time Culture Guard Traffic Light Banner */}
                 <CultureGuardBanner
                   cultureResult={cultureResult}
+                  cultureState={cultureState}
                   onAutoFix={handleAutoFix}
                   onOpenCultureCard={() => setIsCultureCardOpen(true)}
                 />

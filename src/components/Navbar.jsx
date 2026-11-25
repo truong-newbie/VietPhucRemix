@@ -7,7 +7,8 @@ import {
   Palette,
   Menu,
   X,
-  Play
+  Play,
+  Award
 } from 'lucide-react';
 
 export function Navbar({
@@ -18,7 +19,10 @@ export function Navbar({
   onOpenCultureCard,
   onOpenLookbook,
   onOpenPartners,
-  onStartTour
+  onStartTour,
+  badgeCount = 0,
+  totalBadges = 7,
+  onOpenQuiz
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -111,6 +115,17 @@ export function Navbar({
                 <BookOpen className="w-3.5 h-3.5 text-[#8B1A1A]" />
                 <span className="hidden lg:inline text-[11px]">Tư liệu</span>
               </button>
+
+              {onOpenQuiz && (
+                <button
+                  onClick={onOpenQuiz}
+                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold bg-[#FAF3DD] text-[#8C5E3B] border border-[#E2D2B5] hover:border-[#C9A227] transition"
+                  title="Làm Mini-Quiz để sưu tầm đủ huy hiệu 7 dòng cổ phục"
+                >
+                  <Award className="w-3.5 h-3.5 text-[#C9A227]" />
+                  <span>{badgeCount}/{totalBadges}</span>
+                </button>
+              )}
 
               <button
                 onClick={onOpenPartners}

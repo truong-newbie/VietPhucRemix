@@ -11,24 +11,34 @@ import { PartnerModal } from './components/PartnerModal';
 import { ProjectRoadmapPage } from './components/ProjectRoadmapPage';
 import { AutoDemoTour } from './components/AutoDemoTour';
 import { Footer } from './components/Footer';
-import { Link2, Check } from 'lucide-react';
+import { SuggestionPanel } from './components/SuggestionPanel';
+import { CompareDrawer } from './components/CompareDrawer';
+import { QuizModal } from './components/QuizModal';
+import { FamilyStageView } from './components/FamilyStageView';
+import { Link2, Check, BookmarkPlus, Layers, Users, User } from 'lucide-react';
 
 import { SCENARIOS_DATA } from './data/scenariosData';
+import { GARMENTS_DATA } from './data/garmentsData';
+import { ACCESSORIES_DATA } from './data/accessoriesData';
 import { useOutfit } from './hooks/useOutfit';
 import { useFamilyStage } from './hooks/useFamilyStage';
+import { useSavedOutfits } from './hooks/useSavedOutfits';
+import { useBadges } from './hooks/useBadges';
+import { classifyCreativity } from './engines/creativityClassifier';
 
 export function App() {
-  // Navigation View: 'studio' (Phối đồ) | 'roadmap' (Landing page báo cáo MVP & lộ trình)
   const [currentView, setCurrentView] = useState('studio');
+  const [regionFilter, setRegionFilter] = useState('all');
   const [isCopiedLink, setIsCopiedLink] = useState(false);
 
-  // Modals & Guided Tour
+  // Modals & Drawers
   const [isCultureCardOpen, setIsCultureCardOpen] = useState(false);
   const [isLookbookOpen, setIsLookbookOpen] = useState(false);
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
   const [isTourActive, setIsTourActive] = useState(false);
 
-  // Quản lý state bộ phối (URL + localStorage + engines)
   const {
     outfit,
     setField,
@@ -36,6 +46,7 @@ export function App() {
     getShareUrl,
     selectedGarment,
     selectedEvent,
+    selectedStyle,
     outerColor,
     innerColor,
     bottomColor,
@@ -48,8 +59,47 @@ export function App() {
     harmonyResult
   } = useOutfit();
 
-  // Sẵn sàng quản lý 2-4 thành viên cho Phase 3
-  useFamilyStage(outfit);
+  const {
+    groupMode,
+    setGroupMode,
+    familyMembers,
+    activeMemberIndex,
+    setActiveMemberIndex,
+    updateMemberOutfit,
+    addFamilyMember,
+    removeFamilyMember
+  } = useFamilyStage(outfit);
+
+  const { savedOutfits, saveForCompare, removeSavedOutfit, clearSavedOutfits } = useSavedOutfits();
+  const { earnedBadges, earnBadge, totalEarned } = useBadges();
+
+  const accessoriesMap = useMemo(
+    () => ({
+      head: Object.fromEntries(ACCESSORIES_DATA.head.map((a) => [a.id, a])),
+      hand: Object.fromEntries(ACCESSORIES_DATA.hand.map((a) => [a.id, a])),
+      foot: Object.fromEntries(ACCESSORIES_DATA.foot.map((a) => [a.id, a]))
+    }),
+    []
+  );
+
+  const creativity = useMemo(
+    () => classifyCreativity(cultureState, cultureResult, accessoriesMap),
+    [cultureState, cultureResult, accessoriesMap]
+  );
+
+  // Khi đang ở chế độ Family, mọi thay đổi trên StudioControls cập nhật cho thành viên đang chọn (và thành viên 0 đồng bộ với outfit chính)
+  const activeOutfit = groupMode === 'family' ? familyMembers[activeMemberIndex]?.outfit || outfit : outfit;
+
+  const handleControlChange = (field, value) => {
+    if (groupMode === 'family') {
+      updateMemberOutfit(activeMemberIndex, { [field]: value });
+      if (activeMemberIndex === 0) {
+        setField(field, value);
+      }
+    } else {
+      setField(field, value);
+    }
+  };
 
   const handleCopyShareLink = () => {
     const url = getShareUrl();
@@ -59,6 +109,15 @@ export function App() {
         setTimeout(() => setIsCopiedLink(false), 2000);
       });
     }
+  };
+
+  const handleSaveCompare = () => {
+    saveForCompare({
+      outfit: { ...outfit },
+      harmonyScore: harmonyResult.score,
+      cultureStatus: cultureResult.status
+    });
+    setIsCompareOpen(true);
   };
 
   const handleModeChange = (newMode) => {
@@ -89,6 +148,7 @@ export function App() {
 
   const handleAutoFix = (fixPayload) => {
     applyPartial({
+      ...(fixPayload.garmentId ? { garmentId: fixPayload.garmentId } : {}),
       ...(fixPayload.outerColorId ? { outerColorId: fixPayload.outerColorId } : {}),
       ...(fixPayload.bottomColorId ? { bottomColorId: fixPayload.bottomColorId } : {}),
       ...(fixPayload.beltColorId ? { beltColorId: fixPayload.beltColorId } : {}),
@@ -100,6 +160,7 @@ export function App() {
   };
 
   const handleApplyScenario = (scenarioKey) => {
+    setGroupMode('single');
     const scenario = SCENARIOS_DATA[scenarioKey];
     if (scenario?.outfit) {
       applyPartial(scenario.outfit);
@@ -120,6 +181,8 @@ export function App() {
         setIsLookbookOpen(false);
         setIsCultureCardOpen(false);
         setIsPartnerModalOpen(false);
+        setIsCompareOpen(false);
+        setIsQuizOpen(false);
       }
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -141,46 +204,59 @@ export function App() {
           setCurrentView('studio');
           setIsTourActive(true);
         }}
+        badgeCount={totalEarned}
+        totalBadges={GARMENTS_DATA.length}
+        onOpenQuiz={() => setIsQuizOpen(true)}
       />
 
-      {/* Conditional Rendering: Studio vs Project Roadmap Page */}
       {currentView === 'roadmap' ? (
         <main className="flex-1">
           <ProjectRoadmapPage onBackToStudio={() => setCurrentView('studio')} />
         </main>
       ) : (
         <>
-          {/* 2. Hero Ideological Banner & Pitch Scenarios */}
           <HeroSection onApplyScenario={handleApplyScenario} />
 
-          {/* 3. Main Interactive Studio Workspace */}
           <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left Column: 4-Tab Studio Customization Panel (5 Cols on LG) */}
-              <div className="lg:col-span-5 space-y-4">
+              {/* Left Column: 4-Tab Studio Controls + 3 Smart Suggestions */}
+              <div className="lg:col-span-5 space-y-4 order-2 lg:order-1">
+                <SuggestionPanel
+                  eventId={outfit.eventId}
+                  eventName={selectedEvent.name}
+                  gender={outfit.gender}
+                  mode={outfit.mode}
+                  region={regionFilter}
+                  selectedStyle={selectedStyle}
+                  onApplyOutfit={(picked) => applyPartial(picked)}
+                />
+
                 <StudioControls
-                  selectedEventId={outfit.eventId}
-                  onSelectEvent={(val) => setField('eventId', val)}
-                  selectedGarmentId={outfit.garmentId}
-                  onSelectGarment={(val) => setField('garmentId', val)}
-                  selectedOuterColorId={outfit.outerColorId}
-                  onSelectOuterColor={(val) => setField('outerColorId', val)}
-                  selectedBottomColorId={outfit.bottomColorId}
-                  onSelectBottomColor={(val) => setField('bottomColorId', val)}
-                  selectedBeltColorId={outfit.beltColorId}
-                  onSelectBeltColor={(val) => setField('beltColorId', val)}
-                  selectedHeadId={outfit.headId}
-                  onSelectHead={(val) => setField('headId', val)}
-                  selectedHandId={outfit.handId}
-                  onSelectHand={(val) => setField('handId', val)}
-                  selectedFootId={outfit.footId}
-                  onSelectFoot={(val) => setField('footId', val)}
+                  regionFilter={regionFilter}
+                  onRegionFilterChange={setRegionFilter}
+                  selectedStyleId={outfit.styleId}
+                  onSelectStyle={(val) => setField('styleId', val)}
+                  selectedEventId={activeOutfit.eventId}
+                  onSelectEvent={(val) => handleControlChange('eventId', val)}
+                  selectedGarmentId={activeOutfit.garmentId}
+                  onSelectGarment={(val) => handleControlChange('garmentId', val)}
+                  selectedOuterColorId={activeOutfit.outerColorId}
+                  onSelectOuterColor={(val) => handleControlChange('outerColorId', val)}
+                  selectedBottomColorId={activeOutfit.bottomColorId}
+                  onSelectBottomColor={(val) => handleControlChange('bottomColorId', val)}
+                  selectedBeltColorId={activeOutfit.beltColorId}
+                  onSelectBeltColor={(val) => handleControlChange('beltColorId', val)}
+                  selectedHeadId={activeOutfit.headId}
+                  onSelectHead={(val) => handleControlChange('headId', val)}
+                  selectedHandId={activeOutfit.handId}
+                  onSelectHand={(val) => handleControlChange('handId', val)}
+                  selectedFootId={activeOutfit.footId}
+                  onSelectFoot={(val) => handleControlChange('footId', val)}
                 />
               </div>
 
-              {/* Right Column: Live Avatar Stage + Culture Guard + Harmony Score (7 Cols on LG) */}
-              <div className="lg:col-span-7 space-y-4">
-                {/* Real-time Culture Guard Traffic Light Banner */}
+              {/* Right Column: Culture Guard + Stage + Harmony */}
+              <div className="lg:col-span-7 space-y-4 order-1 lg:order-2">
                 <CultureGuardBanner
                   cultureResult={cultureResult}
                   cultureState={cultureState}
@@ -188,48 +264,104 @@ export function App() {
                   onOpenCultureCard={() => setIsCultureCardOpen(true)}
                 />
 
-                {/* Stage & Harmony Split Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
-                  {/* Layered SVG Interactive Stage (7 Cols) */}
-                  <div className="md:col-span-7">
-                    <AvatarStage
-                      garment={selectedGarment}
-                      outerColor={outerColor}
-                      innerColor={innerColor}
-                      bottomColor={bottomColor}
-                      beltColor={beltColor}
-                      headAccessory={headAccessory}
-                      handAccessory={handAccessory}
-                      footAccessory={footAccessory}
-                      gender={outfit.gender}
-                      onGenderChange={(val) => setField('gender', val)}
-                    />
+                {/* Group Mode Switcher (Cá nhân vs Gia đình 2-4 người) */}
+                <div className="flex flex-wrap items-center justify-between gap-2 bg-white px-3 py-2 rounded-xl border border-[#E0D5C1] shadow-xs">
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setGroupMode('single')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                        groupMode === 'single'
+                          ? 'bg-[#8B1A1A] text-white shadow-xs'
+                          : 'text-[#664422] hover:bg-[#FAF7F2]'
+                      }`}
+                    >
+                      <User className="w-3.5 h-3.5" />
+                      <span>Phối Cá Nhân</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGroupMode('family')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+                        groupMode === 'family'
+                          ? 'bg-[#1D2440] text-white shadow-xs'
+                          : 'text-[#664422] hover:bg-[#FAF7F2]'
+                      }`}
+                    >
+                      <Users className="w-3.5 h-3.5" />
+                      <span>Gia Đình (2–4 Người)</span>
+                    </button>
                   </div>
 
-                  {/* Real-time Harmony Score & Quick Summary (5 Cols) */}
-                  <div className="md:col-span-5 flex flex-col justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleSaveCompare}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#FAF7F2] hover:bg-[#EFE8DC] text-[#1D2440] border border-[#DECDB8] transition"
+                    >
+                      <BookmarkPlus className="w-3.5 h-3.5 text-[#8B1A1A]" />
+                      <span>Lưu so sánh</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsCompareOpen(true)}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#FAF3DD] hover:bg-[#F3E5B8] text-[#664422] border border-[#C9A227]/60 transition"
+                    >
+                      <Layers className="w-3.5 h-3.5 text-[#C9A227]" />
+                      <span>So sánh ({savedOutfits.length}/3)</span>
+                    </button>
+                  </div>
+                </div>
+
+                {groupMode === 'family' ? (
+                  <FamilyStageView
+                    members={familyMembers}
+                    activeIndex={activeMemberIndex}
+                    onSelectMember={setActiveMemberIndex}
+                    onAddMember={addFamilyMember}
+                    onRemoveMember={removeFamilyMember}
+                  />
+                ) : null}
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
+                  {groupMode === 'single' && (
+                    <div className="md:col-span-7">
+                      <AvatarStage
+                        garment={selectedGarment}
+                        outerColor={outerColor}
+                        innerColor={innerColor}
+                        bottomColor={bottomColor}
+                        beltColor={beltColor}
+                        headAccessory={headAccessory}
+                        handAccessory={handAccessory}
+                        footAccessory={footAccessory}
+                        gender={outfit.gender}
+                        onGenderChange={(val) => setField('gender', val)}
+                      />
+                    </div>
+                  )}
+
+                  <div className={`${groupMode === 'family' ? 'md:col-span-12' : 'md:col-span-5'} flex flex-col justify-between gap-3`}>
                     <HarmonyGauge harmonyResult={harmonyResult} />
 
-                    {/* Culture 60s Callout Card */}
                     <div className="bg-[#FAF7F2] rounded-2xl border border-[#E0D5C1] p-4 shadow-sm space-y-2.5">
                       <span className="text-[10px] font-bold uppercase tracking-wider text-[#8C5E3B] block">
                         Góc nhìn Chuyên gia Văn hóa
                       </span>
                       <h4 className="font-bold text-sm text-[#1D2440]">
-                        Ý nghĩa 5 Khuy Áo Ngũ Thân
+                        {selectedGarment.cultureCard?.title || 'Tư liệu Di sản Việt Phục'}
                       </h4>
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        Năm hạt cúc áo ngũ thân tượng trưng cho <strong>Ngũ thường</strong> (Nhân, Lễ, Nghĩa, Trí, Tín) – kim chỉ nam rèn luyện nhân cách của người Việt xưa.
+                      <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
+                        {selectedGarment.philosophy}
                       </p>
                       <button
                         onClick={() => setIsCultureCardOpen(true)}
                         className="text-xs font-bold text-[#8B1A1A] hover:underline flex items-center gap-1"
                       >
-                        Đọc tiếp tư liệu di sản →
+                        Đọc tư liệu &amp; Làm Quiz nhận huy hiệu →
                       </button>
                     </div>
 
-                    {/* Quick Action Buttons: Share Link & Export Lookbook */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <button
                         onClick={handleCopyShareLink}
@@ -264,14 +396,33 @@ export function App() {
         </>
       )}
 
-      {/* 4. Footer */}
       <Footer onNavigateRoadmap={() => setCurrentView('roadmap')} />
 
-      {/* 5. Modals */}
       <CultureCardModal
         isOpen={isCultureCardOpen}
         onClose={() => setIsCultureCardOpen(false)}
         garment={selectedGarment}
+        onOpenQuiz={() => {
+          setIsCultureCardOpen(false);
+          setIsQuizOpen(true);
+        }}
+      />
+
+      <QuizModal
+        isOpen={isQuizOpen}
+        onClose={() => setIsQuizOpen(false)}
+        garment={selectedGarment}
+        earnedBadges={earnedBadges}
+        onEarnBadge={earnBadge}
+      />
+
+      <CompareDrawer
+        isOpen={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+        savedOutfits={savedOutfits}
+        onSelectOutfit={(picked) => applyPartial(picked)}
+        onRemoveOutfit={removeSavedOutfit}
+        onClearAll={clearSavedOutfits}
       />
 
       <LookbookModal
@@ -285,6 +436,9 @@ export function App() {
         handAccessory={handAccessory}
         footAccessory={footAccessory}
         harmonyResult={harmonyResult}
+        creativityLabel={creativity.label}
+        familyMembers={familyMembers}
+        groupMode={groupMode}
         shareUrl={getShareUrl()}
       />
 
@@ -294,7 +448,6 @@ export function App() {
         selectedGarment={selectedGarment}
       />
 
-      {/* 6. 3-Minute Guided Auto Tour Overlay & Teleprompter */}
       <AutoDemoTour
         isActive={isTourActive}
         onClose={() => setIsTourActive(false)}

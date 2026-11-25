@@ -1,7 +1,7 @@
 import React from 'react';
-import { X, BookOpen, Scroll, Sparkles, ShieldCheck } from 'lucide-react';
+import { X, BookOpen, Scroll, Sparkles, ShieldCheck, Award } from 'lucide-react';
 
-export function CultureCardModal({ isOpen, onClose, garment }) {
+export function CultureCardModal({ isOpen, onClose, garment, onOpenQuiz }) {
   if (!isOpen || !garment) return null;
 
   const card = garment.cultureCard;
@@ -79,16 +79,28 @@ export function CultureCardModal({ isOpen, onClose, garment }) {
         </div>
 
         {/* Footer */}
-        <div className="bg-[#FAF3DD] p-4 border-t border-[#DECDB8] flex items-center justify-between">
+        <div className="bg-[#FAF3DD] p-4 border-t border-[#DECDB8] flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs text-gray-500 italic">
             Trích xuất từ công trình nghiên cứu “Ngàn năm áo mũ” & Bảo tàng Lịch sử Quốc gia.
           </span>
-          <button
-            onClick={onClose}
-            className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#8B1A1A] hover:bg-[#A62626] transition shadow"
-          >
-            Đã Hiểu & Tiếp Tục Phối Đồ
-          </button>
+          <div className="flex items-center gap-2">
+            {onOpenQuiz && (
+              <button
+                type="button"
+                onClick={onOpenQuiz}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[#1D2440] bg-white hover:bg-[#FAF7F2] border border-[#C9A227] transition shadow-xs"
+              >
+                <Award className="w-4 h-4 text-[#C9A227]" />
+                <span>Kiểm tra hiểu biết (3 câu)</span>
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#8B1A1A] hover:bg-[#A62626] transition shadow"
+            >
+              Đã Hiểu & Tiếp Tục Phối Đồ
+            </button>
+          </div>
         </div>
       </div>
     </div>

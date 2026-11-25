@@ -1,11 +1,30 @@
-import React, { useState } from 'react';
-import { Calendar, Shirt, Palette, Sparkles, CloudSun, Check } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Shirt, Palette, Sparkles, CloudSun, Check, MapPin } from 'lucide-react';
 import { EVENTS_DATA } from '../data/eventsData';
 import { GARMENTS_DATA } from '../data/garmentsData';
 import { COLOR_PALETTE } from '../data/colorsData';
 import { ACCESSORIES_DATA } from '../data/accessoriesData';
+import { STYLES_DATA } from '../data/stylesData';
+import { HERITAGE_CITIES, fetchOpenMeteoWeather, weatherAdvice } from '../services/weather';
+
+const REGION_FILTERS = [
+  { id: 'all', label: 'Tất cả' },
+  { id: 'bac', label: 'Bắc Bộ' },
+  { id: 'trung', label: 'Trung Bộ' },
+  { id: 'nam', label: 'Nam Bộ' }
+];
+
+function matchesRegion(item, region) {
+  if (!region || region === 'all') return true;
+  if (!item.regions || item.regions.length === 0) return true;
+  return item.regions.includes('toan-quoc') || item.regions.includes(region);
+}
 
 export function StudioControls({
+  regionFilter = 'all',
+  onRegionFilterChange,
+  selectedStyleId = '',
+  onSelectStyle,
   selectedEventId,
   onSelectEvent,
   selectedGarmentId,
@@ -23,20 +42,77 @@ export function StudioControls({
   selectedFootId,
   onSelectFoot
 }) {
-  const [activeTab, setActiveTab] = useState('garment'); // 'event' | 'garment' | 'color' | 'accessories'
+  const [activeTab, setActiveTab] = useState('garment');
+  const [cityId, setCityId] = useState('hanoi');
+  const [weatherDate, setWeatherDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [liveWeather, setLiveWeather] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
 
-  const currentEvent = EVENTS_DATA.find(e => e.id === selectedEventId) || EVENTS_DATA[0];
+  const currentEvent = EVENTS_DATA.find((e) => e.id === selectedEventId) || EVENTS_DATA[0];
+  const currentGarment = GARMENTS_DATA.find((g) => g.id === selectedGarmentId) || GARMENTS_DATA[0];
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.resolve().then(() => {
+      if (!cancelled) setWeatherLoading(true);
+    });
+    fetchOpenMeteoWeather(cityId, weatherDate)
+      .then((data) => {
+        if (!cancelled) setLiveWeather(data);
+      })
+      .catch(() => {
+        if (!cancelled) setLiveWeather(null);
+      })
+      .finally(() => {
+        if (!cancelled) setWeatherLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [cityId, weatherDate]);
+
+  const filteredEvents = EVENTS_DATA.filter((e) => matchesRegion(e, regionFilter));
+  const filteredGarments = GARMENTS_DATA.filter((g) => matchesRegion(g, regionFilter));
+  const filteredHead = ACCESSORIES_DATA.head.filter((a) => matchesRegion(a, regionFilter));
+  const filteredHand = ACCESSORIES_DATA.hand.filter((a) => matchesRegion(a, regionFilter));
+  const filteredFoot = ACCESSORIES_DATA.foot.filter((a) => matchesRegion(a, regionFilter));
+
+  const advice = liveWeather ? weatherAdvice(liveWeather, currentGarment) : null;
 
   return (
     <div className="bg-white rounded-2xl border border-[#DECDB8] shadow-md overflow-hidden flex flex-col">
+      {/* Region Filter Strip (Bắc - Trung - Nam) */}
+      {onRegionFilterChange && (
+        <div className="px-3 py-2 bg-[#F4EFE6] border-b border-[#E6DBCE] flex items-center justify-between gap-2 flex-wrap">
+          <span className="text-[11px] font-bold text-[#664422] flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 text-[#8B1A1A]" />
+            Vùng miền:
+          </span>
+          <div className="flex items-center gap-1 flex-wrap">
+            {REGION_FILTERS.map((r) => (
+              <button
+                key={r.id}
+                type="button"
+                onClick={() => onRegionFilterChange(r.id)}
+                className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition ${
+                  regionFilter === r.id
+                    ? 'bg-[#8B1A1A] text-white shadow-xs'
+                    : 'bg-white text-[#664422] border border-[#DECDB8] hover:border-[#8B1A1A]/50'
+                }`}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Tab Navigation Headers */}
       <div className="flex border-b border-[#E6DBCE] bg-[#FAF7F2] p-1.5 gap-1 overflow-x-auto text-xs font-bold">
         <button
           onClick={() => setActiveTab('event')}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition shrink-0 ${
-            activeTab === 'event'
-              ? 'bg-[#8B1A1A] text-white shadow-sm'
-              : 'text-[#664422] hover:bg-black/5'
+            activeTab === 'event' ? 'bg-[#8B1A1A] text-white shadow-sm' : 'text-[#664422] hover:bg-black/5'
           }`}
         >
           <Calendar className="w-3.5 h-3.5" />
@@ -46,9 +122,7 @@ export function StudioControls({
         <button
           onClick={() => setActiveTab('garment')}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition shrink-0 ${
-            activeTab === 'garment'
-              ? 'bg-[#8B1A1A] text-white shadow-sm'
-              : 'text-[#664422] hover:bg-black/5'
+            activeTab === 'garment' ? 'bg-[#8B1A1A] text-white shadow-sm' : 'text-[#664422] hover:bg-black/5'
           }`}
         >
           <Shirt className="w-3.5 h-3.5" />
@@ -58,9 +132,7 @@ export function StudioControls({
         <button
           onClick={() => setActiveTab('color')}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition shrink-0 ${
-            activeTab === 'color'
-              ? 'bg-[#8B1A1A] text-white shadow-sm'
-              : 'text-[#664422] hover:bg-black/5'
+            activeTab === 'color' ? 'bg-[#8B1A1A] text-white shadow-sm' : 'text-[#664422] hover:bg-black/5'
           }`}
         >
           <Palette className="w-3.5 h-3.5" />
@@ -70,9 +142,7 @@ export function StudioControls({
         <button
           onClick={() => setActiveTab('accessories')}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition shrink-0 ${
-            activeTab === 'accessories'
-              ? 'bg-[#8B1A1A] text-white shadow-sm'
-              : 'text-[#664422] hover:bg-black/5'
+            activeTab === 'accessories' ? 'bg-[#8B1A1A] text-white shadow-sm' : 'text-[#664422] hover:bg-black/5'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
@@ -80,27 +150,54 @@ export function StudioControls({
         </button>
       </div>
 
-      {/* Tab 1: Event & Weather Context */}
+      {/* Tab 1: Event & Live Weather Context */}
       {activeTab === 'event' && (
-        <div className="p-4 space-y-4">
-          {/* Weather Callout */}
-          <div className="bg-[#FAF3DD]/80 rounded-xl p-3 border border-[#E8DFC8] flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <CloudSun className="w-4 h-4 text-[#C9A227]" />
-              <div>
-                <span className="font-bold text-[#664422]">
-                  Dự báo sự kiện: {currentEvent.weather.temp} – {currentEvent.weather.desc}
+        <div className="p-4 space-y-3">
+          {/* Weather Callout + Open-Meteo Selector */}
+          <div className="bg-[#FAF3DD]/80 rounded-xl p-3 border border-[#E8DFC8] space-y-2 text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 font-bold text-[#664422]">
+                <CloudSun className="w-4 h-4 text-[#C9A227]" />
+                <span>
+                  {liveWeather
+                    ? `${liveWeather.cityName}: ${liveWeather.tempText} – ${liveWeather.desc}`
+                    : `${currentEvent.weather.temp} – ${currentEvent.weather.desc}`}
                 </span>
-                <p className="text-[11px] text-[#8C5E3B]">{currentEvent.weather.advice}</p>
               </div>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-white text-[#664422] border border-[#DECDB8]">
+                {weatherLoading ? 'Đang tải...' : liveWeather ? 'Open-Meteo Live' : 'Gợi ý mặc định'}
+              </span>
             </div>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-white text-[#664422] border border-[#DECDB8]">
-              Thời tiết gợi ý
-            </span>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                aria-label="Chọn thành phố dự báo thời tiết"
+                value={cityId}
+                onChange={(e) => setCityId(e.target.value)}
+                className="px-2 py-1 rounded-lg bg-white border border-[#DECDB8] text-[11px] font-medium text-[#1D2440]"
+              >
+                {HERITAGE_CITIES.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="date"
+                aria-label="Chọn ngày sự kiện"
+                value={weatherDate}
+                onChange={(e) => setWeatherDate(e.target.value)}
+                className="px-2 py-1 rounded-lg bg-white border border-[#DECDB8] text-[11px] text-[#1D2440]"
+              />
+            </div>
+
+            <p className="text-[11px] text-[#8C5E3B]">
+              {advice ? `${advice.note} Chất liệu khuyên dùng: ${advice.fabric}.` : currentEvent.weather.advice}
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
-            {EVENTS_DATA.map(event => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[360px] overflow-y-auto pr-1">
+            {filteredEvents.map((event) => {
               const isSelected = event.id === selectedEventId;
               return (
                 <button
@@ -119,9 +216,13 @@ export function StudioControls({
                       </span>
                       <h5 className="font-bold text-sm text-[#1D2440]">{event.name}</h5>
                     </div>
-                    {isSelected && <Check className="w-4 h-4 text-[#8B1A1A] shrink-0" />}
+                    {isSelected && (
+                      <div className="w-4 h-4 rounded-full bg-[#8B1A1A] text-white flex items-center justify-center shrink-0">
+                        <Check className="w-2.5 h-2.5" />
+                      </div>
+                    )}
                   </div>
-                  <p className="text-[11px] text-gray-600 mt-1 line-clamp-2">{event.etiquette}</p>
+                  <p className="text-[11px] text-gray-500 mt-1.5 line-clamp-2">{event.etiquette}</p>
                 </button>
               );
             })}
@@ -129,33 +230,59 @@ export function StudioControls({
         </div>
       )}
 
-      {/* Tab 2: Heritage Garment Selector */}
+      {/* Tab 2: Garment & Style Selection */}
       {activeTab === 'garment' && (
         <div className="p-4 space-y-3">
-          <div className="grid grid-cols-1 gap-2.5 max-h-[420px] overflow-y-auto pr-1">
-            {GARMENTS_DATA.map(garment => {
+          {onSelectStyle && (
+            <div className="bg-[#FAF7F2] rounded-xl p-2.5 border border-[#E6DBCE] space-y-1.5">
+              <span className="text-[11px] font-bold text-[#664422] block">
+                Phong cách phối (tùy chọn, +6đ Harmony):
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {STYLES_DATA.map((st) => {
+                  const active = selectedStyleId === st.id;
+                  return (
+                    <button
+                      key={st.id}
+                      type="button"
+                      onClick={() => onSelectStyle(active ? '' : st.id)}
+                      title={st.description}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition border ${
+                        active
+                          ? 'bg-[#1D2440] text-white border-[#1D2440]'
+                          : 'bg-white text-[#664422] border-[#DECDB8] hover:border-[#8B1A1A]'
+                      }`}
+                    >
+                      {st.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+            {filteredGarments.map((garment) => {
               const isSelected = garment.id === selectedGarmentId;
               return (
                 <button
                   key={garment.id}
                   onClick={() => onSelectGarment(garment.id)}
-                  className={`p-3.5 rounded-xl border text-left transition flex items-start justify-between gap-3 ${
+                  className={`w-full p-3.5 rounded-xl border text-left transition flex items-start gap-3 ${
                     isSelected
-                      ? 'border-[#8B1A1A] bg-[#8B1A1A]/5 ring-2 ring-[#8B1A1A]/60 shadow-sm'
+                      ? 'border-[#8B1A1A] bg-[#8B1A1A]/5 ring-1 ring-[#8B1A1A]'
                       : 'border-[#E6DBCE] hover:border-[#8B1A1A]/40 bg-white'
                   }`}
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center justify-between gap-2">
                       <h5 className="font-bold text-sm text-[#1D2440]">{garment.name}</h5>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFE8DC] text-[#664422]">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFE8DC] text-[#664422] shrink-0">
                         {garment.era.split(' ')[0]}
                       </span>
                     </div>
                     <p className="text-xs text-gray-600 leading-snug">{garment.silhouette}</p>
-                    <p className="text-[11px] text-[#8C5E3B] font-medium pt-0.5">
-                      💡 {garment.philosophy}
-                    </p>
+                    <p className="text-[11px] text-[#8C5E3B] font-medium pt-0.5">💡 {garment.philosophy}</p>
                   </div>
                   {isSelected && (
                     <div className="w-5 h-5 rounded-full bg-[#8B1A1A] text-white flex items-center justify-center shrink-0">
@@ -172,18 +299,17 @@ export function StudioControls({
       {/* Tab 3: Color Palette Picker */}
       {activeTab === 'color' && (
         <div className="p-4 space-y-4">
-          {/* 1. Outer Color (Áo chính) */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold uppercase tracking-wider text-gray-700">
                 1. Sắc áo chính (Outer Garment)
               </span>
               <span className="text-xs font-medium text-[#8B1A1A]">
-                {COLOR_PALETTE.find(c => c.id === selectedOuterColorId)?.name}
+                {COLOR_PALETTE.find((c) => c.id === selectedOuterColorId)?.name}
               </span>
             </div>
             <div className="grid grid-cols-5 gap-2">
-              {COLOR_PALETTE.map(color => {
+              {COLOR_PALETTE.map((color) => {
                 const isSelected = color.id === selectedOuterColorId;
                 return (
                   <button
@@ -195,9 +321,7 @@ export function StudioControls({
                     style={{ backgroundColor: color.hex }}
                     title={`${color.name} (Hành ${color.element})`}
                   >
-                    {isSelected && (
-                      <Check className={`w-4 h-4 ${color.textDark ? 'text-black' : 'text-white'}`} />
-                    )}
+                    {isSelected && <Check className={`w-4 h-4 ${color.textDark ? 'text-black' : 'text-white'}`} />}
                     <span className={`text-[9px] font-bold absolute bottom-0.5 ${color.textDark ? 'text-black/80' : 'text-white/80'}`}>
                       {color.element}
                     </span>
@@ -207,18 +331,17 @@ export function StudioControls({
             </div>
           </div>
 
-          {/* 2. Bottom Color (Quần suông / Váy lĩnh) */}
           <div className="pt-2 border-t border-[#E6DBCE]">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold uppercase tracking-wider text-gray-700">
                 2. Màu Quần lụa / Chân váy
               </span>
               <span className="text-xs font-medium text-[#8B1A1A]">
-                {COLOR_PALETTE.find(c => c.id === selectedBottomColorId)?.name}
+                {COLOR_PALETTE.find((c) => c.id === selectedBottomColorId)?.name}
               </span>
             </div>
             <div className="grid grid-cols-5 gap-2">
-              {COLOR_PALETTE.map(color => {
+              {COLOR_PALETTE.map((color) => {
                 const isSelected = color.id === selectedBottomColorId;
                 return (
                   <button
@@ -230,27 +353,24 @@ export function StudioControls({
                     style={{ backgroundColor: color.hex }}
                     title={`${color.name} (Hành ${color.element})`}
                   >
-                    {isSelected && (
-                      <Check className={`w-3.5 h-3.5 ${color.textDark ? 'text-black' : 'text-white'}`} />
-                    )}
+                    {isSelected && <Check className={`w-3.5 h-3.5 ${color.textDark ? 'text-black' : 'text-white'}`} />}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* 3. Belt Color (Dải thắt lưng / Khăn bao) */}
           <div className="pt-2 border-t border-[#E6DBCE]">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold uppercase tracking-wider text-gray-700">
                 3. Thắt lưng / Khăn bao ngũ sắc
               </span>
               <span className="text-xs font-medium text-[#8B1A1A]">
-                {COLOR_PALETTE.find(c => c.id === selectedBeltColorId)?.name}
+                {COLOR_PALETTE.find((c) => c.id === selectedBeltColorId)?.name}
               </span>
             </div>
             <div className="grid grid-cols-5 gap-2">
-              {COLOR_PALETTE.map(color => {
+              {COLOR_PALETTE.map((color) => {
                 const isSelected = color.id === selectedBeltColorId;
                 return (
                   <button
@@ -262,9 +382,7 @@ export function StudioControls({
                     style={{ backgroundColor: color.hex }}
                     title={color.name}
                   >
-                    {isSelected && (
-                      <Check className={`w-3 h-3 ${color.textDark ? 'text-black' : 'text-white'}`} />
-                    )}
+                    {isSelected && <Check className={`w-3 h-3 ${color.textDark ? 'text-black' : 'text-white'}`} />}
                   </button>
                 );
               })}
@@ -276,13 +394,12 @@ export function StudioControls({
       {/* Tab 4: Accessories Wardrobe */}
       {activeTab === 'accessories' && (
         <div className="p-4 space-y-4 max-h-[420px] overflow-y-auto">
-          {/* 1. Mũ / Phụ kiện đầu */}
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-gray-700 block mb-2">
-              Mũ & Phụ Kiện Đầu
+              Mũ &amp; Phụ Kiện Đầu
             </span>
             <div className="grid grid-cols-2 gap-2">
-              {ACCESSORIES_DATA.head.map(item => {
+              {filteredHead.map((item) => {
                 const isSelected = item.id === selectedHeadId;
                 return (
                   <button
@@ -301,13 +418,12 @@ export function StudioControls({
             </div>
           </div>
 
-          {/* 2. Cầm tay */}
           <div className="pt-2 border-t border-[#E6DBCE]">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-700 block mb-2">
               Phụ Kiện Cầm Tay
             </span>
             <div className="grid grid-cols-2 gap-2">
-              {ACCESSORIES_DATA.hand.map(item => {
+              {filteredHand.map((item) => {
                 const isSelected = item.id === selectedHandId;
                 return (
                   <button
@@ -326,13 +442,12 @@ export function StudioControls({
             </div>
           </div>
 
-          {/* 3. Giày dép */}
           <div className="pt-2 border-t border-[#E6DBCE]">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-700 block mb-2">
-              Giày & Guốc (Bắt trend Remix)
+              Giày &amp; Guốc (Bắt trend Remix)
             </span>
             <div className="grid grid-cols-2 gap-2">
-              {ACCESSORIES_DATA.foot.map(item => {
+              {filteredFoot.map((item) => {
                 const isSelected = item.id === selectedFootId;
                 return (
                   <button
@@ -355,4 +470,3 @@ export function StudioControls({
     </div>
   );
 }
-

@@ -59,19 +59,28 @@ describe('cultureEngine', () => {
 
   it('triggers green rules and falls back to default-safe when no rule matches', () => {
     const greenNhatBinh = evaluateCultureGuard(
-      makeState({ eventId: 'dam-cuoi', garmentId: 'nhat-binh', outerColorId: 'hoang-tho', footAccessoryId: 'guoc-moc' }),
+      makeState({
+        eventId: 'dam-cuoi',
+        garmentId: 'nhat-binh',
+        outerColorId: 'hoang-tho',
+        headAccessoryId: 'tram-cai-sen',
+        handAccessoryId: 'quat-lua',
+        footAccessoryId: 'guoc-moc'
+      }),
       colorsMap
     );
     expect(greenNhatBinh.status).toBe('green');
 
     const safeDefault = evaluateCultureGuard(
       makeState({
-        eventId: 'cong-so-sang-tao',
-        garmentId: 'ao-dai',
-        outerColorId: 'luc-bao',
+        eventId: 'su-kien-hoc-duong',
+        garmentId: 'ngu-than',
+        outerColorId: 'lam-cham',
         bottomColorId: 'trang-su',
+        beltColorId: 'lam-cham',
         headAccessoryId: 'khong-mu',
-        footAccessoryId: 'giay-bup-be'
+        handAccessoryId: 'khong-cam-tay',
+        footAccessoryId: 'guoc-moc'
       }),
       colorsMap
     );

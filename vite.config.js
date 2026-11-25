@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 function localApiMiddlewarePlugin() {
   return {
@@ -55,7 +56,45 @@ function localApiMiddlewarePlugin() {
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
-  plugins: [tailwindcss(), react(), localApiMiddlewarePlugin()],
+  plugins: [
+    tailwindcss(),
+    react(),
+    localApiMiddlewarePlugin(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg', 'audio/*.mp3'],
+      manifest: {
+        name: 'Việt Phục Remix – Phối Đồ Di Sản Thông Minh',
+        short_name: 'Việt Phục Remix',
+        description: 'Nền tảng phối đồ di sản thông minh đa thế hệ – HaUI Startup Mindset 2026',
+        theme_color: '#8B1A1A',
+        background_color: '#F4EFE6',
+        display: 'standalone',
+        lang: 'vi',
+        icons: [
+          {
+            src: './pwa-192x192.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml'
+          },
+          {
+            src: './pwa-512x512.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml'
+          }
+        ]
+      },
+      workbox: {
+        navigateFallbackDenylist: [/^\/api\//],
+        runtimeCaching: [
+          {
+            urlPattern: /^\/api\//,
+            handler: 'NetworkOnly'
+          }
+        ]
+      }
+    })
+  ],
   build: {
     rollupOptions: {
       output: {

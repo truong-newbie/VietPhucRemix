@@ -94,7 +94,7 @@ export function StudioControls({
                 key={r.id}
                 type="button"
                 onClick={() => onRegionFilterChange(r.id)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition ${
+                className={`min-h-[32px] px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition ${
                   regionFilter === r.id
                     ? 'bg-[#8B1A1A] text-white shadow-xs'
                     : 'bg-white text-[#664422] border border-[#DECDB8] hover:border-[#8B1A1A]/50'
@@ -108,44 +108,44 @@ export function StudioControls({
       )}
 
       {/* Tab Navigation Headers */}
-      <div className="flex border-b border-[#E6DBCE] bg-[#FAF7F2] p-1.5 gap-1 overflow-x-auto text-xs font-bold">
+      <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-[#E6DBCE] bg-[#FAF7F2] p-1.5 gap-1.5 text-xs font-bold">
         <button
           onClick={() => setActiveTab('event')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition shrink-0 ${
+          className={`min-h-[40px] flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl whitespace-nowrap transition ${
             activeTab === 'event' ? 'bg-[#8B1A1A] text-white shadow-sm' : 'text-[#664422] hover:bg-black/5'
           }`}
         >
-          <Calendar className="w-3.5 h-3.5" />
+          <Calendar className="w-3.5 h-3.5 shrink-0" />
           <span>1. Sự Kiện</span>
         </button>
 
         <button
           onClick={() => setActiveTab('garment')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition shrink-0 ${
+          className={`min-h-[40px] flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl whitespace-nowrap transition ${
             activeTab === 'garment' ? 'bg-[#8B1A1A] text-white shadow-sm' : 'text-[#664422] hover:bg-black/5'
           }`}
         >
-          <Shirt className="w-3.5 h-3.5" />
+          <Shirt className="w-3.5 h-3.5 shrink-0" />
           <span>2. Cổ Phục</span>
         </button>
 
         <button
           onClick={() => setActiveTab('color')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition shrink-0 ${
+          className={`min-h-[40px] flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl whitespace-nowrap transition ${
             activeTab === 'color' ? 'bg-[#8B1A1A] text-white shadow-sm' : 'text-[#664422] hover:bg-black/5'
           }`}
         >
-          <Palette className="w-3.5 h-3.5" />
+          <Palette className="w-3.5 h-3.5 shrink-0" />
           <span>3. Màu Sắc</span>
         </button>
 
         <button
           onClick={() => setActiveTab('accessories')}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl transition shrink-0 ${
+          className={`min-h-[40px] flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl whitespace-nowrap transition ${
             activeTab === 'accessories' ? 'bg-[#8B1A1A] text-white shadow-sm' : 'text-[#664422] hover:bg-black/5'
           }`}
         >
-          <Sparkles className="w-3.5 h-3.5" />
+          <Sparkles className="w-3.5 h-3.5 shrink-0" />
           <span>4. Phụ Kiện</span>
         </button>
       </div>
@@ -277,12 +277,12 @@ export function StudioControls({
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between gap-2">
                       <h5 className="font-bold text-sm text-[#1D2440]">{garment.name}</h5>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#EFE8DC] text-[#664422] shrink-0">
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#EFE8DC] text-[#664422] whitespace-nowrap shrink-0">
                         {garment.era.split(' ')[0]}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600 leading-snug">{garment.silhouette}</p>
-                    <p className="text-[11px] text-[#8C5E3B] font-medium pt-0.5">💡 {garment.philosophy}</p>
+                    <p className="text-xs text-[#574C43] leading-snug line-clamp-2">{garment.silhouette}</p>
+                    <p className="text-[11px] text-[#8C5E3B] font-medium pt-0.5 line-clamp-1">💡 {garment.philosophy}</p>
                   </div>
                   {isSelected && (
                     <div className="w-5 h-5 rounded-full bg-[#8B1A1A] text-white flex items-center justify-center shrink-0">

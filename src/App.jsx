@@ -272,7 +272,7 @@ export function App() {
         <>
           <HeroSection onApplyScenario={handleApplyScenario} />
 
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-24">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* Left Column: 4-Tab Studio Controls + 3 Smart Suggestions */}
               <div className="lg:col-span-5 space-y-4 order-2 lg:order-1">

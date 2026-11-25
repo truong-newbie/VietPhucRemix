@@ -54,40 +54,40 @@ export function Navbar({
         </button>
 
         {/* 2. Center Primary View Switcher (Segmented Control - Desktop & Tablet) */}
-        <div className="hidden md:flex items-center bg-[#EFE8DC] p-1 rounded-xl border border-[#DECDB8] shadow-inner">
+        <div className="hidden md:flex items-center bg-[#EFE8DC] p-1 rounded-xl border border-[#DECDB8] shadow-inner shrink-0">
           <button
             onClick={() => onViewChange('studio')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 transition-all ${
               currentView === 'studio'
                 ? 'bg-white text-[#8B1A1A] shadow-xs font-bold'
                 : 'text-[#664422] hover:text-black'
             }`}
           >
-            <Palette className="w-3.5 h-3.5 text-[#8B1A1A]" />
+            <Palette className="w-3.5 h-3.5 text-[#8B1A1A] shrink-0" />
             <span>Phòng Phối Đồ</span>
           </button>
           <button
             onClick={() => onViewChange('roadmap')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap shrink-0 transition-all ${
               currentView === 'roadmap'
                 ? 'bg-[#1D2440] text-white shadow-xs font-bold'
                 : 'text-[#664422] hover:text-black'
             }`}
           >
-            <Compass className="w-3.5 h-3.5 text-[#F9D423]" />
+            <Compass className="w-3.5 h-3.5 text-[#F9D423] shrink-0" />
             <span>Lộ Trình &amp; Báo Cáo</span>
           </button>
         </div>
 
         {/* 3. Right Action Tools (Streamlined & Clean) */}
-        <div className="hidden md:flex items-center gap-2 shrink-0">
+        <div className="hidden md:flex items-center gap-1.5 lg:gap-2 shrink-0">
           {currentView === 'studio' && (
             <>
               {/* Audience Mode Pill Toggle */}
-              <div className="flex items-center bg-[#EFE8DC] p-0.5 rounded-lg border border-[#DECDB8] text-xs">
+              <div className="flex items-center bg-[#EFE8DC] p-0.5 rounded-lg border border-[#DECDB8] text-xs shrink-0">
                 <button
                   onClick={() => onModeChange('genz')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold whitespace-nowrap transition-all ${
                     mode === 'genz'
                       ? 'bg-[#8B1A1A] text-white shadow-xs'
                       : 'text-[#664422] hover:text-black'
@@ -98,7 +98,7 @@ export function Navbar({
                 </button>
                 <button
                   onClick={() => onModeChange('family')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold whitespace-nowrap transition-all ${
                     mode === 'family'
                       ? 'bg-[#1D2440] text-white shadow-xs'
                       : 'text-[#664422] hover:text-black'
@@ -112,20 +112,20 @@ export function Navbar({
               {/* Utility Icon Buttons */}
               <button
                 onClick={onOpenCultureCard}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#7A6B5D] hover:text-[#8B1A1A] hover:bg-black/5 transition"
+                className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium text-[#574C43] hover:text-[#8B1A1A] hover:bg-black/5 whitespace-nowrap shrink-0 transition"
                 title="Đọc thông tin nguồn gốc di sản (Thẻ văn hóa 60s)"
               >
-                <BookOpen className="w-3.5 h-3.5 text-[#8B1A1A]" />
-                <span className="hidden lg:inline text-[11px]">Tư liệu</span>
+                <BookOpen className="w-3.5 h-3.5 text-[#8B1A1A] shrink-0" />
+                <span className="hidden xl:inline text-[11px]">Tư liệu</span>
               </button>
 
               {onOpenQuiz && (
                 <button
                   onClick={onOpenQuiz}
-                  className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold bg-[#FAF3DD] text-[#8C5E3B] border border-[#E2D2B5] hover:border-[#C9A227] transition"
+                  className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-bold bg-[#FAF3DD] text-[#8C5E3B] border border-[#E2D2B5] hover:border-[#C9A227] whitespace-nowrap shrink-0 transition"
                   title="Làm Mini-Quiz để sưu tầm đủ huy hiệu 7 dòng cổ phục"
                 >
-                  <Award className="w-3.5 h-3.5 text-[#C9A227]" />
+                  <Award className="w-3.5 h-3.5 text-[#C9A227] shrink-0" />
                   <span>{badgeCount}/{totalBadges}</span>
                 </button>
               )}
@@ -134,19 +134,19 @@ export function Navbar({
                 auth.user ? (
                   <button
                     onClick={auth.signOut}
-                    className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition"
+                    className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 whitespace-nowrap shrink-0 transition"
                     title={`Đang đồng bộ: ${auth.user.email} (Bấm để đăng xuất)`}
                   >
-                    <LogOut className="w-3 h-3" />
+                    <LogOut className="w-3.5 h-3.5 shrink-0" />
                     <span className="hidden xl:inline">Đã đồng bộ</span>
                   </button>
                 ) : (
                   <button
                     onClick={auth.signInWithGoogle}
-                    className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold bg-white text-[#1D2440] border border-[#DECDB8] hover:border-[#8B1A1A] transition"
+                    className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[11px] font-semibold bg-white text-[#1D2440] border border-[#DECDB8] hover:border-[#8B1A1A] whitespace-nowrap shrink-0 transition"
                     title="Đăng nhập Google để đồng bộ tủ đồ (tùy chọn)"
                   >
-                    <LogIn className="w-3 h-3 text-[#8B1A1A]" />
+                    <LogIn className="w-3.5 h-3.5 text-[#8B1A1A] shrink-0" />
                     <span className="hidden xl:inline">Đồng bộ</span>
                   </button>
                 )
@@ -154,30 +154,30 @@ export function Navbar({
 
               <button
                 onClick={onOpenPartners}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium text-[#7A6B5D] hover:text-[#1F6F5C] hover:bg-black/5 transition"
+                className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium text-[#574C43] hover:text-[#1F6F5C] hover:bg-black/5 whitespace-nowrap shrink-0 transition"
                 title="Mạng lưới tiệm thuê & may đo đối tác"
               >
-                <Store className="w-3.5 h-3.5 text-[#1F6F5C]" />
-                <span className="hidden lg:inline text-[11px]">Tiệm thuê</span>
+                <Store className="w-3.5 h-3.5 text-[#1F6F5C] shrink-0" />
+                <span className="hidden xl:inline text-[11px]">Tiệm thuê</span>
               </button>
 
               {/* Auto Demo 3-Minute Tour Button */}
               <button
                 onClick={onStartTour}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-[#C9A227] to-[#8C5E3B] hover:brightness-110 transition shadow-xs"
+                className="flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-[#C9A227] to-[#8C5E3B] hover:brightness-110 whitespace-nowrap shrink-0 transition shadow-xs"
                 title="Bật chế độ tự động diễn hoạt và thuyết trình 3 phút"
               >
-                <Play className="w-3.5 h-3.5 fill-white" />
-                <span className="hidden sm:inline">Tự Động Demo (3p)</span>
-                <span className="sm:hidden">Demo 3p</span>
+                <Play className="w-3.5 h-3.5 fill-white shrink-0" />
+                <span className="hidden xl:inline">Tự Động Demo (3p)</span>
+                <span className="xl:hidden">Demo 3p</span>
               </button>
 
               {/* Primary CTA Button */}
               <button
                 onClick={onOpenLookbook}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-[#8B1A1A] to-[#A62626] hover:brightness-110 transition shadow-xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-[#8B1A1A] to-[#A62626] hover:brightness-110 whitespace-nowrap shrink-0 transition shadow-xs"
               >
-                <Download className="w-3.5 h-3.5 text-[#F9D423]" />
+                <Download className="w-3.5 h-3.5 text-[#F9D423] shrink-0" />
                 <span>Xuất Lookbook</span>
               </button>
             </>
@@ -186,9 +186,9 @@ export function Navbar({
           {currentView === 'roadmap' && (
             <button
               onClick={() => onViewChange('studio')}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-[#8B1A1A] hover:bg-[#A62626] transition shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-[#8B1A1A] hover:bg-[#A62626] whitespace-nowrap shrink-0 transition shadow-xs"
             >
-              <Palette className="w-3.5 h-3.5 text-[#F9D423]" />
+              <Palette className="w-3.5 h-3.5 text-[#F9D423] shrink-0" />
               <span>Vào Thử Đồ</span>
             </button>
           )}
@@ -199,14 +199,14 @@ export function Navbar({
           {currentView === 'studio' && (
             <button
               onClick={onOpenLookbook}
-              className="px-2.5 py-1 rounded-lg text-xs font-bold text-white bg-[#8B1A1A] shadow-xs"
+              className="min-h-[40px] px-3 py-2 rounded-xl text-xs font-bold text-white bg-[#8B1A1A] shadow-xs whitespace-nowrap"
             >
               Lookbook
             </button>
           )}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-1.5 rounded-lg text-[#664422] hover:bg-[#EFE8DC] transition focus:outline-hidden"
+            className="w-10 h-10 flex items-center justify-center rounded-xl text-[#664422] hover:bg-[#EFE8DC] transition focus:outline-hidden"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

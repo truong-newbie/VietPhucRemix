@@ -21,7 +21,7 @@ export function HeroSection({ onApplyScenario }) {
 
           <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-[#FAF7F2] leading-snug tracking-normal">
             “Mọi người nghĩ như thế nào là một đất nước mạnh? Quân sự ư, vũ khí ư?{' '}
-            <span className="text-[#F9D423] underline decoration-[#C9A227] decoration-2 underline-offset-4">
+            <span className="text-[#F9D423] font-extrabold">
               Không, chính Văn hóa của dân tộc mới là nội lực mạnh nhất!
             </span>”
           </h1>

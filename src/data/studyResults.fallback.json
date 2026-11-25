@@ -1,0 +1,11 @@
+{
+  "sampleSize": 0,
+  "lastUpdated": "2026-11-25",
+  "note": "Chưa có dữ liệu khảo sát trực tiếp từ người dùng (?study=1). Hãy mở ?study=1 để thu thập mẫu thật.",
+  "metrics": {
+    "avgSusScore": 0,
+    "medianCompletionSec": 0,
+    "culturalImprovementPct": 0,
+    "shareRatePct": 0
+  }
+}

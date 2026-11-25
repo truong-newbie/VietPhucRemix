@@ -12,6 +12,7 @@ import {
   HeartHandshake
 } from 'lucide-react';
 import { CULTURE_RULES } from '../data/cultureRules';
+import { EvidenceSection } from './EvidenceSection';
 
 export function ProjectRoadmapPage({ onBackToStudio }) {
   return (
@@ -169,6 +170,8 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
             </div>
           </div>
         </section>
+
+        <EvidenceSection />
 
         {/* PHẦN 2: THẲNG THẮN NHÌN NHẬN HẠN CHẾ (NÓI THẬT) */}
         <section className="space-y-4">

@@ -27,6 +27,9 @@ const Stage3D = lazy(() => import('./components/stage3d/Stage3D'));
 const AdvisorAdminPage = lazy(() =>
   import('./components/AdvisorAdminPage').then((m) => ({ default: m.AdvisorAdminPage }))
 );
+const StudyModeModal = lazy(() =>
+  import('./components/StudyModeModal').then((m) => ({ default: m.StudyModeModal }))
+);
 
 import { SCENARIOS_DATA } from './data/scenariosData';
 import { GARMENTS_DATA } from './data/garmentsData';
@@ -37,6 +40,7 @@ import { useSavedOutfits } from './hooks/useSavedOutfits';
 import { useBadges } from './hooks/useBadges';
 import { useAuthSync } from './hooks/useAuthSync';
 import { classifyCreativity } from './engines/creativityClassifier';
+import { track, trackFirstCompleteOutfit, setAnalyticsTourMode } from './utils/analytics';
 
 export function App() {
   const [currentView, setCurrentView] = useState(() => {
@@ -56,7 +60,14 @@ export function App() {
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [isQuizOpen, setIsQuizOpen] = useState(false);
+  const [isStudyOpen, setIsStudyOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('study') === '1';
+    }
+    return false;
+  });
   const [isTourActive, setIsTourActive] = useState(false);
+  const [hasCustomized, setHasCustomized] = useState(false);
 
   const {
     outfit,
@@ -111,6 +122,8 @@ export function App() {
   const activeOutfit = groupMode === 'family' ? familyMembers[activeMemberIndex]?.outfit || outfit : outfit;
 
   const handleControlChange = (field, value) => {
+    setHasCustomized(true);
+    track('outfit_change', { field });
     if (groupMode === 'family') {
       updateMemberOutfit(activeMemberIndex, { [field]: value });
       if (activeMemberIndex === 0) {
@@ -221,6 +234,7 @@ export function App() {
         onOpenLookbook={() => setIsLookbookOpen(true)}
         onOpenPartners={() => setIsPartnerModalOpen(true)}
         onStartTour={() => {
+          setAnalyticsTourMode(true);
           setCurrentView('studio');
           setIsTourActive(true);
         }}
@@ -514,6 +528,10 @@ export function App() {
         familyMembers={familyMembers}
         groupMode={groupMode}
         shareUrl={getShareUrl()}
+        onShareClick={() => {
+          track('share_click');
+          trackFirstCompleteOutfit(hasCustomized);
+        }}
       />
 
       <PartnerModal
@@ -521,11 +539,19 @@ export function App() {
         onClose={() => setIsPartnerModalOpen(false)}
         selectedGarment={selectedGarment}
         shareUrl={getShareUrl()}
+        onBooked={() => track('booking_submit')}
       />
+
+      <Suspense fallback={null}>
+        <StudyModeModal isOpen={isStudyOpen} onClose={() => setIsStudyOpen(false)} />
+      </Suspense>
 
       <AutoDemoTour
         isActive={isTourActive}
-        onClose={() => setIsTourActive(false)}
+        onClose={() => {
+          setAnalyticsTourMode(false);
+          setIsTourActive(false);
+        }}
         helpers={tourHelpers}
       />
 

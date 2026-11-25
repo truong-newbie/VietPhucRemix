@@ -4,6 +4,7 @@ import {
   Pause,
   X,
   SkipForward,
+  SkipBack,
   RotateCcw,
   Sparkles,
   Volume2,
@@ -168,14 +169,40 @@ export function AutoDemoTour({
     return () => clearInterval(interval);
   }, [isActive, isPlaying, currentStepIndex]);
 
-  if (!isActive) return null;
-
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentStepIndex < TOUR_STEPS.length - 1) {
-      setCurrentStepIndex(currentStepIndex + 1);
+      setCurrentStepIndex((c) => c + 1);
       setElapsedTime(0);
     }
-  };
+  }, [currentStepIndex]);
+
+  const handlePrev = useCallback(() => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex((c) => c - 1);
+      setElapsedTime(0);
+    }
+  }, [currentStepIndex]);
+
+  const handleClose = useCallback(() => {
+    stopAllAudio();
+    onClose();
+  }, [stopAllAudio, onClose]);
+
+  // Phím tắt cho người thuyết trình: -> bước tiếp, <- bước trước, Esc thoát
+  useEffect(() => {
+    if (!isActive) return;
+    const onKeyDown = (e) => {
+      const tag = e.target?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+      if (e.key === 'ArrowRight') handleNext();
+      else if (e.key === 'ArrowLeft') handlePrev();
+      else if (e.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isActive, handleNext, handlePrev, handleClose]);
+
+  if (!isActive) return null;
 
   const handleRestart = () => {
     setCurrentStepIndex(0);
@@ -195,11 +222,6 @@ export function AutoDemoTour({
     } else {
       playStepAudio(currentStepIndex);
     }
-  };
-
-  const handleClose = () => {
-    stopAllAudio();
-    onClose();
   };
 
   return (
@@ -254,7 +276,18 @@ export function AutoDemoTour({
         {/* Playback Controls */}
         <div className="flex items-center gap-2 shrink-0">
           <button
+            onClick={handlePrev}
+            disabled={currentStepIndex === 0}
+            aria-label="Cảnh trước"
+            className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-30 transition text-white"
+            title="Quay lại cảnh trước (←)"
+          >
+            <SkipBack className="w-4 h-4" />
+          </button>
+
+          <button
             onClick={() => setIsPlaying(!isPlaying)}
+            aria-label={isPlaying ? 'Tạm dừng' : 'Tiếp tục phát'}
             className="p-2.5 rounded-xl bg-[#8B1A1A] hover:bg-[#A62626] transition text-white shadow-sm"
             title={isPlaying ? 'Tạm dừng' : 'Tiếp tục phát'}
           >
@@ -264,8 +297,9 @@ export function AutoDemoTour({
           <button
             onClick={handleNext}
             disabled={currentStepIndex === TOUR_STEPS.length - 1}
+            aria-label="Sang cảnh tiếp theo"
             className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 disabled:opacity-30 transition text-white"
-            title="Sang cảnh tiếp theo"
+            title="Sang cảnh tiếp theo (→)"
           >
             <SkipForward className="w-4 h-4" />
           </button>

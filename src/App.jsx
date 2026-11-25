@@ -16,6 +16,8 @@ import { QuizModal } from './components/QuizModal';
 import { FamilyStageView } from './components/FamilyStageView';
 import { StageModeTabs } from './components/StageModeTabs';
 import { Stage3DErrorBoundary } from './components/stage3d/Stage3DErrorBoundary';
+import { TryOnStage } from './components/TryOnStage';
+import { CulturalAdvisorChat } from './components/CulturalAdvisorChat';
 import { Link2, Check, BookmarkPlus, Layers, Users, User } from 'lucide-react';
 
 const ProjectRoadmapPage = lazy(() =>
@@ -364,6 +366,14 @@ export function App() {
                             />
                           </Suspense>
                         </Stage3DErrorBoundary>
+                      ) : stageMode === 'tryon' ? (
+                        <TryOnStage
+                          garment={selectedGarment}
+                          outerColor={outerColor}
+                          bottomColor={bottomColor}
+                          headAccessory={headAccessory}
+                          footAccessory={footAccessory}
+                        />
                       ) : (
                         <AvatarStage
                           garment={selectedGarment}
@@ -492,6 +502,12 @@ export function App() {
         isActive={isTourActive}
         onClose={() => setIsTourActive(false)}
         helpers={tourHelpers}
+      />
+
+      <CulturalAdvisorChat
+        activeOutfit={outfit}
+        garmentName={selectedGarment.name}
+        eventName={selectedEvent.name}
       />
     </div>
   );

@@ -1,14 +1,61 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { defineConfig, loadEnv } from 'vite';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+
+function localApiMiddlewarePlugin() {
+  return {
+    name: 'local-vercel-api-dev',
+    configureServer(server) {
+      const env = loadEnv('development', process.cwd(), '');
+      Object.assign(process.env, env);
+
+      server.middlewares.use(async (req, res, next) => {
+        if (req.url !== '/api/try-on' && req.url !== '/api/rag-chat') {
+          return next();
+        }
+
+        const chunks = [];
+        req.on('data', (c) => chunks.push(c));
+        req.on('end', async () => {
+          try {
+            const raw = Buffer.concat(chunks).toString('utf8');
+            req.body = raw ? JSON.parse(raw) : {};
+          } catch {
+            req.body = {};
+          }
+
+          const wrappedRes = {
+            statusCode: 200,
+            status(code) {
+              this.statusCode = code;
+              return this;
+            },
+            json(payload) {
+              res.statusCode = this.statusCode;
+              res.setHeader('Content-Type', 'application/json; charset=utf-8');
+              res.end(JSON.stringify(payload));
+            }
+          };
+
+          try {
+            const mod =
+              req.url === '/api/try-on'
+                ? await import('./api/try-on.js')
+                : await import('./api/rag-chat.js');
+            await mod.default(req, wrappedRes);
+          } catch (err) {
+            wrappedRes.status(500).json({ error: err?.message || 'Local API error' });
+          }
+        });
+      });
+    }
+  };
+}
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: './', // Sử dụng relative path để chạy hoàn hảo trên mọi nền tảng (Vercel, GitHub Pages, Netlify)
-  plugins: [
-    tailwindcss(),
-    react()
-  ],
+  base: './',
+  plugins: [tailwindcss(), react(), localApiMiddlewarePlugin()],
   build: {
     rollupOptions: {
       output: {
@@ -26,4 +73,4 @@ export default defineConfig({
   test: {
     environment: 'node'
   }
-})
+});

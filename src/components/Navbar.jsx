@@ -8,7 +8,9 @@ import {
   Menu,
   X,
   Play,
-  Award
+  Award,
+  LogIn,
+  LogOut
 } from 'lucide-react';
 
 export function Navbar({
@@ -22,7 +24,8 @@ export function Navbar({
   onStartTour,
   badgeCount = 0,
   totalBadges = 7,
-  onOpenQuiz
+  onOpenQuiz,
+  auth
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -125,6 +128,28 @@ export function Navbar({
                   <Award className="w-3.5 h-3.5 text-[#C9A227]" />
                   <span>{badgeCount}/{totalBadges}</span>
                 </button>
+              )}
+
+              {auth?.enabled && (
+                auth.user ? (
+                  <button
+                    onClick={auth.signOut}
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100 transition"
+                    title={`Đang đồng bộ: ${auth.user.email} (Bấm để đăng xuất)`}
+                  >
+                    <LogOut className="w-3 h-3" />
+                    <span className="hidden xl:inline">Đã đồng bộ</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={auth.signInWithGoogle}
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold bg-white text-[#1D2440] border border-[#DECDB8] hover:border-[#8B1A1A] transition"
+                    title="Đăng nhập Google để đồng bộ tủ đồ (tùy chọn)"
+                  >
+                    <LogIn className="w-3 h-3 text-[#8B1A1A]" />
+                    <span className="hidden xl:inline">Đồng bộ</span>
+                  </button>
+                )
               )}
 
               <button

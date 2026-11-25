@@ -24,6 +24,9 @@ const ProjectRoadmapPage = lazy(() =>
   import('./components/ProjectRoadmapPage').then((m) => ({ default: m.ProjectRoadmapPage }))
 );
 const Stage3D = lazy(() => import('./components/stage3d/Stage3D'));
+const AdvisorAdminPage = lazy(() =>
+  import('./components/AdvisorAdminPage').then((m) => ({ default: m.AdvisorAdminPage }))
+);
 
 import { SCENARIOS_DATA } from './data/scenariosData';
 import { GARMENTS_DATA } from './data/garmentsData';
@@ -32,10 +35,17 @@ import { useOutfit } from './hooks/useOutfit';
 import { useFamilyStage } from './hooks/useFamilyStage';
 import { useSavedOutfits } from './hooks/useSavedOutfits';
 import { useBadges } from './hooks/useBadges';
+import { useAuthSync } from './hooks/useAuthSync';
 import { classifyCreativity } from './engines/creativityClassifier';
 
 export function App() {
-  const [currentView, setCurrentView] = useState('studio');
+  const [currentView, setCurrentView] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('admin') === '1') return 'admin';
+    }
+    return 'studio';
+  });
   const [stageMode, setStageMode] = useState('2d'); // '2d' | '3d' | 'tryon'
   const [regionFilter, setRegionFilter] = useState('all');
   const [isCopiedLink, setIsCopiedLink] = useState(false);
@@ -81,6 +91,7 @@ export function App() {
 
   const { savedOutfits, saveForCompare, removeSavedOutfit, clearSavedOutfits } = useSavedOutfits();
   const { earnedBadges, earnBadge, totalEarned } = useBadges();
+  const auth = useAuthSync({ savedOutfits, earnedBadges });
 
   const accessoriesMap = useMemo(
     () => ({
@@ -216,9 +227,22 @@ export function App() {
         badgeCount={totalEarned}
         totalBadges={GARMENTS_DATA.length}
         onOpenQuiz={() => setIsQuizOpen(true)}
+        auth={auth}
       />
 
-      {currentView === 'roadmap' ? (
+      {currentView === 'admin' ? (
+        <main className="flex-1">
+          <Suspense
+            fallback={
+              <div className="p-12 text-center text-sm font-semibold text-[#664422]">
+                Đang tải Bảng Duyệt Luật Cố Vấn...
+              </div>
+            }
+          >
+            <AdvisorAdminPage user={auth.user} onBack={() => setCurrentView('studio')} />
+          </Suspense>
+        </main>
+      ) : currentView === 'roadmap' ? (
         <main className="flex-1">
           <Suspense
             fallback={
@@ -496,6 +520,7 @@ export function App() {
         isOpen={isPartnerModalOpen}
         onClose={() => setIsPartnerModalOpen(false)}
         selectedGarment={selectedGarment}
+        shareUrl={getShareUrl()}
       />
 
       <AutoDemoTour

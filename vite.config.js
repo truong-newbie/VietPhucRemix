@@ -9,6 +9,20 @@ export default defineConfig({
     tailwindcss(),
     react()
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/three') || id.includes('@react-three')) {
+            return 'vendor-three';
+          }
+          if (id.includes('node_modules/qrcode') || id.includes('canvas-confetti')) {
+            return 'vendor-media';
+          }
+        }
+      }
+    }
+  },
   test: {
     environment: 'node'
   }

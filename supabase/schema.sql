@@ -119,3 +119,9 @@ CREATE POLICY "Public read verified rule reviews" ON public.rule_reviews
 DROP POLICY IF EXISTS "Authenticated advisors upsert rule reviews" ON public.rule_reviews;
 CREATE POLICY "Authenticated advisors upsert rule reviews" ON public.rule_reviews
   FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
+
+-- Cấp quyền mức bảng cho role anon & authenticated (bắt buộc kèm RLS trên Supabase mới)
+GRANT USAGE ON SCHEMA public TO anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.profiles, public.saved_outfits, public.user_badges, public.rule_reviews TO authenticated;
+GRANT INSERT ON public.bookings, public.analytics_events, public.study_responses TO anon, authenticated;
+GRANT SELECT ON public.study_responses, public.rule_reviews TO anon, authenticated;

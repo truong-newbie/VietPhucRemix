@@ -1,5 +1,5 @@
 import React from 'react';
-import { Palette, Flame, CheckCircle, Info } from 'lucide-react';
+import { Palette, CheckCircle } from 'lucide-react';
 
 export function HarmonyGauge({ harmonyResult }) {
   const { score, rating, badgeColor, explanations } = harmonyResult;

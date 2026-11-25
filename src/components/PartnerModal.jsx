@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { X, Store, MapPin, Star, Phone, Tag, Check, ExternalLink } from 'lucide-react';
+import { X, Store, MapPin, Star, Tag, Check } from 'lucide-react';
 import { PARTNERS_DATA } from '../data/partnersData';
 
-export function PartnerModal({ isOpen, onClose, selectedGarment }) {
+export function PartnerModal({ isOpen, onClose, selectedGarment: _selectedGarment }) {
   const [copiedId, setCopiedId] = useState(null);
 
   if (!isOpen) return null;

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Shirt, Palette, Sparkles, CloudSun, Check, SlidersHorizontal } from 'lucide-react';
+import { Calendar, Shirt, Palette, Sparkles, CloudSun, Check } from 'lucide-react';
 import { EVENTS_DATA } from '../data/eventsData';
 import { GARMENTS_DATA } from '../data/garmentsData';
 import { COLOR_PALETTE } from '../data/colorsData';

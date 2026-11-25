@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldAlert, ShieldCheck, AlertTriangle, CheckCircle2, Wand2, BookOpen } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, AlertTriangle, Wand2, BookOpen } from 'lucide-react';
 
 export function CultureGuardBanner({
   cultureResult,
@@ -10,7 +10,6 @@ export function CultureGuardBanner({
 
   const isRed = status === 'red';
   const isYellow = status === 'yellow';
-  const isGreen = status === 'green';
 
   const themeStyles = isRed
     ? {

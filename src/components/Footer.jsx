@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Heart, Award, ExternalLink, Compass } from 'lucide-react';
+import { Compass } from 'lucide-react';
 
 export function Footer({ onNavigateRoadmap }) {
   return (

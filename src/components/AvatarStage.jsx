@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, RotateCcw, Sparkles, User, ZoomIn } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 
 export function AvatarStage({
   garment,

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { StudioControls } from './components/StudioControls';
@@ -13,194 +13,42 @@ import { AutoDemoTour } from './components/AutoDemoTour';
 import { Footer } from './components/Footer';
 import { Link2, Check } from 'lucide-react';
 
-import { GARMENTS_DATA } from './data/garmentsData';
-import { EVENTS_DATA } from './data/eventsData';
-import { COLOR_PALETTE } from './data/colorsData';
-import { ACCESSORIES_DATA } from './data/accessoriesData';
-import { evaluateCultureGuard } from './engines/cultureEngine';
-import { calculateHarmonyScore } from './engines/harmonyEngine';
-import { encodeOutfit, decodeOutfit } from './utils/outfitUrl';
+import { SCENARIOS_DATA } from './data/scenariosData';
+import { useOutfit } from './hooks/useOutfit';
+import { useFamilyStage } from './hooks/useFamilyStage';
 
 export function App() {
-  // Read initial outfit from URL parameters safely
-  const [initialParams] = useState(() => {
-    if (typeof window === 'undefined') return {};
-    return decodeOutfit(window.location.search);
-  });
-
   // Navigation View: 'studio' (Phối đồ) | 'roadmap' (Landing page báo cáo MVP & lộ trình)
   const [currentView, setCurrentView] = useState('studio');
-
-  // Target Audience Mode: 'genz' | 'family'
-  const [mode, setMode] = useState(() => initialParams.mode || 'genz');
-  const [gender, setGender] = useState(() => initialParams.gender || 'female');
-
-  // Core Outfit Configuration State
-  const [selectedEventId, setSelectedEventId] = useState(() => initialParams.eventId || 'tet-xuan');
-  const [selectedGarmentId, setSelectedGarmentId] = useState(() => initialParams.garmentId || 'ngu-than');
-  const [selectedOuterColorId, setSelectedOuterColorId] = useState(() => initialParams.outerColorId || 'do-son');
-  const [selectedBottomColorId, setSelectedBottomColorId] = useState(() => initialParams.bottomColorId || 'trang-su');
-  const [selectedBeltColorId, setSelectedBeltColorId] = useState(() => initialParams.beltColorId || 'hoang-tho');
-  const [selectedHeadId, setSelectedHeadId] = useState(() => initialParams.headId || 'khan-van');
-  const [selectedHandId, setSelectedHandId] = useState(() => initialParams.handId || 'tui-tote');
-  const [selectedFootId, setSelectedFootId] = useState(() => initialParams.footId || 'sneaker-trang');
-  const [bottomLength, setBottomLength] = useState(() => initialParams.bottomLength || 'long'); // 'long' | 'short' (để test Culture Guard)
-
-  // Copy share link status
   const [isCopiedLink, setIsCopiedLink] = useState(false);
 
-  // Modals
+  // Modals & Guided Tour
   const [isCultureCardOpen, setIsCultureCardOpen] = useState(false);
   const [isLookbookOpen, setIsLookbookOpen] = useState(false);
   const [isPartnerModalOpen, setIsPartnerModalOpen] = useState(false);
-
-  // 3-Minute Guided Auto Tour Mode
   const [isTourActive, setIsTourActive] = useState(false);
 
-  // Colors Map lookup
-  const colorsMap = useMemo(() => {
-    const map = {};
-    COLOR_PALETTE.forEach(c => {
-      map[c.id] = c;
-    });
-    return map;
-  }, []);
+  // Quản lý state bộ phối (URL + localStorage + engines)
+  const {
+    outfit,
+    setField,
+    applyPartial,
+    getShareUrl,
+    selectedGarment,
+    selectedEvent,
+    outerColor,
+    innerColor,
+    bottomColor,
+    beltColor,
+    headAccessory,
+    handAccessory,
+    footAccessory,
+    cultureResult,
+    harmonyResult
+  } = useOutfit();
 
-  // Selected Objects
-  const selectedGarment = useMemo(
-    () => GARMENTS_DATA.find(g => g.id === selectedGarmentId) || GARMENTS_DATA[0],
-    [selectedGarmentId]
-  );
-
-  const selectedEvent = useMemo(
-    () => EVENTS_DATA.find(e => e.id === selectedEventId) || EVENTS_DATA[0],
-    [selectedEventId]
-  );
-
-  const outerColor = colorsMap[selectedOuterColorId] || COLOR_PALETTE[0];
-  const bottomColor = colorsMap[selectedBottomColorId] || COLOR_PALETTE[4];
-  const innerColor = colorsMap['trang-su'];
-  const beltColor = colorsMap[selectedBeltColorId] || COLOR_PALETTE[1];
-
-  const headAccessory = useMemo(
-    () => ACCESSORIES_DATA.head.find(a => a.id === selectedHeadId),
-    [selectedHeadId]
-  );
-
-  const handAccessory = useMemo(
-    () => ACCESSORIES_DATA.hand.find(a => a.id === selectedHandId),
-    [selectedHandId]
-  );
-
-  const footAccessory = useMemo(
-    () => ACCESSORIES_DATA.foot.find(a => a.id === selectedFootId),
-    [selectedFootId]
-  );
-
-  // Evaluate Culture Guard with memoized state
-  const cultureState = useMemo(() => ({
-    eventId: selectedEventId,
-    garmentId: selectedGarmentId,
-    outerColorId: selectedOuterColorId,
-    bottomColorId: selectedBottomColorId,
-    beltColorId: selectedBeltColorId,
-    headAccessoryId: selectedHeadId,
-    handAccessoryId: selectedHandId,
-    footAccessoryId: selectedFootId,
-    bottomLength
-  }), [
-    selectedEventId,
-    selectedGarmentId,
-    selectedOuterColorId,
-    selectedBottomColorId,
-    selectedBeltColorId,
-    selectedHeadId,
-    selectedHandId,
-    selectedFootId,
-    bottomLength
-  ]);
-
-  const cultureResult = useMemo(
-    () => evaluateCultureGuard(cultureState, colorsMap),
-    [cultureState, colorsMap]
-  );
-
-  // Calculate Harmony Score
-  const harmonyResult = useMemo(
-    () =>
-      calculateHarmonyScore({
-        garment: selectedGarment,
-        event: selectedEvent,
-        outerColor,
-        bottomColor,
-        beltColor,
-        headAccessory,
-        footAccessory
-      }),
-    [selectedGarment, selectedEvent, outerColor, bottomColor, beltColor, headAccessory, footAccessory]
-  );
-
-  // Synchronize outfit state into URL query string via history.replaceState
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const qs = encodeOutfit({
-      eventId: selectedEventId,
-      garmentId: selectedGarmentId,
-      outerColorId: selectedOuterColorId,
-      bottomColorId: selectedBottomColorId,
-      beltColorId: selectedBeltColorId,
-      headId: selectedHeadId,
-      handId: selectedHandId,
-      footId: selectedFootId,
-      bottomLength,
-      mode,
-      gender
-    });
-    const newUrl = `${window.location.pathname}${qs}${window.location.hash}`;
-    window.history.replaceState(null, '', newUrl);
-  }, [
-    selectedEventId,
-    selectedGarmentId,
-    selectedOuterColorId,
-    selectedBottomColorId,
-    selectedBeltColorId,
-    selectedHeadId,
-    selectedHandId,
-    selectedFootId,
-    bottomLength,
-    mode,
-    gender
-  ]);
-
-  const getShareUrl = useCallback(() => {
-    if (typeof window === 'undefined') return '';
-    const qs = encodeOutfit({
-      eventId: selectedEventId,
-      garmentId: selectedGarmentId,
-      outerColorId: selectedOuterColorId,
-      bottomColorId: selectedBottomColorId,
-      beltColorId: selectedBeltColorId,
-      headId: selectedHeadId,
-      handId: selectedHandId,
-      footId: selectedFootId,
-      bottomLength,
-      mode,
-      gender
-    });
-    return `${window.location.origin}${window.location.pathname}${qs}`;
-  }, [
-    selectedEventId,
-    selectedGarmentId,
-    selectedOuterColorId,
-    selectedBottomColorId,
-    selectedBeltColorId,
-    selectedHeadId,
-    selectedHandId,
-    selectedFootId,
-    bottomLength,
-    mode,
-    gender
-  ]);
+  // Sẵn sàng quản lý 2-4 thành viên cho Phase 3
+  useFamilyStage(outfit);
 
   const handleCopyShareLink = () => {
     const url = getShareUrl();
@@ -212,97 +60,70 @@ export function App() {
     }
   };
 
-  // Handle Mode Change (Gen Z vs Family)
-  const handleModeChange = newMode => {
-    setMode(newMode);
+  const handleModeChange = (newMode) => {
     if (newMode === 'family') {
-      setSelectedEventId('dam-cuoi');
-      setSelectedGarmentId('nhat-binh');
-      setSelectedOuterColorId('do-son');
-      setSelectedHeadId('tram-cai-sen');
-      setSelectedHandId('quat-lua');
-      setSelectedFootId('guoc-moc');
-      setBottomLength('long');
+      applyPartial({
+        mode: 'family',
+        eventId: 'dam-cuoi',
+        garmentId: 'nhat-binh',
+        outerColorId: 'do-son',
+        headId: 'tram-cai-sen',
+        handId: 'quat-lua',
+        footId: 'guoc-moc',
+        bottomLength: 'long'
+      });
     } else {
-      setSelectedEventId('tet-xuan');
-      setSelectedGarmentId('ngu-than');
-      setSelectedOuterColorId('do-son');
-      setSelectedHeadId('khan-van');
-      setSelectedHandId('tui-tote');
-      setSelectedFootId('sneaker-trang');
-      setBottomLength('long');
+      applyPartial({
+        mode: 'genz',
+        eventId: 'tet-xuan',
+        garmentId: 'ngu-than',
+        outerColorId: 'do-son',
+        headId: 'khan-van',
+        handId: 'tui-tote',
+        footId: 'sneaker-trang',
+        bottomLength: 'long'
+      });
     }
   };
 
-  // 1-Click Auto-Fix Handler
-  const handleAutoFix = fixPayload => {
-    if (fixPayload.outerColorId) setSelectedOuterColorId(fixPayload.outerColorId);
-    if (fixPayload.bottomColorId) setSelectedBottomColorId(fixPayload.bottomColorId);
-    if (fixPayload.beltColorId) setSelectedBeltColorId(fixPayload.beltColorId);
-    if (fixPayload.headAccessoryId) setSelectedHeadId(fixPayload.headAccessoryId);
-    if (fixPayload.footAccessoryId) setSelectedFootId(fixPayload.footAccessoryId);
-    if (fixPayload.bottomLength) setBottomLength(fixPayload.bottomLength);
+  const handleAutoFix = (fixPayload) => {
+    applyPartial({
+      ...(fixPayload.outerColorId ? { outerColorId: fixPayload.outerColorId } : {}),
+      ...(fixPayload.bottomColorId ? { bottomColorId: fixPayload.bottomColorId } : {}),
+      ...(fixPayload.beltColorId ? { beltColorId: fixPayload.beltColorId } : {}),
+      ...(fixPayload.headAccessoryId ? { headId: fixPayload.headAccessoryId } : {}),
+      ...(fixPayload.handAccessoryId ? { handId: fixPayload.handAccessoryId } : {}),
+      ...(fixPayload.footAccessoryId ? { footId: fixPayload.footAccessoryId } : {}),
+      ...(fixPayload.bottomLength ? { bottomLength: fixPayload.bottomLength } : {})
+    });
   };
 
-  // 4 Demo Scenarios for Pitch & Video
-  const handleApplyScenario = scenarioKey => {
-    if (scenarioKey === 'genz-tet') {
-      setMode('genz');
-      setSelectedEventId('tet-xuan');
-      setSelectedGarmentId('ngu-than');
-      setSelectedOuterColorId('do-son');
-      setSelectedBottomColorId('trang-su');
-      setSelectedBeltColorId('hoang-tho');
-      setSelectedHeadId('khan-van');
-      setSelectedHandId('tui-tote');
-      setSelectedFootId('sneaker-trang');
-      setBottomLength('long');
-    } else if (scenarioKey === 'temple-violation') {
-      // Cố tình tạo bối cảnh sai lệch để kiểm chứng Lá chắn Culture Guard (Báo Đỏ)
-      setSelectedEventId('le-chua');
-      setSelectedGarmentId('ao-dai');
-      setSelectedOuterColorId('do-son');
-      setBottomLength('short');
-    } else if (scenarioKey === 'royal-wedding') {
-      setMode('family');
-      setSelectedEventId('dam-cuoi');
-      setSelectedGarmentId('nhat-binh');
-      setSelectedOuterColorId('hoang-tho');
-      setSelectedBottomColorId('trang-su');
-      setSelectedBeltColorId('do-son');
-      setSelectedHeadId('tram-cai-sen');
-      setSelectedHandId('quat-lua');
-      setSelectedFootId('guoc-moc');
-      setBottomLength('long');
-    } else if (scenarioKey === 'quan-ho-heritage') {
-      setSelectedEventId('hoi-lang');
-      setSelectedGarmentId('tu-than');
-      setSelectedOuterColorId('nau-non');
-      setSelectedBottomColorId('den-tuyen');
-      setSelectedBeltColorId('hoang-tho');
-      setSelectedHeadId('non-quai-thao');
-      setSelectedHandId('quat-lua');
-      setSelectedFootId('guoc-moc');
-      setBottomLength('long');
+  const handleApplyScenario = (scenarioKey) => {
+    const scenario = SCENARIOS_DATA[scenarioKey];
+    if (scenario?.outfit) {
+      applyPartial(scenario.outfit);
     }
   };
 
-  // Helpers for 3-minute Guided Auto Tour
-  const tourHelpers = {
-    setView: setCurrentView,
-    setGarment: setSelectedGarmentId,
-    setOuterColor: setSelectedOuterColorId,
-    setBottomColor: setSelectedBottomColorId,
-    setFoot: setSelectedFootId,
-    applyScenario: handleApplyScenario,
-    autoFix: handleAutoFix,
-    openLookbook: () => setIsLookbookOpen(true),
-    closeModals: () => {
-      setIsLookbookOpen(false);
-      setIsCultureCardOpen(false);
-      setIsPartnerModalOpen(false);
-    }
-  };
+  const tourHelpers = useMemo(
+    () => ({
+      setView: setCurrentView,
+      setGarment: (val) => setField('garmentId', val),
+      setOuterColor: (val) => setField('outerColorId', val),
+      setBottomColor: (val) => setField('bottomColorId', val),
+      setFoot: (val) => setField('footId', val),
+      applyScenario: handleApplyScenario,
+      autoFix: handleAutoFix,
+      openLookbook: () => setIsLookbookOpen(true),
+      closeModals: () => {
+        setIsLookbookOpen(false);
+        setIsCultureCardOpen(false);
+        setIsPartnerModalOpen(false);
+      }
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [setField, applyPartial]
+  );
 
   return (
     <div className="min-h-screen bg-[#F4EFE6] text-[#2C241D] flex flex-col font-sans selection:bg-[#8B1A1A] selection:text-white">
@@ -310,59 +131,64 @@ export function App() {
       <Navbar
         currentView={currentView}
         onViewChange={setCurrentView}
-        mode={mode}
+        mode={outfit.mode}
         onModeChange={handleModeChange}
         onOpenCultureCard={() => setIsCultureCardOpen(true)}
         onOpenLookbook={() => setIsLookbookOpen(true)}
         onOpenPartners={() => setIsPartnerModalOpen(true)}
-        onStartTour={() => setIsTourActive(true)}
+        onStartTour={() => {
+          setCurrentView('studio');
+          setIsTourActive(true);
+        }}
       />
 
-      {/* Conditionally Render: Studio View OR Roadmap Landing Page */}
+      {/* Conditional Rendering: Studio vs Project Roadmap Page */}
       {currentView === 'roadmap' ? (
-        <ProjectRoadmapPage onBackToStudio={() => setCurrentView('studio')} />
+        <main className="flex-1">
+          <ProjectRoadmapPage onBackToStudio={() => setCurrentView('studio')} />
+        </main>
       ) : (
         <>
-          {/* 2. Hero Philosophy & 4 Quick Scenarios */}
+          {/* 2. Hero Ideological Banner & Pitch Scenarios */}
           <HeroSection onApplyScenario={handleApplyScenario} />
 
-          {/* 3. Main Interactive Workspace */}
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* 3. Main Interactive Studio Workspace */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-              {/* Left Column (5 Cols on LG): Studio Controls */}
+              {/* Left Column: 4-Tab Studio Customization Panel (5 Cols on LG) */}
               <div className="lg:col-span-5 space-y-4">
                 <StudioControls
-                  selectedEventId={selectedEventId}
-                  onSelectEvent={setSelectedEventId}
-                  selectedGarmentId={selectedGarmentId}
-                  onSelectGarment={setSelectedGarmentId}
-                  selectedOuterColorId={selectedOuterColorId}
-                  onSelectOuterColor={setSelectedOuterColorId}
-                  selectedBottomColorId={selectedBottomColorId}
-                  onSelectBottomColor={setSelectedBottomColorId}
-                  selectedBeltColorId={selectedBeltColorId}
-                  onSelectBeltColor={setSelectedBeltColorId}
-                  selectedHeadId={selectedHeadId}
-                  onSelectHead={setSelectedHeadId}
-                  selectedHandId={selectedHandId}
-                  onSelectHand={setSelectedHandId}
-                  selectedFootId={selectedFootId}
-                  onSelectFoot={setSelectedFootId}
+                  selectedEventId={outfit.eventId}
+                  onSelectEvent={(val) => setField('eventId', val)}
+                  selectedGarmentId={outfit.garmentId}
+                  onSelectGarment={(val) => setField('garmentId', val)}
+                  selectedOuterColorId={outfit.outerColorId}
+                  onSelectOuterColor={(val) => setField('outerColorId', val)}
+                  selectedBottomColorId={outfit.bottomColorId}
+                  onSelectBottomColor={(val) => setField('bottomColorId', val)}
+                  selectedBeltColorId={outfit.beltColorId}
+                  onSelectBeltColor={(val) => setField('beltColorId', val)}
+                  selectedHeadId={outfit.headId}
+                  onSelectHead={(val) => setField('headId', val)}
+                  selectedHandId={outfit.handId}
+                  onSelectHand={(val) => setField('handId', val)}
+                  selectedFootId={outfit.footId}
+                  onSelectFoot={(val) => setField('footId', val)}
                 />
               </div>
 
-              {/* Right Column (7 Cols on LG): Culture Guard + Layered SVG Avatar + Harmony Gauge */}
+              {/* Right Column: Live Avatar Stage + Culture Guard + Harmony Score (7 Cols on LG) */}
               <div className="lg:col-span-7 space-y-4">
-                {/* Culture Guard Traffic-Light Alert Banner */}
+                {/* Real-time Culture Guard Traffic Light Banner */}
                 <CultureGuardBanner
                   cultureResult={cultureResult}
                   onAutoFix={handleAutoFix}
                   onOpenCultureCard={() => setIsCultureCardOpen(true)}
                 />
 
-                {/* Stage Grid: Avatar & Gauges */}
+                {/* Stage & Harmony Split Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-stretch">
-                  {/* Visual Avatar Stage (7 Cols) */}
+                  {/* Layered SVG Interactive Stage (7 Cols) */}
                   <div className="md:col-span-7">
                     <AvatarStage
                       garment={selectedGarment}
@@ -373,8 +199,8 @@ export function App() {
                       headAccessory={headAccessory}
                       handAccessory={handAccessory}
                       footAccessory={footAccessory}
-                      gender={gender}
-                      onGenderChange={setGender}
+                      gender={outfit.gender}
+                      onGenderChange={(val) => setField('gender', val)}
                     />
                   </div>
 

@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Sparkles,
-  Users,
   BookOpen,
   Download,
   Store,

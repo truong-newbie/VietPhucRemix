@@ -8,7 +8,9 @@ export function calculateHarmonyScore({
   bottomColor,
   beltColor,
   headAccessory,
-  footAccessory: _footAccessory
+  handAccessory: _handAccessory,
+  footAccessory,
+  style
 }) {
   let score = 50; // Base score
   const explanations = [];
@@ -64,7 +66,19 @@ export function calculateHarmonyScore({
     }
   }
 
-  // Giới hạn điểm số từ 15 đến 99
+  // 4. Phong cách phối (tùy chọn, tối đa +6 điểm)
+  if (style && outerColor) {
+    let styleBonus = 0;
+    if (style.preferredColors?.includes(outerColor.id)) styleBonus += 3;
+    const accIds = [headAccessory?.id, _handAccessory?.id, footAccessory?.id].filter(Boolean);
+    if (accIds.some((id) => style.preferredAccessories?.includes(id))) styleBonus += 3;
+    if (styleBonus > 0) {
+      score += styleBonus;
+      explanations.push(`Đồng điệu phong cách ${style.name} (+${styleBonus}đ).`);
+    }
+  }
+
+  // Giới hạn điểm số từ 20 đến 99
   const finalScore = Math.min(99, Math.max(20, score));
 
   let rating = 'Khá hài hòa';

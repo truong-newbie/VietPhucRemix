@@ -3,7 +3,24 @@ import { getSupabaseClient } from './supabase';
 import { loadJson, saveJson } from '../utils/storage';
 
 export const LOCAL_BOOKINGS_KEY = 'vpr_pending_bookings';
+export const BOOKING_HISTORY_KEY = 'vpr_booking_history';
 const VN_PHONE_REGEX = /^(0|\+84)(3|5|7|8|9)\d{8}$/;
+
+export function getLocalBookingHistory() {
+  const list = loadJson(BOOKING_HISTORY_KEY, []);
+  return Array.isArray(list) ? list : [];
+}
+
+function appendBookingHistory(entry) {
+  const current = getLocalBookingHistory().filter((item) => item.booking_code !== entry.booking_code);
+  saveJson(BOOKING_HISTORY_KEY, [entry, ...current].slice(0, 20));
+}
+
+export function removeLocalBooking(bookingCode) {
+  const next = getLocalBookingHistory().filter((item) => item.booking_code !== bookingCode);
+  saveJson(BOOKING_HISTORY_KEY, next);
+  return next;
+}
 
 export function validateBookingPayload(input = {}, todayStr = new Date().toISOString().slice(0, 10)) {
   const errors = [];
@@ -61,11 +78,17 @@ export async function submitBooking(payload) {
     pdp_consent: true
   };
 
+  const historyEntry = {
+    ...record,
+    created_at: new Date().toISOString()
+  };
+
   const client = getSupabaseClient();
   if (client) {
     try {
       const { error } = await client.from('bookings').insert(record);
       if (!error) {
+        appendBookingHistory({ ...historyEntry, storageMode: 'supabase' });
         return { ok: true, bookingCode, storageMode: 'supabase' };
       }
     } catch {
@@ -74,6 +97,7 @@ export async function submitBooking(payload) {
   }
 
   const existing = loadJson(LOCAL_BOOKINGS_KEY, []);
-  saveJson(LOCAL_BOOKINGS_KEY, [...(Array.isArray(existing) ? existing : []), { ...record, created_at: new Date().toISOString() }]);
+  saveJson(LOCAL_BOOKINGS_KEY, [...(Array.isArray(existing) ? existing : []), historyEntry]);
+  appendBookingHistory({ ...historyEntry, storageMode: 'local' });
   return { ok: true, bookingCode, storageMode: 'local' };
 }

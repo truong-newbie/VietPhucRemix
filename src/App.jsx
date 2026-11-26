@@ -18,6 +18,9 @@ import { StageModeTabs } from './components/StageModeTabs';
 import { Stage3DErrorBoundary } from './components/stage3d/Stage3DErrorBoundary';
 import { TryOnStage } from './components/TryOnStage';
 import { CulturalAdvisorChat } from './components/CulturalAdvisorChat';
+import { ChallengeBanner } from './components/ChallengeBanner';
+import { PricingModal } from './components/PricingModal';
+import { CHALLENGES_DATA } from './data/challengesData';
 import { Link2, Check, BookmarkPlus, Layers, Users, User } from 'lucide-react';
 
 const ProjectRoadmapPage = lazy(() =>
@@ -39,6 +42,7 @@ import { useFamilyStage } from './hooks/useFamilyStage';
 import { useSavedOutfits } from './hooks/useSavedOutfits';
 import { useBadges } from './hooks/useBadges';
 import { useAuthSync } from './hooks/useAuthSync';
+import { useEntitlements } from './hooks/useEntitlements';
 import { classifyCreativity } from './engines/creativityClassifier';
 import { track, trackFirstCompleteOutfit, setAnalyticsTourMode } from './utils/analytics';
 
@@ -68,6 +72,9 @@ export function App() {
   });
   const [isTourActive, setIsTourActive] = useState(false);
   const [hasCustomized, setHasCustomized] = useState(false);
+  const [latestTryOnImage, setLatestTryOnImage] = useState(null);
+  const [activeChallenge, setActiveChallenge] = useState(null);
+  const [isPricingOpen, setIsPricingOpen] = useState(false);
 
   const {
     outfit,
@@ -103,6 +110,7 @@ export function App() {
   const { savedOutfits, saveForCompare, removeSavedOutfit, clearSavedOutfits } = useSavedOutfits();
   const { earnedBadges, earnBadge, totalEarned } = useBadges();
   const auth = useAuthSync({ savedOutfits, earnedBadges });
+  const entitlements = useEntitlements();
 
   const accessoriesMap = useMemo(
     () => ({
@@ -242,6 +250,8 @@ export function App() {
         totalBadges={GARMENTS_DATA.length}
         onOpenQuiz={() => setIsQuizOpen(true)}
         auth={auth}
+        entitlements={entitlements}
+        onOpenPricing={() => setIsPricingOpen(true)}
       />
 
       {currentView === 'admin' ? (
@@ -312,6 +322,26 @@ export function App() {
 
               {/* Right Column: Culture Guard + Stage + Harmony */}
               <div className="lg:col-span-7 space-y-4 order-1 lg:order-2">
+                {activeChallenge && (
+                  <ChallengeBanner
+                    challenge={activeChallenge}
+                    outfit={outfit}
+                    cultureResult={cultureResult}
+                    harmonyResult={harmonyResult}
+                    onComplete={(ch) => {
+                      if (ch.rewardGarmentId) earnBadge(ch.rewardGarmentId);
+                      track('challenge_complete', { challengeId: ch.id });
+                    }}
+                    onNextChallenge={() => {
+                      const idx = CHALLENGES_DATA.findIndex((c) => c.id === activeChallenge.id);
+                      const next = CHALLENGES_DATA[(idx + 1) % CHALLENGES_DATA.length];
+                      setActiveChallenge(next);
+                      if (next?.eventId) setField('eventId', next.eventId);
+                    }}
+                    onClose={() => setActiveChallenge(null)}
+                  />
+                )}
+
                 <CultureGuardBanner
                   cultureResult={cultureResult}
                   cultureState={cultureState}
@@ -408,9 +438,19 @@ export function App() {
                         <TryOnStage
                           garment={selectedGarment}
                           outerColor={outerColor}
+                          innerColor={innerColor}
                           bottomColor={bottomColor}
+                          beltColor={beltColor}
                           headAccessory={headAccessory}
                           footAccessory={footAccessory}
+                          onTryOnSuccess={setLatestTryOnImage}
+                          credits={entitlements.credits}
+                          onConsumeCredit={entitlements.spendCredit}
+                          onOpenPricing={() => setIsPricingOpen(true)}
+                          onApplyStylistOutfit={(picked) => {
+                            setHasCustomized(true);
+                            applyPartial(picked);
+                          }}
                         />
                       ) : (
                         <AvatarStage
@@ -502,6 +542,12 @@ export function App() {
         garment={selectedGarment}
         earnedBadges={earnedBadges}
         onEarnBadge={earnBadge}
+        onStartChallenge={(ch) => {
+          setActiveChallenge(ch);
+          setStageMode('2d');
+          setGroupMode('single');
+          if (ch.eventId) setField('eventId', ch.eventId);
+        }}
       />
 
       <CompareDrawer
@@ -528,6 +574,8 @@ export function App() {
         familyMembers={familyMembers}
         groupMode={groupMode}
         shareUrl={getShareUrl()}
+        tryOnImage={latestTryOnImage}
+        removeWatermark={entitlements.removeWatermark}
         onShareClick={() => {
           track('share_click');
           trackFirstCompleteOutfit(hasCustomized);
@@ -539,7 +587,18 @@ export function App() {
         onClose={() => setIsPartnerModalOpen(false)}
         selectedGarment={selectedGarment}
         shareUrl={getShareUrl()}
+        discountPercent={entitlements.partnerDiscountPercent}
         onBooked={() => track('booking_submit')}
+      />
+
+      <PricingModal
+        isOpen={isPricingOpen}
+        onClose={() => setIsPricingOpen(false)}
+        entitlements={entitlements}
+        onPurchaseDemo={(plan, code) => {
+          track('pro_purchase_demo', { planId: plan.id, amountVnd: plan.priceVnd });
+          return entitlements.purchasePlanDemo(plan, code);
+        }}
       />
 
       <Suspense fallback={null}>

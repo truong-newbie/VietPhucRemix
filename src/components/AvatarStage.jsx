@@ -21,7 +21,7 @@ export function AvatarStage({
 
   return (
     <div
-      className={`relative w-full rounded-2xl bg-gradient-to-b from-[#FAF7F2] via-[#F4EFE6] to-[#EBE4D5] border border-[#E0D5C1] overflow-hidden flex flex-col items-center justify-between select-none ${
+      className={`relative w-full rounded-2xl bg-gradient-to-b from-[#FAF7F2] via-[#F4EFE6] to-[#EBE4D5] border border-border-subtle overflow-hidden flex flex-col items-center justify-between select-none ${
         compact ? 'aspect-[3/4] p-2 shadow-sm' : 'aspect-[3/4] max-h-[620px] p-4 shadow-xl'
       }`}
     >
@@ -37,14 +37,14 @@ export function AvatarStage({
       {/* Top Floating Badges */}
       {!compact && (
         <div className="w-full flex items-center justify-between z-10">
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-md rounded-full border border-[#D8C7B0] shadow-sm text-xs font-semibold text-[#664422]">
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-white/80 backdrop-blur-md rounded-full border border-border-warm shadow-sm text-xs font-semibold text-[#664422]">
             <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
             <span>Layered SVG Engine</span>
           </div>
 
           {/* Gender Toggle */}
           {onGenderChange && (
-            <div className="flex bg-[#EAE2D3] p-0.5 rounded-full border border-[#D5C7B2] text-xs font-medium">
+            <div className="flex bg-[#EAE2D3] p-0.5 rounded-full border border-border-warm text-xs font-medium">
               <button
                 onClick={() => onGenderChange('female')}
                 className={`px-2.5 py-1 rounded-full transition-all ${
@@ -388,9 +388,9 @@ export function AvatarStage({
 
       {/* Bottom Summary Bar */}
       {!compact && (
-        <div className="w-full bg-white/90 backdrop-blur-md rounded-xl p-2.5 border border-[#E0D5C1] shadow-sm flex items-center justify-between z-10 text-xs">
+        <div className="w-full bg-white/90 backdrop-blur-md rounded-xl p-2.5 border border-border-subtle shadow-sm flex items-center justify-between z-10 text-xs">
           <div>
-            <span className="text-gray-500 block text-[10px] uppercase font-semibold">Trang phục đang chọn</span>
+            <span className="text-gray-500 block text-[11px] uppercase font-semibold">Trang phục đang chọn</span>
             <span className="font-bold text-[#8B1A1A] text-sm">{garment.name}</span>
           </div>
           <div className="flex items-center gap-2">

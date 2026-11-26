@@ -80,10 +80,10 @@ export function StudioControls({
   const advice = liveWeather ? weatherAdvice(liveWeather, currentGarment) : null;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#DECDB8] shadow-md overflow-hidden flex flex-col">
+    <div className="bg-white rounded-2xl border border-border-warm shadow-md overflow-hidden flex flex-col">
       {/* Region Filter Strip (Bắc - Trung - Nam) */}
       {onRegionFilterChange && (
-        <div className="px-3 py-2 bg-[#F4EFE6] border-b border-[#E6DBCE] flex items-center justify-between gap-2 flex-wrap">
+        <div className="px-3 py-2 bg-surface-canvas border-b border-border-subtle flex items-center justify-between gap-2 flex-wrap">
           <span className="text-[11px] font-bold text-[#664422] flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5 text-[#8B1A1A]" />
             Vùng miền:
@@ -97,7 +97,7 @@ export function StudioControls({
                 className={`min-h-[32px] px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition ${
                   regionFilter === r.id
                     ? 'bg-[#8B1A1A] text-white shadow-xs'
-                    : 'bg-white text-[#664422] border border-[#DECDB8] hover:border-[#8B1A1A]/50'
+                    : 'bg-white text-[#664422] border border-border-warm hover:border-[#8B1A1A]/50'
                 }`}
               >
                 {r.label}
@@ -108,7 +108,7 @@ export function StudioControls({
       )}
 
       {/* Tab Navigation Headers */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-[#E6DBCE] bg-[#FAF7F2] p-1.5 gap-1.5 text-xs font-bold">
+      <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-border-subtle bg-surface-subtle p-1.5 gap-1.5 text-xs font-bold">
         <button
           onClick={() => setActiveTab('event')}
           className={`min-h-[40px] flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-xl whitespace-nowrap transition ${
@@ -154,7 +154,7 @@ export function StudioControls({
       {activeTab === 'event' && (
         <div className="p-4 space-y-3">
           {/* Weather Callout + Open-Meteo Selector */}
-          <div className="bg-[#FAF3DD]/80 rounded-xl p-3 border border-[#E8DFC8] space-y-2 text-xs">
+          <div className="bg-[#FAF3DD]/80 rounded-xl p-3 border border-border-subtle space-y-2 text-xs">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 font-bold text-[#664422]">
                 <CloudSun className="w-4 h-4 text-[#C9A227]" />
@@ -164,7 +164,7 @@ export function StudioControls({
                     : `${currentEvent.weather.temp} – ${currentEvent.weather.desc}`}
                 </span>
               </div>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-white text-[#664422] border border-[#DECDB8]">
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-white text-[#664422] border border-border-warm">
                 {weatherLoading ? 'Đang tải...' : liveWeather ? 'Open-Meteo Live' : 'Gợi ý mặc định'}
               </span>
             </div>
@@ -174,7 +174,7 @@ export function StudioControls({
                 aria-label="Chọn thành phố dự báo thời tiết"
                 value={cityId}
                 onChange={(e) => setCityId(e.target.value)}
-                className="px-2 py-1 rounded-lg bg-white border border-[#DECDB8] text-[11px] font-medium text-[#1D2440]"
+                className="px-2 py-1 rounded-lg bg-white border border-border-warm text-[11px] font-medium text-[#1D2440]"
               >
                 {HERITAGE_CITIES.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -187,7 +187,7 @@ export function StudioControls({
                 aria-label="Chọn ngày sự kiện"
                 value={weatherDate}
                 onChange={(e) => setWeatherDate(e.target.value)}
-                className="px-2 py-1 rounded-lg bg-white border border-[#DECDB8] text-[11px] text-[#1D2440]"
+                className="px-2 py-1 rounded-lg bg-white border border-border-warm text-[11px] text-[#1D2440]"
               />
             </div>
 
@@ -206,12 +206,12 @@ export function StudioControls({
                   className={`p-3 rounded-xl border text-left transition flex flex-col justify-between ${
                     isSelected
                       ? 'border-[#8B1A1A] bg-[#8B1A1A]/5 ring-1 ring-[#8B1A1A]'
-                      : 'border-[#E6DBCE] hover:border-[#8B1A1A]/40 bg-white'
+                      : 'border-border-subtle hover:border-[#8B1A1A]/40 bg-white'
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <span className="text-[10px] font-bold text-[#8C5E3B] uppercase block">
+                      <span className="text-[11px] font-bold text-[#8C5E3B] uppercase block">
                         {event.category}
                       </span>
                       <h5 className="font-bold text-sm text-[#1D2440]">{event.name}</h5>
@@ -234,7 +234,7 @@ export function StudioControls({
       {activeTab === 'garment' && (
         <div className="p-4 space-y-3">
           {onSelectStyle && (
-            <div className="bg-[#FAF7F2] rounded-xl p-2.5 border border-[#E6DBCE] space-y-1.5">
+            <div className="bg-surface-subtle rounded-xl p-2.5 border border-border-subtle space-y-1.5">
               <span className="text-[11px] font-bold text-[#664422] block">
                 Phong cách phối (tùy chọn, +6đ Harmony):
               </span>
@@ -250,7 +250,7 @@ export function StudioControls({
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition border ${
                         active
                           ? 'bg-[#1D2440] text-white border-[#1D2440]'
-                          : 'bg-white text-[#664422] border-[#DECDB8] hover:border-[#8B1A1A]'
+                          : 'bg-white text-[#664422] border-border-warm hover:border-[#8B1A1A]'
                       }`}
                     >
                       {st.name}
@@ -271,13 +271,13 @@ export function StudioControls({
                   className={`w-full p-3.5 rounded-xl border text-left transition flex items-start gap-3 ${
                     isSelected
                       ? 'border-[#8B1A1A] bg-[#8B1A1A]/5 ring-1 ring-[#8B1A1A]'
-                      : 'border-[#E6DBCE] hover:border-[#8B1A1A]/40 bg-white'
+                      : 'border-border-subtle hover:border-[#8B1A1A]/40 bg-white'
                   }`}
                 >
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center justify-between gap-2">
                       <h5 className="font-bold text-sm text-[#1D2440]">{garment.name}</h5>
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#EFE8DC] text-[#664422] whitespace-nowrap shrink-0">
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-surface-muted text-[#664422] whitespace-nowrap shrink-0">
                         {garment.era.split(' ')[0]}
                       </span>
                     </div>
@@ -322,7 +322,7 @@ export function StudioControls({
                     title={`${color.name} (Hành ${color.element})`}
                   >
                     {isSelected && <Check className={`w-4 h-4 ${color.textDark ? 'text-black' : 'text-white'}`} />}
-                    <span className={`text-[9px] font-bold absolute bottom-0.5 ${color.textDark ? 'text-black/80' : 'text-white/80'}`}>
+                    <span className={`text-[11px] font-bold absolute bottom-0.5 ${color.textDark ? 'text-black/80' : 'text-white/80'}`}>
                       {color.element}
                     </span>
                   </button>
@@ -331,7 +331,7 @@ export function StudioControls({
             </div>
           </div>
 
-          <div className="pt-2 border-t border-[#E6DBCE]">
+          <div className="pt-2 border-t border-border-subtle">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold uppercase tracking-wider text-gray-700">
                 2. Màu Quần lụa / Chân váy
@@ -360,7 +360,7 @@ export function StudioControls({
             </div>
           </div>
 
-          <div className="pt-2 border-t border-[#E6DBCE]">
+          <div className="pt-2 border-t border-border-subtle">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-bold uppercase tracking-wider text-gray-700">
                 3. Thắt lưng / Khăn bao ngũ sắc
@@ -408,7 +408,7 @@ export function StudioControls({
                     className={`p-2.5 rounded-xl border text-left text-xs transition ${
                       isSelected
                         ? 'border-[#8B1A1A] bg-[#8B1A1A]/10 font-bold text-[#8B1A1A]'
-                        : 'border-[#E6DBCE] hover:border-gray-400 bg-white text-gray-700'
+                        : 'border-border-subtle hover:border-gray-400 bg-white text-gray-700'
                     }`}
                   >
                     <span>{item.name}</span>
@@ -418,7 +418,7 @@ export function StudioControls({
             </div>
           </div>
 
-          <div className="pt-2 border-t border-[#E6DBCE]">
+          <div className="pt-2 border-t border-border-subtle">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-700 block mb-2">
               Phụ Kiện Cầm Tay
             </span>
@@ -432,7 +432,7 @@ export function StudioControls({
                     className={`p-2.5 rounded-xl border text-left text-xs transition ${
                       isSelected
                         ? 'border-[#8B1A1A] bg-[#8B1A1A]/10 font-bold text-[#8B1A1A]'
-                        : 'border-[#E6DBCE] hover:border-gray-400 bg-white text-gray-700'
+                        : 'border-border-subtle hover:border-gray-400 bg-white text-gray-700'
                     }`}
                   >
                     <span>{item.name}</span>
@@ -442,7 +442,7 @@ export function StudioControls({
             </div>
           </div>
 
-          <div className="pt-2 border-t border-[#E6DBCE]">
+          <div className="pt-2 border-t border-border-subtle">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-700 block mb-2">
               Giày &amp; Guốc (Bắt trend Remix)
             </span>
@@ -456,7 +456,7 @@ export function StudioControls({
                     className={`p-2.5 rounded-xl border text-left text-xs transition ${
                       isSelected
                         ? 'border-[#8B1A1A] bg-[#8B1A1A]/10 font-bold text-[#8B1A1A]'
-                        : 'border-[#E6DBCE] hover:border-gray-400 bg-white text-gray-700'
+                        : 'border-border-subtle hover:border-gray-400 bg-white text-gray-700'
                     }`}
                   >
                     <span>{item.name}</span>

@@ -62,11 +62,11 @@ export function CultureGuardBanner({
           {themeStyles.icon}
           <div>
             <div className="flex flex-wrap items-center gap-1.5">
-              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${themeStyles.badge}`}>
+              <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider ${themeStyles.badge}`}>
                 {levelText}
               </span>
               {creativity && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${creativity.badgeClass}`}>
+                <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${creativity.badgeClass}`}>
                   {creativity.label}
                 </span>
               )}

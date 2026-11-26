@@ -10,7 +10,7 @@ export function HarmonyGauge({ harmonyResult }) {
   const strokeDashoffset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="bg-[#FAF7F2] rounded-2xl border border-[#E0D5C1] p-4 shadow-sm flex flex-col gap-3">
+    <div className="bg-surface-subtle rounded-2xl border border-border-subtle p-4 shadow-sm flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <Palette className="w-4 h-4 text-[#8B1A1A] shrink-0" />
@@ -50,7 +50,7 @@ export function HarmonyGauge({ harmonyResult }) {
             <span className="text-xl font-black text-[#1D2440] leading-none">
               {score}
             </span>
-            <span className="text-[10px] text-[#574C43] font-semibold uppercase">Điểm</span>
+            <span className="text-[11px] text-[#574C43] font-semibold uppercase">Điểm</span>
           </div>
         </div>
 

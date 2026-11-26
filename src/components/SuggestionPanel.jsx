@@ -26,7 +26,7 @@ export function SuggestionPanel({
   if (suggestions.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-[#DECDB8] p-3.5 shadow-sm space-y-2.5">
+    <div className="bg-white rounded-2xl border border-border-warm p-3.5 shadow-sm space-y-2.5">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 min-w-0">
           <Sparkles className="w-4 h-4 text-[#C9A227] shrink-0" />
@@ -48,7 +48,7 @@ export function SuggestionPanel({
               type="button"
               onClick={() => onApplyOutfit(item.outfit)}
               title={`${item.garmentName} • ${item.outerColorName}`}
-              className="text-left p-2.5 rounded-xl border border-[#E6DBCE] bg-[#FAF7F2] hover:border-[#8B1A1A] hover:bg-white transition group"
+              className="text-left p-2.5 rounded-xl border border-border-subtle bg-surface-subtle hover:border-[#8B1A1A] hover:bg-white transition group"
             >
               <div className="flex items-center justify-between gap-1 mb-1">
                 <div className="flex items-center gap-1">

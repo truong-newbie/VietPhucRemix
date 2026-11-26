@@ -23,14 +23,19 @@ export function LookbookModal({
   familyMembers,
   groupMode = 'single',
   shareUrl,
+  tryOnImage = null,
+  removeWatermark = false,
   onShareClick
 }) {
   const canvasRef = useRef(null);
   const [downloadUrl, setDownloadUrl] = useState(null);
   const [downloadFilename, setDownloadFilename] = useState('Lookbook-Viet-Phuc-Remix.png');
   const [shareFeedback, setShareFeedback] = useState('');
+  const [customCaption, setCustomCaption] = useState('');
+  const [useTryOnPhoto, setUseTryOnPhoto] = useState(true);
 
   const isFamily = groupMode === 'family' && Array.isArray(familyMembers) && familyMembers.length >= 2;
+  const showTryOnPhoto = !isFamily && Boolean(tryOnImage) && useTryOnPhoto;
 
   const renderCanvas = useCallback(async () => {
     const canvas = canvasRef.current;
@@ -81,7 +86,11 @@ export function LookbookModal({
 
     ctx.fillStyle = '#F9D423';
     ctx.font = 'italic 12px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('“Mặc đẹp – Mặc đúng – Giữ trọn hồn thiêng dân tộc”', width / 2, 102);
+    ctx.fillText(
+      customCaption.trim() || '“Mặc đẹp – Mặc đúng – Giữ trọn hồn thiêng dân tộc”',
+      width / 2,
+      102
+    );
 
     // 4. Center Display Frame
     ctx.fillStyle = '#FFFFFF';
@@ -144,6 +153,108 @@ export function LookbookModal({
         ctx.font = '11px "Be Vietnam Pro", sans-serif';
         ctx.fillText(mOuter.name, x, 412);
       });
+    } else if (showTryOnPhoto) {
+      // Bố cục Single kèm Ảnh Thử Đồ Thật bên trái + Điểm Harmony & Hệ màu bên phải
+      ctx.fillStyle = '#8B1A1A';
+      ctx.font = 'bold 22px "Be Vietnam Pro", sans-serif';
+      ctx.fillText(garment ? garment.name.toUpperCase() : 'CỔ PHỤC VIỆT NAM', width / 2, 178);
+
+      ctx.fillStyle = '#664422';
+      ctx.font = '13px "Be Vietnam Pro", sans-serif';
+      ctx.fillText(`Bối cảnh: ${event ? event.name : 'Du xuân truyền thống'}`, width / 2, 202);
+
+      // Vẽ ảnh thử đồ thật trong khung bo tròn viền vàng kim (object-cover)
+      try {
+        const portraitImg = await new Promise((resolve, reject) => {
+          const im = new Image();
+          im.onload = () => resolve(im);
+          im.onerror = reject;
+          im.src = tryOnImage;
+        });
+        const px = 86;
+        const py = 222;
+        const pw = 186;
+        const ph = 248;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(px, py, pw, ph, 14);
+        ctx.clip();
+        const imgRatio = portraitImg.width / portraitImg.height;
+        const boxRatio = pw / ph;
+        let sx = 0;
+        let sy = 0;
+        let sw = portraitImg.width;
+        let sh = portraitImg.height;
+        if (imgRatio > boxRatio) {
+          sw = portraitImg.height * boxRatio;
+          sx = (portraitImg.width - sw) / 2;
+        } else {
+          sh = portraitImg.width / boxRatio;
+          sy = (portraitImg.height - sh) / 2;
+        }
+        ctx.drawImage(portraitImg, sx, sy, sw, sh, px, py, pw, ph);
+        ctx.restore();
+
+        ctx.strokeStyle = '#C9A227';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.roundRect(px, py, pw, ph, 14);
+        ctx.stroke();
+      } catch {
+        // Bỏ qua nếu ảnh lỗi
+      }
+
+      // Cột phải: Điểm Harmony + Bảng màu Ngũ Hành + Cấp độ
+      const rightCx = 408;
+      ctx.beginPath();
+      ctx.arc(rightCx, 290, 48, 0, 2 * Math.PI);
+      ctx.fillStyle = '#FAF3DD';
+      ctx.fill();
+      ctx.strokeStyle = '#C9A227';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.fillStyle = '#8B1A1A';
+      ctx.font = 'bold 30px "Be Vietnam Pro", sans-serif';
+      ctx.fillText(`${harmonyResult ? harmonyResult.score : 85}`, rightCx, 296);
+      ctx.fillStyle = '#664422';
+      ctx.font = 'bold 10px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('ĐIỂM HÀI HÒA', rightCx, 314);
+
+      if (creativityLabel) {
+        ctx.fillStyle = '#1D2440';
+        ctx.font = 'bold 11px "Be Vietnam Pro", sans-serif';
+        ctx.fillText(creativityLabel, rightCx, 362);
+      }
+
+      const colors = [
+        { hex: outerColor?.hex || '#8B1A1A', label: 'Áo' },
+        { hex: bottomColor?.hex || '#F5F5F0', label: 'Quần' },
+        { hex: '#C9A227', label: 'Khuy' }
+      ];
+      colors.forEach((c, idx) => {
+        const bx = 342 + idx * 54;
+        ctx.beginPath();
+        ctx.arc(bx + 12, 405, 16, 0, 2 * Math.PI);
+        ctx.fillStyle = c.hex;
+        ctx.fill();
+        ctx.strokeStyle = '#333333';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = '#333333';
+        ctx.font = '10px "Be Vietnam Pro", sans-serif';
+        ctx.fillText(c.label, bx + 12, 434);
+      });
+
+      const accList = [headAccessory?.name, handAccessory?.name, footAccessory?.name].filter(Boolean);
+      ctx.fillStyle = '#555555';
+      ctx.font = 'italic 11px "Be Vietnam Pro", sans-serif';
+      ctx.fillText(
+        (accList.length > 0 ? accList.join(' • ') : 'Trang phục cổ truyền').slice(0, 34),
+        rightCx,
+        462
+      );
     } else {
       ctx.fillStyle = '#8B1A1A';
       ctx.font = 'bold 24px "Be Vietnam Pro", sans-serif';
@@ -255,11 +366,13 @@ export function LookbookModal({
     ctx.font = 'bold 11px "Be Vietnam Pro", sans-serif';
     ctx.fillText('Đại diện dự án: Đỗ Đăng Trường – HaUI', 160, 726);
 
-    // Subtle Watermark (Free tier mark)
-    ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(139, 26, 26, 0.35)';
-    ctx.font = 'bold 11px "Be Vietnam Pro", sans-serif';
-    ctx.fillText('Việt Phục Remix', width - 48, 756);
+    // Subtle Watermark (chỉ hiển thị ở gói Miễn phí; tự động ẩn ở gói Pro)
+    if (!removeWatermark) {
+      ctx.textAlign = 'right';
+      ctx.fillStyle = 'rgba(139, 26, 26, 0.35)';
+      ctx.font = 'bold 11px "Be Vietnam Pro", sans-serif';
+      ctx.fillText('Việt Phục Remix', width - 48, 756);
+    }
 
     // Bottom Copyright
     ctx.textAlign = 'center';
@@ -300,7 +413,11 @@ export function LookbookModal({
     footAccessory,
     harmonyResult,
     creativityLabel,
-    shareUrl
+    shareUrl,
+    customCaption,
+    showTryOnPhoto,
+    tryOnImage,
+    removeWatermark
   ]);
 
   useEffect(() => {
@@ -350,7 +467,7 @@ export function LookbookModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-2xl bg-[#FAF7F2] rounded-3xl border-2 border-[#C9A227] shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
+      <div className="relative w-full max-w-2xl bg-surface-subtle rounded-3xl border-2 border-[#C9A227] shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
         <div className="bg-gradient-to-r from-[#8B1A1A] to-[#600C0C] text-white p-4 flex items-center justify-between border-b-2 border-[#C9A227]">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-[#F9D423]" />
@@ -367,13 +484,45 @@ export function LookbookModal({
           </button>
         </div>
 
-        <div className="p-4 overflow-y-auto flex flex-col items-center">
-          <div className={`w-full rounded-2xl overflow-hidden shadow-xl border-2 border-[#DECDB8] ${isFamily ? 'max-w-[520px]' : 'max-w-[360px]'}`}>
+        <div className="p-4 overflow-y-auto flex flex-col items-center space-y-3">
+          {/* Tùy biến tiêu đề / lời chúc & bật nhúng ảnh thử đồ thật */}
+          <div className="w-full max-w-[520px] bg-white rounded-2xl p-3 border border-border-warm space-y-2 text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label htmlFor="lookbook-custom-caption" className="font-bold text-[#1D2440] whitespace-nowrap">
+                Lời chúc / Tên bộ sưu tập:
+              </label>
+              <input
+                id="lookbook-custom-caption"
+                name="customCaption"
+                type="text"
+                maxLength={48}
+                value={customCaption}
+                onChange={(e) => setCustomCaption(e.target.value)}
+                placeholder="VD: Xuân Bính Ngọ — Gia đình Minh Anh"
+                className="flex-1 px-2.5 py-1.5 rounded-lg border border-border-warm bg-surface-subtle focus:outline-hidden focus:border-[#8B1A1A]"
+              />
+            </div>
+
+            {!isFamily && tryOnImage && (
+              <label htmlFor="lookbook-use-tryon" className="flex items-center gap-2 text-[11px] font-semibold text-[#664422] cursor-pointer">
+                <input
+                  id="lookbook-use-tryon"
+                  name="useTryOnPhoto"
+                  type="checkbox"
+                  checked={useTryOnPhoto}
+                  onChange={(e) => setUseTryOnPhoto(e.target.checked)}
+                />
+                <span>Nhúng ảnh thử đồ thật của tôi vào khung chính Poster</span>
+              </label>
+            )}
+          </div>
+
+          <div className={`w-full rounded-2xl overflow-hidden shadow-xl border-2 border-border-warm ${isFamily ? 'max-w-[520px]' : 'max-w-[360px]'}`}>
             <canvas ref={canvasRef} className="w-full h-auto block" />
           </div>
         </div>
 
-        <div className="bg-[#FAF3DD] p-4 border-t border-[#DECDB8] flex flex-wrap items-center justify-between gap-3">
+        <div className="bg-[#FAF3DD] p-4 border-t border-border-warm flex flex-wrap items-center justify-between gap-3">
           <div className="text-xs text-[#664422]">
             <span className="font-bold block">Độ phân giải: {isFamily ? '900 × 800' : '600 × 800'} HD</span>
             <span>Mã QR thật kết nối trực tiếp đến bộ phối này.</span>
@@ -383,7 +532,7 @@ export function LookbookModal({
             <button
               type="button"
               onClick={handleSocialShare}
-              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-[#1D2440] bg-white hover:bg-[#FAF7F2] border border-[#DECDB8] transition shadow-xs"
+              className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-[#1D2440] bg-white hover:bg-surface-subtle border border-border-warm transition shadow-xs"
             >
               {shareFeedback ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4 text-[#8B1A1A]" />}
               <span>{shareFeedback || 'Chia sẻ MXH'}</span>

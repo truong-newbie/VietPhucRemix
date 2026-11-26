@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { CalendarCheck, CheckCircle2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { CalendarCheck, CheckCircle2, AlertCircle, ArrowLeft, Ruler } from 'lucide-react';
 import { submitBooking } from '../services/bookingService';
+import { suggestGarmentSize, estimateDiscountedPrice } from '../utils/sizeHelper';
 
 export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBooked }) {
   const [serviceType, setServiceType] = useState('thue');
@@ -8,11 +9,18 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
   const [phone, setPhone] = useState('');
   const [pickupDate, setPickupDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [size, setSize] = useState('M');
+  const [showSizeHelper, setShowSizeHelper] = useState(false);
+  const [heightCm, setHeightCm] = useState('165');
+  const [weightKg, setWeightKg] = useState('56');
   const [note, setNote] = useState('');
   const [pdpConsent, setPdpConsent] = useState(false);
   const [errors, setErrors] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [receipt, setReceipt] = useState(null);
+
+  const sizeSuggestion = suggestGarmentSize(heightCm, weightKg);
+  const activePriceText = serviceType === 'may' ? partner.tailoringPrice : partner.rentalPrice;
+  const discountedEstimate = estimateDiscountedPrice(activePriceText, 10);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,7 +80,7 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-4 border border-[#DECDB8] space-y-3 text-xs">
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl p-4 border border-border-warm space-y-3 text-xs">
       <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
         <button
           type="button"
@@ -92,7 +100,7 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
           className={`py-2 rounded-xl font-bold border ${
             serviceType === 'thue'
               ? 'bg-[#8B1A1A] text-white border-[#8B1A1A]'
-              : 'bg-[#FAF7F2] text-gray-700 border-[#DECDB8]'
+              : 'bg-surface-subtle text-gray-700 border-border-warm'
           }`}
         >
           Thuê theo ngày
@@ -103,12 +111,23 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
           className={`py-2 rounded-xl font-bold border ${
             serviceType === 'may'
               ? 'bg-[#1D2440] text-white border-[#1D2440]'
-              : 'bg-[#FAF7F2] text-gray-700 border-[#DECDB8]'
+              : 'bg-surface-subtle text-gray-700 border-border-warm'
           }`}
         >
           Đặt may đo riêng
         </button>
       </div>
+
+      {discountedEstimate && (
+        <div className="flex flex-wrap items-center justify-between gap-2 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 text-[11px] text-emerald-900">
+          <span>
+            Giá niêm yết: <strong className="line-through text-gray-500">{activePriceText}</strong>
+          </span>
+          <span>
+            Ước tính sau giảm 10%: <strong className="text-emerald-800 text-xs">{discountedEstimate}</strong>
+          </span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <div>
@@ -119,7 +138,7 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             placeholder="Nguyễn Minh Anh"
-            className="w-full px-3 py-2 rounded-xl border border-[#DECDB8] bg-[#FAF7F2]"
+            className="w-full px-3 py-2 rounded-xl border border-border-warm bg-surface-subtle"
           />
         </div>
         <div>
@@ -130,7 +149,7 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="0912345678"
-            className="w-full px-3 py-2 rounded-xl border border-[#DECDB8] bg-[#FAF7F2]"
+            className="w-full px-3 py-2 rounded-xl border border-border-warm bg-surface-subtle"
           />
         </div>
         <div>
@@ -140,15 +159,29 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
             required
             value={pickupDate}
             onChange={(e) => setPickupDate(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-[#DECDB8] bg-[#FAF7F2]"
+            className="w-full px-3 py-2 rounded-xl border border-border-warm bg-surface-subtle"
           />
         </div>
         <div>
-          <label className="font-bold text-gray-700 block mb-1">Kích cỡ dự kiến</label>
+          <div className="flex items-center justify-between mb-1">
+            <label htmlFor="booking-size-select" className="font-bold text-gray-700">
+              Kích cỡ dự kiến
+            </label>
+            <button
+              type="button"
+              onClick={() => setShowSizeHelper((v) => !v)}
+              className="flex items-center gap-1 text-[11px] font-bold text-[#8B1A1A] hover:underline"
+            >
+              <Ruler className="w-3 h-3" />
+              <span>Gợi ý Size</span>
+            </button>
+          </div>
           <select
+            id="booking-size-select"
+            name="size"
             value={size}
             onChange={(e) => setSize(e.target.value)}
-            className="w-full px-3 py-2 rounded-xl border border-[#DECDB8] bg-[#FAF7F2]"
+            className="w-full px-3 py-2 rounded-xl border border-border-warm bg-surface-subtle"
           >
             <option value="S">Size S (42–48 kg)</option>
             <option value="M">Size M (49–56 kg)</option>
@@ -159,6 +192,52 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
         </div>
       </div>
 
+      {showSizeHelper && (
+        <div className="bg-surface-subtle rounded-xl p-3 border border-border-warm space-y-2 text-[11px]">
+          <div className="grid grid-cols-2 gap-2">
+            <label className="flex flex-col gap-1 font-semibold text-[#574C43]">
+              <span>Chiều cao (cm)</span>
+              <input
+                type="number"
+                min={120}
+                max={220}
+                value={heightCm}
+                onChange={(e) => setHeightCm(e.target.value)}
+                className="px-2.5 py-1.5 rounded-lg border border-border-warm bg-white text-xs text-[#1D2440]"
+              />
+            </label>
+            <label className="flex flex-col gap-1 font-semibold text-[#574C43]">
+              <span>Cân nặng (kg)</span>
+              <input
+                type="number"
+                min={30}
+                max={150}
+                value={weightKg}
+                onChange={(e) => setWeightKg(e.target.value)}
+                className="px-2.5 py-1.5 rounded-lg border border-border-warm bg-white text-xs text-[#1D2440]"
+              />
+            </label>
+          </div>
+          {sizeSuggestion && (
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+              <span className="text-[#1D2440]">
+                Gợi ý: <strong className="text-[#8B1A1A]">Size {sizeSuggestion.size}</strong> — {sizeSuggestion.note}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setSize(sizeSuggestion.size);
+                  setShowSizeHelper(false);
+                }}
+                className="px-2.5 py-1 rounded-lg bg-[#8B1A1A] text-white font-bold"
+              >
+                Chọn Size {sizeSuggestion.size}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       <div>
         <label className="font-bold text-gray-700 block mb-1">Ghi chú thêm (màu sắc, phụ kiện đi kèm)</label>
         <textarea
@@ -166,11 +245,11 @@ export function BookingForm({ partner, selectedGarment, shareUrl, onBack, onBook
           value={note}
           onChange={(e) => setNote(e.target.value)}
           placeholder={`Đặt mẫu ${selectedGarment?.name || 'Việt phục'}...`}
-          className="w-full px-3 py-2 rounded-xl border border-[#DECDB8] bg-[#FAF7F2]"
+          className="w-full px-3 py-2 rounded-xl border border-border-warm bg-surface-subtle"
         />
       </div>
 
-      <label className="flex items-start gap-2 bg-[#FAF3DD] p-2.5 rounded-xl border border-[#E8DFC8] cursor-pointer">
+      <label className="flex items-start gap-2 bg-[#FAF3DD] p-2.5 rounded-xl border border-border-subtle cursor-pointer">
         <input
           type="checkbox"
           checked={pdpConsent}

@@ -14,7 +14,7 @@ export class Stage3DErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="w-full aspect-[3/4] max-h-[620px] rounded-2xl bg-[#FAF7F2] border border-[#E0D5C1] p-6 flex flex-col items-center justify-center text-center gap-3">
+        <div className="w-full aspect-[3/4] max-h-[620px] rounded-2xl bg-surface-subtle border border-border-subtle p-6 flex flex-col items-center justify-center text-center gap-3">
           <AlertTriangle className="w-8 h-8 text-amber-600" />
           <h4 className="font-bold text-sm text-[#1D2440]">
             Thiết bị chưa hỗ trợ hiển thị WebGL 3D

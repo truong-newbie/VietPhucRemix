@@ -19,3 +19,10 @@
 | `Mat_Trim` | Cổ áo lót trong / Nẹp viền / Cổ tay |
 
 Các phần không đổi màu (da mặt, tóc, khuy vàng) đặt tên khác (ví dụ `Skin_Base`, `Gold_Button`) để hệ thống giữ nguyên màu gốc.
+
+## 3. Tạo nhanh file `.glb` bằng AI trong 5 phút (Tripo3D / Hunyuan3D / TRELLIS)
+Khi chưa có artist 3D, bạn có thể tạo mẫu `.glb` thật theo 3 bước:
+1. Tạo 1 ảnh tham chiếu **chính diện, nền trắng trơn** (dùng ChatGPT / Gemini / ảnh chụp ma-nơ-canh) theo prompt gợi ý:
+   > `Full-body museum mannequin wearing Vietnamese traditional Nhat Binh royal robe, standing straight facing front, pure solid white background, studio lighting, crisp silk embroidery details, no shadows on floor`
+2. Tải ảnh lên **Tripo3D.ai** (miễn phí mỗi ngày) hoặc **Tencent Hunyuan3D / TRELLIS** trên Hugging Face Spaces → bấm tạo 3D → tải về định dạng `.glb`.
+3. Đổi tên thành `nhat-binh.glb`, chép vào `public/models/` và thêm `"nhat-binh"` vào `public/models/manifest.json` — `GlbGarmentLoader` đã tích hợp tự động căn giữa và chuẩn hóa tỷ lệ trên bục trưng bày.

@@ -120,8 +120,43 @@ DROP POLICY IF EXISTS "Authenticated advisors upsert rule reviews" ON public.rul
 CREATE POLICY "Authenticated advisors upsert rule reviews" ON public.rule_reviews
   FOR ALL USING (auth.role() = 'authenticated') WITH CHECK (auth.role() = 'authenticated');
 
+-- Bảng Đơn thanh toán VietQR & Số dư Credit AI (sẵn sàng đấu nối webhook SePay / PayOS)
+CREATE TABLE IF NOT EXISTS public.payment_orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_code TEXT NOT NULL UNIQUE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  plan_id TEXT NOT NULL,
+  amount_vnd INT NOT NULL,
+  credits_granted INT NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'sandbox_paid', 'cancelled')),
+  provider TEXT NOT NULL DEFAULT 'vietqr-sandbox',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  paid_at TIMESTAMPTZ
+);
+
+CREATE TABLE IF NOT EXISTS public.user_credits (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  credits INT NOT NULL DEFAULT 2,
+  plan_id TEXT NOT NULL DEFAULT 'free',
+  remove_watermark BOOLEAN NOT NULL DEFAULT FALSE,
+  partner_discount_percent INT NOT NULL DEFAULT 10,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.payment_orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_credits ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users read own payment orders" ON public.payment_orders;
+CREATE POLICY "Users read own payment orders" ON public.payment_orders
+  FOR SELECT USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users read own credits" ON public.user_credits;
+CREATE POLICY "Users read own credits" ON public.user_credits
+  FOR SELECT USING (auth.uid() = user_id);
+
 -- Cấp quyền mức bảng cho role anon & authenticated (bắt buộc kèm RLS trên Supabase mới)
 GRANT USAGE ON SCHEMA public TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.profiles, public.saved_outfits, public.user_badges, public.rule_reviews TO authenticated;
+GRANT SELECT ON public.payment_orders, public.user_credits TO authenticated;
 GRANT INSERT ON public.bookings, public.analytics_events, public.study_responses TO anon, authenticated;
 GRANT SELECT ON public.study_responses, public.rule_reviews TO anon, authenticated;

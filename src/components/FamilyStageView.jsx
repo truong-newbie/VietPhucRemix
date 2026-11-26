@@ -44,7 +44,7 @@ export function FamilyStageView({
   const familyHarmony = useMemo(() => computeFamilyHarmony(members), [members]);
 
   return (
-    <div className="rounded-2xl bg-gradient-to-b from-[#FAF7F2] via-[#F4EFE6] to-[#EBE4D5] border border-[#E0D5C1] shadow-xl p-4 space-y-3">
+    <div className="rounded-2xl bg-gradient-to-b from-[#FAF7F2] via-[#F4EFE6] to-[#EBE4D5] border border-border-subtle shadow-xl p-4 space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Users className="w-4 h-4 text-[#8B1A1A]" />
@@ -87,7 +87,7 @@ export function FamilyStageView({
               className={`relative rounded-2xl p-1.5 border-2 transition cursor-pointer ${
                 isActive
                   ? 'border-[#8B1A1A] bg-white shadow-md ring-2 ring-[#8B1A1A]/20'
-                  : 'border-[#E0D5C1] bg-white/60 hover:bg-white'
+                  : 'border-border-subtle bg-white/60 hover:bg-white'
               }`}
               onClick={() => onSelectMember(idx)}
             >
@@ -125,7 +125,7 @@ export function FamilyStageView({
                 />
               </div>
 
-              <p className="text-[10px] text-center font-semibold text-gray-600 truncate mt-1">
+              <p className="text-[11px] text-center font-semibold text-gray-600 truncate mt-1">
                 {garment.name}
               </p>
             </div>

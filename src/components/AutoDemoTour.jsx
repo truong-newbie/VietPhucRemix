@@ -235,7 +235,7 @@ export function AutoDemoTour({
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C9A227] text-black">
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#C9A227] text-black">
                 Cảnh {currentStep.id}/6 • {currentStep.timeRange}
               </span>
               <span className="text-[11px] text-gray-300 font-mono">
@@ -251,7 +251,7 @@ export function AutoDemoTour({
         {/* Subtitle Teleprompter (Lời thoại hiển thị & AI đang đọc) */}
         <div className="flex-1 w-full max-w-xl bg-white/10 p-2.5 rounded-xl border border-white/15 text-xs text-gray-200 leading-relaxed">
           <div className="flex items-center justify-between gap-2 mb-1">
-            <span className="flex items-center gap-1.5 text-[#F9D423] font-bold text-[10px] uppercase">
+            <span className="flex items-center gap-1.5 text-[#F9D423] font-bold text-[11px] uppercase">
               <Mic className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
               <span>Lời thuyết minh {isVoiceEnabled ? '(AI đang đọc live)' : '(Đã tắt tiếng)'}:</span>
             </span>
@@ -259,7 +259,7 @@ export function AutoDemoTour({
             {/* Voice Mute / Unmute Button */}
             <button
               onClick={toggleVoice}
-              className={`flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold transition ${
+              className={`flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-bold transition ${
                 isVoiceEnabled
                   ? 'bg-emerald-600 text-white'
                   : 'bg-white/20 text-gray-300 hover:text-white'

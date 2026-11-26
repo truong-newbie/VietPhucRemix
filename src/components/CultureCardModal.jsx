@@ -8,7 +8,7 @@ export function CultureCardModal({ isOpen, onClose, garment, onOpenQuiz }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-2xl bg-[#FAF7F2] rounded-3xl border-2 border-[#C9A227] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-2xl bg-surface-subtle rounded-3xl border-2 border-[#C9A227] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header Ribbon */}
         <div className="bg-gradient-to-r from-[#8B1A1A] via-[#7A1515] to-[#5C1010] text-white p-5 flex items-center justify-between border-b-2 border-[#C9A227]">
           <div className="flex items-center gap-3">
@@ -36,10 +36,10 @@ export function CultureCardModal({ isOpen, onClose, garment, onOpenQuiz }) {
         <div className="p-6 overflow-y-auto space-y-5 text-gray-800 text-sm leading-relaxed">
           {/* Era & Region Tag */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#EAE0D0] text-[#664422] border border-[#DECDB8]">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#EAE0D0] text-[#664422] border border-border-warm">
               Thời kỳ: {garment.era}
             </span>
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#FAF3DD] text-[#8C5E3B] border border-[#E8DFC8]">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#FAF3DD] text-[#8C5E3B] border border-border-subtle">
               Địa bàn: {garment.region}
             </span>
             <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
@@ -48,7 +48,7 @@ export function CultureCardModal({ isOpen, onClose, garment, onOpenQuiz }) {
           </div>
 
           {/* Section 1: Lịch sử & Nguồn gốc */}
-          <div className="bg-white p-4 rounded-2xl border border-[#E6DBCE] shadow-sm">
+          <div className="bg-white p-4 rounded-2xl border border-border-subtle shadow-sm">
             <h4 className="font-bold text-[#8B1A1A] text-sm flex items-center gap-2 mb-2">
               <BookOpen className="w-4 h-4 text-[#C9A227]" />
               1. Bối cảnh Lịch sử & Sắc Dụ Hoàng Gia
@@ -57,13 +57,13 @@ export function CultureCardModal({ isOpen, onClose, garment, onOpenQuiz }) {
           </div>
 
           {/* Section 2: Cấu tạo & Triết lý nếp áo */}
-          <div className="bg-white p-4 rounded-2xl border border-[#E6DBCE] shadow-sm">
+          <div className="bg-white p-4 rounded-2xl border border-border-subtle shadow-sm">
             <h4 className="font-bold text-[#8B1A1A] text-sm flex items-center gap-2 mb-2">
               <ShieldCheck className="w-4 h-4 text-[#C9A227]" />
               2. Cấu tạo nếp áo & Triết lý sống cha ông
             </h4>
             <p className="text-gray-700 mb-2">{card.structure}</p>
-            <div className="p-3 bg-[#FAF7F2] rounded-xl border border-[#E6DBCE] text-xs italic text-[#664422]">
+            <div className="p-3 bg-surface-subtle rounded-xl border border-border-subtle text-xs italic text-[#664422]">
               💡 {garment.philosophy}
             </div>
           </div>
@@ -79,7 +79,7 @@ export function CultureCardModal({ isOpen, onClose, garment, onOpenQuiz }) {
         </div>
 
         {/* Footer */}
-        <div className="bg-[#FAF3DD] p-4 border-t border-[#DECDB8] flex flex-wrap items-center justify-between gap-2">
+        <div className="bg-[#FAF3DD] p-4 border-t border-border-warm flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs text-gray-500 italic">
             Trích xuất từ công trình nghiên cứu “Ngàn năm áo mũ” & Bảo tàng Lịch sử Quốc gia.
           </span>
@@ -88,7 +88,7 @@ export function CultureCardModal({ isOpen, onClose, garment, onOpenQuiz }) {
               <button
                 type="button"
                 onClick={onOpenQuiz}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[#1D2440] bg-white hover:bg-[#FAF7F2] border border-[#C9A227] transition shadow-xs"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-[#1D2440] bg-white hover:bg-surface-subtle border border-[#C9A227] transition shadow-xs"
               >
                 <Award className="w-4 h-4 text-[#C9A227]" />
                 <span>Kiểm tra hiểu biết (3 câu)</span>

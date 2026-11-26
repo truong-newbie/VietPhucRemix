@@ -11,7 +11,7 @@ export function Footer({ onNavigateRoadmap }) {
               <span className="font-black text-lg text-white tracking-wider">
                 VIỆT PHỤC REMIX
               </span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#C9A227]/20 text-[#F9D423] border border-[#C9A227]/40">
+              <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#C9A227]/20 text-[#F9D423] border border-[#C9A227]/40">
                 MVP 1.0 Live
               </span>
             </div>
@@ -42,23 +42,23 @@ export function Footer({ onNavigateRoadmap }) {
         {/* Team Leadership Details */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-white/5 p-4 rounded-2xl border border-white/10">
           <div>
-            <span className="text-[10px] uppercase font-bold text-gray-400 block">Đại diện dự án</span>
+            <span className="text-[11px] uppercase font-bold text-gray-400 block">Đại diện dự án</span>
             <span className="font-bold text-white text-sm">Đỗ Đăng Trường</span>
             <p className="text-gray-400 text-[11px]">Trường Đại học Công nghiệp Hà Nội</p>
           </div>
 
           <div>
-            <span className="text-[10px] uppercase font-bold text-gray-400 block">Liên hệ dự án</span>
+            <span className="text-[11px] uppercase font-bold text-gray-400 block">Liên hệ dự án</span>
             <span className="text-white font-medium">dangtruong3122005@gmail.com</span>
             <p className="text-gray-400 text-[11px]">HaUI Innovation Hub</p>
           </div>
 
           <div>
-            <span className="text-[10px] uppercase font-bold text-gray-400 block">Kim chỉ nam tư tưởng</span>
+            <span className="text-[11px] uppercase font-bold text-gray-400 block">Kim chỉ nam tư tưởng</span>
             <span className="text-[#F9D423] italic text-[11px] font-medium">
               “Văn hóa còn thì Dân tộc còn”
             </span>
-            <p className="text-gray-400 text-[10px]">Nghị quyết 33 & Nghị quyết 68-NQ/TW</p>
+            <p className="text-gray-400 text-[11px]">Nghị quyết 33 & Nghị quyết 68-NQ/TW</p>
           </div>
         </div>
 

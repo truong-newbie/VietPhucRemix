@@ -25,10 +25,10 @@ export function CompareDrawer({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-4xl bg-[#FAF7F2] rounded-3xl border-2 border-[#C9A227] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="relative w-full max-w-4xl bg-surface-subtle rounded-3xl border-2 border-[#C9A227] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         <div className="bg-gradient-to-r from-[#1D2440] to-[#2C365E] text-white p-4 flex items-center justify-between border-b-2 border-[#C9A227]">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#F9D423] block">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#F9D423] block">
               So sánh phương án phối đồ (Tối đa 3 bộ)
             </span>
             <h3 className="font-bold text-base sm:text-lg">
@@ -74,7 +74,7 @@ export function CompareDrawer({
                   <div
                     key={item.id}
                     className={`min-w-[240px] flex-1 snap-center rounded-2xl bg-white p-3 border-2 flex flex-col justify-between gap-3 ${
-                      isBest ? 'border-[#C9A227] shadow-md' : 'border-[#E6DBCE]'
+                      isBest ? 'border-[#C9A227] shadow-md' : 'border-border-subtle'
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -82,7 +82,7 @@ export function CompareDrawer({
                         Phương án {label}
                       </span>
                       {isBest && (
-                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                        <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
                           <Trophy className="w-3 h-3" />
                           Cao nhất
                         </span>

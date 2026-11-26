@@ -98,7 +98,7 @@ export function AdvisorAdminPage({ user, onBack }) {
 
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen bg-[#F4EFE6] p-8 flex flex-col items-center justify-center text-center gap-4">
+      <div className="min-h-screen bg-surface-canvas p-8 flex flex-col items-center justify-center text-center gap-4">
         <ShieldCheck className="w-10 h-10 text-[#8B1A1A]" />
         <h2 className="font-bold text-lg text-[#1D2440]">Khu vực dành riêng cho Hội đồng Cố vấn Văn hóa</h2>
         <p className="text-xs text-gray-600 max-w-md">
@@ -112,15 +112,15 @@ export function AdvisorAdminPage({ user, onBack }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#F4EFE6] py-6 px-4 sm:px-8">
+    <div className="min-h-screen bg-surface-canvas py-6 px-4 sm:px-8">
       <div className="max-w-6xl mx-auto space-y-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-[#DECDB8] shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-border-warm shadow-sm">
           <div className="flex items-center gap-3">
-            <button onClick={onBack} className="p-2 rounded-xl bg-[#FAF7F2] border border-[#DECDB8] text-[#1D2440]">
+            <button onClick={onBack} className="p-2 rounded-xl bg-surface-subtle border border-border-warm text-[#1D2440]">
               <ArrowLeft className="w-4 h-4" />
             </button>
             <div>
-              <span className="text-[10px] font-bold uppercase text-[#8B1A1A] block">
+              <span className="text-[11px] font-bold uppercase text-[#8B1A1A] block">
                 Lớp 2 – Thẩm định Chuyên gia (?admin=1)
               </span>
               <h1 className="font-bold text-lg text-[#1D2440]">
@@ -140,8 +140,8 @@ export function AdvisorAdminPage({ user, onBack }) {
         </div>
 
         {/* Filters */}
-        <div className="bg-white p-4 rounded-2xl border border-[#DECDB8] flex flex-wrap items-center gap-3 text-xs">
-          <div className="flex items-center gap-2 flex-1 min-w-[200px] bg-[#FAF7F2] px-3 py-2 rounded-xl border border-[#DECDB8]">
+        <div className="bg-white p-4 rounded-2xl border border-border-warm flex flex-wrap items-center gap-3 text-xs">
+          <div className="flex items-center gap-2 flex-1 min-w-[200px] bg-surface-subtle px-3 py-2 rounded-xl border border-border-warm">
             <Search className="w-4 h-4 text-gray-400" />
             <input
               id="admin-rule-search"
@@ -161,7 +161,7 @@ export function AdvisorAdminPage({ user, onBack }) {
             aria-label="Lọc theo nhóm luật"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-[#DECDB8] bg-[#FAF7F2] font-semibold"
+            className="px-3 py-2 rounded-xl border border-border-warm bg-surface-subtle font-semibold"
           >
             <option value="all">Tất cả 8 nhóm</option>
             <option value="ton-nghiem">Tôn nghiêm</option>
@@ -194,10 +194,10 @@ export function AdvisorAdminPage({ user, onBack }) {
             const isEditing = editingId === rule.id;
 
             return (
-              <div key={rule.id} className="bg-white rounded-2xl p-4 border border-[#E0D5C1] text-xs space-y-2">
+              <div key={rule.id} className="bg-white rounded-2xl p-4 border border-border-subtle text-xs space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-[10px] px-2 py-0.5 rounded bg-gray-100 text-gray-700">
+                    <span className="font-mono text-[11px] px-2 py-0.5 rounded bg-gray-100 text-gray-700">
                       {rule.id}
                     </span>
                     <span className="font-bold text-[#1D2440] text-sm">{rule.title}</span>
@@ -205,7 +205,7 @@ export function AdvisorAdminPage({ user, onBack }) {
 
                   <div className="flex items-center gap-2">
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
                         effectiveSource === 'CẦN THẨM ĐỊNH'
                           ? 'bg-amber-100 text-amber-800'
                           : 'bg-emerald-100 text-emerald-800'
@@ -245,7 +245,7 @@ export function AdvisorAdminPage({ user, onBack }) {
                       value={draftSource}
                       onChange={(e) => setDraftSource(e.target.value)}
                       placeholder="Nhập nguồn sách / trang (vd: Ngàn năm áo mũ, tr. 142)"
-                      className="sm:col-span-2 px-3 py-1.5 rounded-lg border border-[#DECDB8] bg-[#FAF7F2]"
+                      className="sm:col-span-2 px-3 py-1.5 rounded-lg border border-border-warm bg-surface-subtle"
                     />
                     <button
                       type="button"

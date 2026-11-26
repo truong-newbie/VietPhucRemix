@@ -66,7 +66,7 @@ export function StudyModeModal({ isOpen, onClose }) {
     return (
       <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 bg-[#1D2440] text-white p-4 rounded-2xl border-2 border-[#C9A227] shadow-2xl space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase text-[#F9D423]">
+          <span className="text-[11px] font-bold uppercase text-[#F9D423]">
             Chế độ Khảo sát (?study=1) • Bước 3/5
           </span>
           <button type="button" onClick={onClose} aria-label="Thoát khảo sát" className="text-gray-300 hover:text-white">
@@ -90,12 +90,12 @@ export function StudyModeModal({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-sm">
-      <div className="w-full max-w-2xl bg-[#FAF7F2] rounded-3xl border-2 border-[#C9A227] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="w-full max-w-2xl bg-surface-subtle rounded-3xl border-2 border-[#C9A227] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="bg-gradient-to-r from-[#1D2440] to-[#2C365E] text-white p-4 flex items-center justify-between border-b-2 border-[#C9A227]">
           <div className="flex items-center gap-2">
             <ClipboardCheck className="w-5 h-5 text-[#F9D423]" />
             <div>
-              <span className="text-[10px] font-bold uppercase text-[#F9D423] block">
+              <span className="text-[11px] font-bold uppercase text-[#F9D423] block">
                 Thực nghiệm Người dùng &amp; Đo lường SUS (?study=1)
               </span>
               <h3 className="font-bold text-base">Khảo sát Trải nghiệm Việt Phục Remix</h3>
@@ -123,7 +123,7 @@ export function StudyModeModal({ isOpen, onClose }) {
                       className={`py-2 px-3 rounded-xl font-bold border ${
                         ageGroup === g
                           ? 'bg-[#8B1A1A] text-white border-[#8B1A1A]'
-                          : 'bg-white text-gray-700 border-[#DECDB8]'
+                          : 'bg-white text-gray-700 border-border-warm'
                       }`}
                     >
                       {g}
@@ -150,7 +150,7 @@ export function StudyModeModal({ isOpen, onClose }) {
                 const map = step === 2 ? preAnswers : postAnswers;
                 const setMap = step === 2 ? setPreAnswers : setPostAnswers;
                 return (
-                  <div key={q.id} className="bg-white p-3.5 rounded-xl border border-[#DECDB8] space-y-2">
+                  <div key={q.id} className="bg-white p-3.5 rounded-xl border border-border-warm space-y-2">
                     <p className="font-bold text-[#1D2440]">
                       Câu {idx + 1}: {q.question}
                     </p>
@@ -163,7 +163,7 @@ export function StudyModeModal({ isOpen, onClose }) {
                           className={`w-full text-left px-3 py-1.5 rounded-lg border ${
                             map[q.id] === oIdx
                               ? 'border-[#8B1A1A] bg-[#8B1A1A]/10 font-bold text-[#8B1A1A]'
-                              : 'border-[#E6DBCE] bg-[#FAF7F2]'
+                              : 'border-border-subtle bg-surface-subtle'
                           }`}
                         >
                           {opt}
@@ -189,7 +189,7 @@ export function StudyModeModal({ isOpen, onClose }) {
                 Bước 5/5: Bảng đánh giá Mức độ Khả dụng SUS (1 = Rất không đồng ý → 5 = Rất đồng ý)
               </h4>
               {SUS_QUESTIONS_VI.map((qText, i) => (
-                <div key={i} className="bg-white p-3 rounded-xl border border-[#DECDB8] space-y-2">
+                <div key={i} className="bg-white p-3 rounded-xl border border-border-warm space-y-2">
                   <p className="font-semibold text-gray-800">
                     {i + 1}. {qText}
                   </p>
@@ -204,7 +204,7 @@ export function StudyModeModal({ isOpen, onClose }) {
                         className={`flex-1 py-1.5 rounded-lg font-bold border ${
                           susAnswers[i] === val
                             ? 'bg-[#1D2440] text-white border-[#1D2440]'
-                            : 'bg-[#FAF7F2] text-gray-700 border-[#DECDB8]'
+                            : 'bg-surface-subtle text-gray-700 border-border-warm'
                         }`}
                       >
                         {val}
@@ -221,7 +221,7 @@ export function StudyModeModal({ isOpen, onClose }) {
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Điều bạn thích nhất hoặc muốn cải thiện thêm..."
-                  className="w-full px-3 py-2 rounded-xl border border-[#DECDB8] bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-border-warm bg-white"
                 />
               </div>
 

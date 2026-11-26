@@ -16,10 +16,10 @@ import { EvidenceSection } from './EvidenceSection';
 
 export function ProjectRoadmapPage({ onBackToStudio }) {
   return (
-    <div className="min-h-screen bg-[#F4EFE6] text-[#2C241D] py-8 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#8B1A1A] selection:text-white">
+    <div className="min-h-screen bg-surface-canvas text-[#2C241D] py-8 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#8B1A1A] selection:text-white">
       <div className="max-w-5xl mx-auto space-y-10">
         {/* Navigation Back Bar */}
-        <div className="flex items-center justify-between border-b border-[#DECDB8] pb-4">
+        <div className="flex items-center justify-between border-b border-border-warm pb-4">
           <button
             onClick={onBackToStudio}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#8B1A1A] hover:bg-[#A62626] transition shadow-md"
@@ -82,7 +82,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Box 1: Đạt 100% đề thi Audition */}
-            <div className="bg-white rounded-2xl p-5 border border-[#DECDB8] shadow-sm space-y-3">
+            <div className="bg-white rounded-2xl p-5 border border-border-warm shadow-sm space-y-3">
               <div className="flex items-center gap-2.5 text-[#8B1A1A]">
                 <Target className="w-5 h-5 shrink-0" />
                 <h3 className="font-bold text-base text-[#1D2440]">1. Đáp ứng 100% Đề bài Audition của BTC</h3>
@@ -104,7 +104,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
             </div>
 
             {/* Box 2: Động cơ Layered SVG 0đ server */}
-            <div className="bg-white rounded-2xl p-5 border border-[#DECDB8] shadow-sm space-y-3">
+            <div className="bg-white rounded-2xl p-5 border border-border-warm shadow-sm space-y-3">
               <div className="flex items-center gap-2.5 text-[#1F6F5C]">
                 <Cpu className="w-5 h-5 shrink-0" />
                 <h3 className="font-bold text-base text-[#1D2440]">2. Động cơ Layered SVG Avatar (0đ Chi Phí Server)</h3>
@@ -112,7 +112,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
               <p className="text-xs text-gray-700 leading-relaxed">
                 Đội ngũ kỹ thuật giải bài toán kinh tế thông minh: Thay vì sử dụng server GPU render AI đắt đỏ ngốn hàng nghìn USD, nhóm xây dựng <strong>Layered SVG Engine</strong> chạy trực tiếp trên trình duyệt máy khách (Client-side).
               </p>
-              <div className="p-3 bg-[#FAF7F2] rounded-xl border border-[#E6DBCE] text-xs text-[#664422] space-y-1">
+              <div className="p-3 bg-surface-subtle rounded-xl border border-border-subtle text-xs text-[#664422] space-y-1">
                 <div className="font-bold flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-[#C9A227]" />
                   <span>Lợi ích kinh tế vượt trội:</span>
@@ -123,7 +123,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
             </div>
 
             {/* Box 3: Lá chắn Văn hóa Culture Guard */}
-            <div className="bg-white rounded-2xl p-5 border border-[#DECDB8] shadow-sm space-y-3">
+            <div className="bg-white rounded-2xl p-5 border border-border-warm shadow-sm space-y-3">
               <div className="flex items-center gap-2.5 text-[#8B1A1A]">
                 <ShieldCheck className="w-5 h-5 shrink-0" />
                 <h3 className="font-bold text-base text-[#1D2440]">3. Culture Guard – Lá Chắn Bản Sắc Tự Động</h3>
@@ -133,13 +133,13 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
               </p>
               <div className="grid grid-cols-3 gap-2 text-center text-[11px] font-bold">
                 <div className="p-2 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  🟢 Đèn Xanh<br /><span className="text-[9px] font-normal">Khen ngợi sáng tạo</span>
+                  🟢 Đèn Xanh<br /><span className="text-[11px] font-normal">Khen ngợi sáng tạo</span>
                 </div>
                 <div className="p-2 rounded-lg bg-amber-50 text-amber-700 border border-amber-200">
-                  🟡 Đèn Vàng<br /><span className="text-[9px] font-normal">Lưu ý bản sắc</span>
+                  🟡 Đèn Vàng<br /><span className="text-[11px] font-normal">Lưu ý bản sắc</span>
                 </div>
                 <div className="p-2 rounded-lg bg-rose-50 text-rose-700 border border-rose-200">
-                  🔴 Đèn Đỏ<br /><span className="text-[9px] font-normal">Cảnh báo sai lệch</span>
+                  🔴 Đèn Đỏ<br /><span className="text-[11px] font-normal">Cảnh báo sai lệch</span>
                 </div>
               </div>
               <p className="text-xs text-gray-600">
@@ -148,7 +148,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
             </div>
 
             {/* Box 4: Harmony Score & Xuất Lookbook Canvas */}
-            <div className="bg-white rounded-2xl p-5 border border-[#DECDB8] shadow-sm space-y-3">
+            <div className="bg-white rounded-2xl p-5 border border-border-warm shadow-sm space-y-3">
               <div className="flex items-center gap-2.5 text-[#C9A227]">
                 <Layers className="w-5 h-5 shrink-0" />
                 <h3 className="font-bold text-base text-[#1D2440]">4. Chấm Điểm Ngũ Sắc &amp; Xuất Lookbook Canvas</h3>
@@ -252,7 +252,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
 
           <div className="space-y-4">
             {/* Phase 1 */}
-            <div className="bg-white rounded-2xl p-5 border-l-4 border-l-[#1F6F5C] border border-[#DECDB8] shadow-sm space-y-2">
+            <div className="bg-white rounded-2xl p-5 border-l-4 border-l-[#1F6F5C] border border-border-warm shadow-sm space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
@@ -272,7 +272,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
             </div>
 
             {/* Phase 2 */}
-            <div className="bg-white rounded-2xl p-5 border-l-4 border-l-[#C9A227] border border-[#DECDB8] shadow-sm space-y-2">
+            <div className="bg-white rounded-2xl p-5 border-l-4 border-l-[#C9A227] border border-border-warm shadow-sm space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#FAF3DD] text-[#8C5E3B]">
@@ -292,7 +292,7 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
             </div>
 
             {/* Phase 3 */}
-            <div className="bg-white rounded-2xl p-5 border-l-4 border-l-[#8B1A1A] border border-[#DECDB8] shadow-sm space-y-2">
+            <div className="bg-white rounded-2xl p-5 border-l-4 border-l-[#8B1A1A] border border-border-warm shadow-sm space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800">
@@ -327,22 +327,22 @@ export function ProjectRoadmapPage({ onBackToStudio }) {
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
-            <div className="bg-white p-3.5 rounded-xl border border-[#DECDB8] shadow-sm">
+            <div className="bg-white p-3.5 rounded-xl border border-border-warm shadow-sm">
               <span className="font-bold text-[#8B1A1A] block mb-1">1. Cố vấn Mô hình Kinh doanh</span>
               <p className="text-gray-600">Được các thầy cô Khoa Quản lý Kinh doanh hướng dẫn định giá hoa hồng B2B và chiến lược đàm phán hợp đồng đối tác.</p>
             </div>
-            <div className="bg-white p-3.5 rounded-xl border border-[#DECDB8] shadow-sm">
+            <div className="bg-white p-3.5 rounded-xl border border-border-warm shadow-sm">
               <span className="font-bold text-[#1F6F5C] block mb-1">2. Không gian Ươm tạo HaUI</span>
               <p className="text-gray-600">Hỗ trợ không gian làm việc tại HaUI Innovation Hub và cơ hội tiếp cận Quỹ Hỗ trợ Khởi nghiệp Sáng tạo Sinh viên.</p>
             </div>
-            <div className="bg-white p-3.5 rounded-xl border border-[#DECDB8] shadow-sm">
+            <div className="bg-white p-3.5 rounded-xl border border-border-warm shadow-sm">
               <span className="font-bold text-[#1D2440] block mb-1">3. Kết nối Mạng lưới Văn hóa</span>
               <p className="text-gray-600">Giới thiệu dự án tham gia các ngày hội văn hóa, festival sinh viên Thủ đô để có ngay tập 1.000 người dùng đầu tiên.</p>
             </div>
           </div>
 
           {/* Action CTA Box */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#DECDB8]">
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-border-warm">
             <div className="text-xs text-gray-600">
               <span className="font-bold text-[#8B1A1A]">Trưởng nhóm Đỗ Đăng Trường:</span> “Nhóm cam kết không dừng lại ở bài thi lý thuyết, mà quyết tâm đưa Việt Phục Remix trở thành cầu nối bản sắc cho người trẻ.”
             </div>

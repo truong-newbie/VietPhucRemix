@@ -64,7 +64,7 @@ export function EvidenceSection() {
   ];
 
   return (
-    <section className="bg-white rounded-3xl p-6 border-2 border-[#DECDB8] shadow-sm space-y-4">
+    <section className="bg-white rounded-3xl p-6 border-2 border-border-warm shadow-sm space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-[#8B1A1A]" />
@@ -72,7 +72,7 @@ export function EvidenceSection() {
             Minh chứng Thực nghiệm Người dùng (?study=1)
           </h3>
         </div>
-        <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#FAF3DD] text-[#8C5E3B] border border-[#E8DFC8]">
+        <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#FAF3DD] text-[#8C5E3B] border border-border-subtle">
           Cỡ mẫu thật: n = {summary.sampleSize} • Cập nhật {summary.lastUpdated}
         </span>
       </div>
@@ -80,7 +80,7 @@ export function EvidenceSection() {
       <p className="text-xs text-gray-600">{summary.note}</p>
 
       {/* Pure SVG Bar Chart (0 external chart library) */}
-      <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-[#E6DBCE]">
+      <div className="bg-surface-subtle p-4 rounded-2xl border border-border-subtle">
         <svg viewBox="0 0 600 175" className="w-full h-auto" role="img" aria-label="Biểu đồ chỉ số thực nghiệm SUS">
           {bars.map((b, idx) => {
             const y = 20 + idx * 52;
